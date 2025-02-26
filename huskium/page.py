@@ -108,7 +108,7 @@ class Page:
         return getattr(self, _Name._wait_timeout, None)
 
     def wait(
-        self, 
+        self,
         timeout: int | float | None = None,
         ignored_exceptions: WaitExcTypes | None = None
     ) -> WebDriverWait:
@@ -123,7 +123,7 @@ class Page:
         """
         self._wait_timeout = self.timeout if timeout is None else timeout
         return WebDriverWait(
-            driver=self.driver, 
+            driver=self.driver,
             timeout=self._wait_timeout,
             ignored_exceptions=ignored_exceptions
         )
