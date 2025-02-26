@@ -85,10 +85,10 @@ class Element:
         if getattr(self, _Name._page, None) != instance:
             self._page = instance
             self._driver = instance._driver
-            self._logger.debug(f'[__get__] Driver updated: {self._driver}.')
+            self.logger.debug(f'[__get__] Driver updated: {self._driver}.')
             self._if_clear_caches('[__get__]')
         else:
-            self._logger.debug(f'[__get__] Using existing driver: {self._driver}.')
+            self.logger.debug(f'[__get__] Using existing driver: {self._driver}.')
         return self
 
     def __set__(self, instance: Page, value: Element) -> None:
@@ -99,7 +99,7 @@ class Element:
         # Do not call dynamic, as it will duplicate the verification.
         self._set_data(value.by, value.value, value.index, value.timeout, value.remark, value.cache)
         self._if_clear_caches('[__set__]')  # dynamic should clear caches.
-        self._logger.debug('[__set__] Dynamic element set.')
+        self.logger.debug('[__set__] Dynamic element set.')
 
     def dynamic(
         self,
@@ -147,7 +147,7 @@ class Element:
         self._verify_data(by, value, index, timeout, remark, cache)
         self._set_data(by, value, index, timeout, remark, cache)
         self._if_clear_caches('[dynamic]')  # dynamic should clear caches.
-        self._logger.debug('[dynamic] Dynamic element set.')
+        self.logger.debug('[dynamic] Dynamic element set.')
         return self
 
     def _verify_data(self, by, value, index, timeout, remark, cache) -> None:
@@ -180,7 +180,7 @@ class Element:
         if self.cache:
             for cache_name in _Name._caches:
                 if cache := vars(self).pop(cache_name, None):
-                    self._logger.debug(f'{logtag} Cleared {cache_name}: {cache}.', stacklevel=2)
+                    self.logger.debug(f'{logtag} Cleared {cache_name}: {cache}.', stacklevel=2)
 
     def _cache_try(self, name: str) -> Any:
         """
@@ -189,9 +189,9 @@ class Element:
         """
         if self.cache and hasattr(self, name):
             cache = getattr(self, name)
-            self._logger.debug(f'Using {name}: {cache}', stacklevel=3)
+            self.logger.debug(f'Using {name}: {cache}', stacklevel=3)
             return cache
-        self._logger.debug(f'No {name}(c={self.cache}): relocating the element directly.', stacklevel=3)
+        self.logger.debug(f'No {name}(c={self.cache}): relocating the element directly.', stacklevel=3)
         raise NoSuchCacheException(f'No cache for "{name}", please relocate the element in except.')
 
     @property
@@ -233,6 +233,16 @@ class Element:
     def cache(self) -> bool:
         """If initial cache is `None`, return `Cache.ELEMENT`."""
         return Cache.ELEMENT if self._cache is None else self._cache
+    
+    @property
+    def logger(self) -> PageElementLoggerAdapter:
+        """The `logger` attribute of the `Element`."""
+        return self._logger
+    
+    @property
+    def page(self) -> Page:
+        """The `page` object from descriptor."""
+        return self._page
 
     @property
     def driver(self) -> WebDriver:
@@ -294,13 +304,13 @@ class Element:
         """Handling a TimeoutException after it occurs."""
         if not present:
             status += ' or absent'
-        exc.msg = f'Timed out waiting {self._wait_timeout} seconds for element "{self.remark}" to be "{status}".'
+        exc.msg = f'Timed out waiting {self.wait_timeout} seconds for element "{self.remark}" to be "{status}".'
         if isinstance(exc.__context__, NoSuchCacheException):
             exc.__context__ = None  # Suppress unnecessary internal exceptions.
         if Timeout.reraise(reraise):
-            self._logger.exception(exc.msg, stacklevel=2)
+            self.logger.exception(exc.msg, stacklevel=2)
             raise exc
-        self._logger.warning(exc.msg, exc_info=True, stacklevel=2)
+        self.logger.warning(exc.msg, exc_info=True, stacklevel=2)
         return False
 
     def wait_present(
@@ -335,9 +345,9 @@ class Element:
             )
             if self.cache:
                 self._present_cache = element
-                self._logger.debug(f'Locator -> PresentC = {self._present_cache}')
+                self.logger.debug(f'Locator -> PresentC = {self._present_cache}')
             else:
-                self._logger.debug(f'Locator -> PresentE = {element}')
+                self.logger.debug(f'Locator -> PresentE = {element}')
             return element
         except TimeoutException as exc:
             return self._timeout_process('present', exc, reraise)
@@ -372,7 +382,7 @@ class Element:
             true: Literal[True] = self.wait(timeout).until(
                 ecex.absence_of_element_located(self.locator, self.index)
             )
-            self._logger.debug(f'Locator -> Absent = {true}')
+            self.logger.debug(f'Locator -> Absent = {true}')
             return true
         except TimeoutException as exc:
             return self._timeout_process('absent', exc, reraise)
@@ -409,7 +419,7 @@ class Element:
                 self._visible_cache = self.wait(timeout).until(
                     ecex.visibility_of_element(self.present_try)
                 )
-                self._logger.debug(f'PresentC -> VisibleC = {self._visible_cache}')
+                self.logger.debug(f'PresentC -> VisibleC = {self._visible_cache}')
                 return self._visible_cache
             except ELEMENT_REFERENCE_EXCEPTIONS:
                 element = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
@@ -417,9 +427,9 @@ class Element:
                 )
                 if self.cache:
                     self._visible_cache = self._present_cache = element
-                    self._logger.debug(f'Locator -> PresentC -> VisibleC = {self._visible_cache}')
+                    self.logger.debug(f'Locator -> PresentC -> VisibleC = {self._visible_cache}')
                 else:
-                    self._logger.debug(f'Locator -> VisibleE : {element}')
+                    self.logger.debug(f'Locator -> VisibleE : {element}')
                 return element
         except TimeoutException as exc:
             return self._timeout_process('visible', exc, reraise)
@@ -460,7 +470,7 @@ class Element:
                 element_or_true: WebElement | Literal[True] = self.wait(timeout).until(
                     ecex.invisibility_of_element(self.present_try, present)
                 )
-                self._logger.debug(f'PresentC -> Invisible(P={present}) = {element_or_true}')
+                self.logger.debug(f'PresentC -> Invisible(P={present}) = {element_or_true}')
                 return element_or_true
             except ELEMENT_REFERENCE_EXCEPTIONS:
                 element_or_true = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
@@ -468,9 +478,9 @@ class Element:
                 )
                 if self.cache and isinstance(element_or_true, WebElement):
                     self._present_cache = element_or_true
-                    self._logger.debug(f'Locator -> PresentC -> Invisible(P={present}) = {self._present_cache}')
+                    self.logger.debug(f'Locator -> PresentC -> Invisible(P={present}) = {self._present_cache}')
                 else:
-                    self._logger.debug(f'Locator -> Invisible(P={present}) = {element_or_true}')
+                    self.logger.debug(f'Locator -> Invisible(P={present}) = {element_or_true}')
                 return element_or_true
         except TimeoutException as exc:
             return self._timeout_process('invisible', exc, reraise, present)
@@ -507,7 +517,7 @@ class Element:
                 self._clickable_cache = self._visible_cache = self.wait(timeout).until(
                     ecex.element_to_be_clickable(self.present_try)
                 )
-                self._logger.debug(f'PresentC -> VisibleC -> ClickableC = {self._clickable_cache}')
+                self.logger.debug(f'PresentC -> VisibleC -> ClickableC = {self._clickable_cache}')
                 return self._clickable_cache
             except ELEMENT_REFERENCE_EXCEPTIONS:
                 element = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
@@ -515,9 +525,9 @@ class Element:
                 )
                 if self.cache:
                     self._clickable_cache = self._visible_cache = self._present_cache = element
-                    self._logger.debug(f'Locator -> PresentC -> VisibleC -> ClickableC = {self._clickable_cache}')
+                    self.logger.debug(f'Locator -> PresentC -> VisibleC -> ClickableC = {self._clickable_cache}')
                 else:
-                    self._logger.debug(f'Locator -> ClickableE = {element}')
+                    self.logger.debug(f'Locator -> ClickableE = {element}')
                 return element
         except TimeoutException as exc:
             return self._timeout_process('clickable', exc, reraise)
@@ -558,7 +568,7 @@ class Element:
                 element_or_true: WebElement | Literal[True] = self.wait(timeout).until(
                     ecex.element_to_be_unclickable(self.present_try, present)
                 )
-                self._logger.debug(f'PresentC -> Unclickable(P={present}) = {element_or_true}')
+                self.logger.debug(f'PresentC -> Unclickable(P={present}) = {element_or_true}')
                 return element_or_true
             except ELEMENT_REFERENCE_EXCEPTIONS:
                 element_or_true = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
@@ -566,9 +576,9 @@ class Element:
                 )
                 if self.cache and isinstance(element_or_true, WebElement):
                     self._present_cache = element_or_true
-                    self._logger.debug(f'Locator -> PresentC -> Unclickable(P={present}) = {self._present_cache}')
+                    self.logger.debug(f'Locator -> PresentC -> Unclickable(P={present}) = {self._present_cache}')
                 else:
-                    self._logger.debug(f'Locator -> Unclickable(P={present}) = {element_or_true}')
+                    self.logger.debug(f'Locator -> Unclickable(P={present}) = {element_or_true}')
                 return element_or_true
         except TimeoutException as exc:
             return self._timeout_process('unclickable', exc, reraise, present)
@@ -605,7 +615,7 @@ class Element:
                 element = self.wait(timeout).until(
                     ecex.element_to_be_selected(self.present_try)
                 )
-                self._logger.debug(f'PresentC -> Selected = {element}')
+                self.logger.debug(f'PresentC -> Selected = {element}')
                 return element
             except ELEMENT_REFERENCE_EXCEPTIONS:
                 element = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
@@ -613,9 +623,9 @@ class Element:
                 )
                 if self.cache:
                     self._present_cache = element
-                    self._logger.debug(f'Locator -> PresentC -> Selected = {self._present_cache}')
+                    self.logger.debug(f'Locator -> PresentC -> Selected = {self._present_cache}')
                 else:
-                    self._logger.debug(f'Locator -> Selected = {element}')
+                    self.logger.debug(f'Locator -> Selected = {element}')
                 return element
         except TimeoutException as exc:
             return self._timeout_process('selected', exc, reraise)
@@ -652,7 +662,7 @@ class Element:
                 element = self.wait(timeout).until(
                     ecex.element_to_be_unselected(self.present_try)
                 )
-                self._logger.debug(f'PresentC -> Unselected = {element}')
+                self.logger.debug(f'PresentC -> Unselected = {element}')
                 return element
             except ELEMENT_REFERENCE_EXCEPTIONS:
                 element = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
@@ -660,9 +670,9 @@ class Element:
                 )
                 if self.cache:
                     self._present_cache = element
-                    self._logger.debug(f'Locator -> PresentC -> Unselected = {self._present_cache}')
+                    self.logger.debug(f'Locator -> PresentC -> Unselected = {self._present_cache}')
                 else:
-                    self._logger.debug(f'Locator -> Unselected = {element}')
+                    self.logger.debug(f'Locator -> Unselected = {element}')
                 return element
         except TimeoutException as exc:
             return self._timeout_process('unselected', exc, reraise)
@@ -757,8 +767,8 @@ class Element:
             result = self.present.is_displayed()
         if result and self.cache:
             self._visible_cache = self._present_cache
-            self._logger.debug(f'PresentC -> VisibleC = {self._visible_cache}')
-        self._logger.debug(f'is_visible: {result}')
+            self.logger.debug(f'PresentC -> VisibleC = {self._visible_cache}')
+        self.logger.debug(f'is_visible: {result}')
         return result
 
     def is_enabled(self) -> bool:
@@ -767,7 +777,7 @@ class Element:
             result = self.present_try.is_enabled()
         except ELEMENT_REFERENCE_EXCEPTIONS:
             result = self.present.is_enabled()
-        self._logger.debug(f'is_enabled: {result}')
+        self.logger.debug(f'is_enabled: {result}')
         return result
 
     def is_clickable(self) -> bool:
@@ -780,8 +790,8 @@ class Element:
             result = element.is_displayed() and element.is_enabled()
         if result and self.cache:
             self._clickable_cache = self._visible_cache = self._present_cache
-            self._logger.debug(f'PresentC -> VisibleC -> ClickableC = {self._clickable_cache}')
-        self._logger.debug(f'is_clickable: {result}')
+            self.logger.debug(f'PresentC -> VisibleC -> ClickableC = {self._clickable_cache}')
+        self.logger.debug(f'is_clickable: {result}')
         return result
 
     def is_selected(self) -> bool:
@@ -790,7 +800,7 @@ class Element:
             result = self.present_try.is_selected()
         except ELEMENT_REFERENCE_EXCEPTIONS:
             result = self.present.is_selected()
-        self._logger.debug(f'is_selected: {result}')
+        self.logger.debug(f'is_selected: {result}')
         return result
 
     def screenshot(self, filename: str) -> bool:
@@ -1021,12 +1031,12 @@ class Element:
         if element and element.is_displayed():
             if self.cache:
                 self._visible_cache = element
-                self._logger.debug(f'Locator -> PresentC -> VisibleC = {self._visible_cache}')
+                self.logger.debug(f'Locator -> PresentC -> VisibleC = {self._visible_cache}')
             else:
-                self._logger.debug(f'Locator -> VisibleE = {element}')
-            self._logger.debug('Finding one is viewable.')
+                self.logger.debug(f'Locator -> VisibleE = {element}')
+            self.logger.debug('Finding one is viewable.')
             return True
-        self._logger.debug('Finding one is unviewable.')
+        self.logger.debug('Finding one is unviewable.')
         return False
 
     def swipe_by(
@@ -1101,8 +1111,8 @@ class Element:
                 )
 
         """
-        area = self._page._get_area(area)
-        offset = self._page._get_offset(offset, area)
+        area = self.page._get_area(area)
+        offset = self.page._get_offset(offset, area)
         self._start_swiping_by(offset, duration, timeout, max_round)
         self._start_adjusting_by(offset, area, max_adjustment, min_distance, duration)
         return self
@@ -1181,8 +1191,8 @@ class Element:
                 )
 
         """
-        area = self._page._get_area(area)
-        offset = self._page._get_offset(offset, area)
+        area = self.page._get_area(area)
+        offset = self.page._get_offset(offset, area)
         self._start_flicking_by(offset, timeout, max_round)
         self._start_adjusting_by(offset, area, max_adjustment, min_distance, duration)
         return self
@@ -1195,18 +1205,18 @@ class Element:
         max_round: int
     ) -> int | None:
         if not max_round:
-            self._logger.warning(f'For max_round is {max_round}, no swiping performed.')
+            self.logger.warning(f'For max_round is {max_round}, no swiping performed.')
             return None
-        self._logger.debug('Start swiping.')
+        self.logger.debug('Start swiping.')
         round = 0
         while not self.is_viewable(timeout):
             if round == max_round:
-                self._logger.warning(f'Stop swiping. Element remains not viewable after max {max_round} rounds.\n')
+                self.logger.warning(f'Stop swiping. Element remains not viewable after max {max_round} rounds.\n')
                 return round
             self.driver.swipe(*offset, duration)  # type: ignore[attr-defined]
             round += 1
-            self._logger.debug(f'Swiping round {round} done.\n')
-        self._logger.debug(f'Stop swiping. Element is viewable after {round} rounds.\n')
+            self.logger.debug(f'Swiping round {round} done.\n')
+        self.logger.debug(f'Stop swiping. Element is viewable after {round} rounds.\n')
         return round
 
     def _start_flicking_by(
@@ -1216,19 +1226,19 @@ class Element:
         max_round: int
     ) -> int | None:
         if not max_round:
-            self._logger.warning(f'For max_round is {max_round}, no flicking performed.')
+            self.logger.warning(f'For max_round is {max_round}, no flicking performed.')
             return None
-        self._logger.debug('Start flicking.')
+        self.logger.debug('Start flicking.')
         round = 0
         while not self.is_viewable(timeout):
             if round == max_round:
-                self._logger.warning(
+                self.logger.warning(
                     f'Stop flicking. Element remains not viewable after max {max_round} rounds.\n')
                 return round
             self.driver.flick(*offset)  # type: ignore[attr-defined]
             round += 1
-            self._logger.debug(f'Flicking round {round} done.\n')
-        self._logger.debug(f'Stop flicking. Element is viewable after {round} rounds.\n')
+            self.logger.debug(f'Flicking round {round} done.\n')
+        self.logger.debug(f'Stop flicking. Element is viewable after {round} rounds.\n')
         return round
 
     def _start_adjusting_by(
@@ -1240,18 +1250,18 @@ class Element:
         duration: int
     ) -> int | None:
         if not max_adjustment:
-            self._logger.debug(f'For max_adjustment is {max_adjustment}, no adjustment performed.')
+            self.logger.debug(f'For max_adjustment is {max_adjustment}, no adjustment performed.')
             return None
-        self._logger.debug('Start adjusting.')
+        self.logger.debug('Start adjusting.')
         round = 0
         while (adjusted_offset := self._get_adjusted_offset(offset, area, min_distance)):
             if round == max_adjustment:
-                self._logger.debug(f'Stop adjusting after max {max_adjustment} rounds.\n')
+                self.logger.debug(f'Stop adjusting after max {max_adjustment} rounds.\n')
                 return round
             self.driver.swipe(*adjusted_offset, duration)  # type: ignore[attr-defined]
             round += 1
-            self._logger.debug(f'Adjusting round {round} done.\n')
-        self._logger.debug(f'Stop adjusting after {round} round.\n')
+            self.logger.debug(f'Adjusting round {round} done.\n')
+        self.logger.debug(f'Stop adjusting after {round} round.\n')
         return round
 
     def _get_adjusted_offset(
@@ -1266,35 +1276,35 @@ class Element:
 
         # original offset
         start_x, start_y, end_x, end_y = offset
-        self._logger.debug(f'OriginalOffset(sx, sy, ex, ey): {offset}')
+        self.logger.debug(f'OriginalOffset(sx, sy, ex, ey): {offset}')
 
         # area border
         area_left, area_top, area_width, area_height = area
         area_right = area_left + area_width
         area_bottom = area_top + area_height
-        self._logger.debug(f'Area(l, r, t, b): {(area_left, area_right, area_top, area_bottom)}')
+        self.logger.debug(f'Area(l, r, t, b): {(area_left, area_right, area_top, area_bottom)}')
 
         # element border
         element_left, element_right, element_top, element_bottom = self.border.values()
-        self._logger.debug(f'Element(l, r, t, b): {(element_left, element_right, element_top, element_bottom)}')
+        self.logger.debug(f'Element(l, r, t, b): {(element_left, element_right, element_top, element_bottom)}')
 
         # delta = (area - element)
         delta_left = area_left - element_left
         delta_right = area_right - element_right
         delta_top = area_top - element_top
         delta_bottom = area_bottom - element_bottom
-        self._logger.debug(f'Delta(A-E)(l, r, t, b): {(delta_left, delta_right, delta_top, delta_bottom)}')
+        self.logger.debug(f'Delta(A-E)(l, r, t, b): {(delta_left, delta_right, delta_top, delta_bottom)}')
 
         # adjust action, note that this must use delta to judge
         adjust_action = ((delta_left > 0), (delta_right < 0), (delta_top > 0), (delta_bottom < 0))
-        self._logger.debug(f'AdjustAction(l>0, r<0, t>0, b<0): {adjust_action}')
+        self.logger.debug(f'AdjustAction(l>0, r<0, t>0, b<0): {adjust_action}')
 
         # compare delta with min_distance
         dist_left = dist(delta_left)
         dist_right = dist(delta_right)
         dist_top = dist(delta_top)
         dist_bottom = dist(delta_bottom)
-        self._logger.debug(
+        self.logger.debug(
             f'AdjustDistance(min={min_distance})(l, r, t, b): '
             f'{(dist_left, dist_right, dist_top, dist_bottom)}'
         )
@@ -1309,16 +1319,16 @@ class Element:
             (False, True, False, True): (dist_right, dist_bottom),
         }
         delta_x, delta_y = adjust_actions.get(adjust_action, (0, 0))
-        self._logger.debug(f'End(dx, dy): {(delta_x, delta_y)}')
+        self.logger.debug(f'End(dx, dy): {(delta_x, delta_y)}')
 
         # return
         if delta_x == 0 and delta_y == 0:
-            self._logger.debug('No further adjustment needed.')
+            self.logger.debug('No further adjustment needed.')
             return None
         end_x, end_y = (start_x + delta_x), (start_y + delta_y)
         adjusted_offset = (start_x, start_y, end_x, end_y)
-        self._logger.debug(f'OriginalOffset(sx, sy, ex, ey): {offset}')
-        self._logger.debug(f'AdjustedOffset(sx, sy, ex, ey): {adjusted_offset}')
+        self.logger.debug(f'OriginalOffset(sx, sy, ex, ey): {offset}')
+        self.logger.debug(f'AdjustedOffset(sx, sy, ex, ey): {adjusted_offset}')
         return adjusted_offset
 
     def clear(self) -> Self:
@@ -2011,9 +2021,9 @@ class Element:
             select = Select(self.present)
         if self.cache:
             self._select_cache = select
-            self._logger.debug(f'Get select_cache: {self._select_cache}')
+            self.logger.debug(f'Get select_cache: {self._select_cache}')
         else:
-            self._logger.debug(f'Get select: {select}')
+            self.logger.debug(f'Get select: {select}')
         return select
 
     @property

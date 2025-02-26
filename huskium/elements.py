@@ -69,9 +69,9 @@ class Elements:
         if getattr(self, _Name._page, None) != instance:
             self._page = instance
             self._driver = instance._driver
-            self._logger.debug(f'[__get__] Driver updated: {self._driver}.')
+            self.logger.debug(f'[__get__] Driver updated: {self._driver}.')
         else:
-            self._logger.debug(f'[__get__] Using existing driver: {self._driver}.')
+            self.logger.debug(f'[__get__] Using existing driver: {self._driver}.')
         return self
 
     def __set__(self, instance: Page, value: Elements) -> None:
@@ -81,7 +81,7 @@ class Elements:
         # Avoid using __init__() here, as it may reset the descriptor.
         # Do not call dynamic, as it will duplicate the verification.
         self._set_data(value.by, value.value, value.timeout, value.remark)
-        self._logger.debug('[__set__] Dynamic element set.')
+        self.logger.debug('[__set__] Dynamic element set.')
 
     def dynamic(
         self,
@@ -124,7 +124,7 @@ class Elements:
         # Avoid using __init__() here, as it will reset the descriptor.
         self._verify_data(by, value, timeout, remark)
         self._set_data(by, value, timeout, remark)
-        self._logger.debug('[dynamic] Dynamic element set.')
+        self.logger.debug('[dynamic] Dynamic element set.')
         return self
 
     def _verify_data(self, by, value, timeout, remark) -> None:
@@ -172,6 +172,16 @@ class Elements:
     def remark(self) -> str:
         """If initial remark is None, return (by="{by}", value="{value}")."""
         return self._remark or f'(by="{self._by}", value="{self._value}")'
+    
+    @property
+    def logger(self) -> PageElementLoggerAdapter:
+        """The `logger` attribute of the `Elements`."""
+        return self._logger
+    
+    @property
+    def page(self) -> Page:
+        """The `page` object from descriptor."""
+        return self._page
 
     @property
     def driver(self) -> WebDriver:
@@ -258,9 +268,9 @@ class Elements:
         """Handling a TimeoutException after it occurs."""
         exc.msg = f'Timed out waiting {self._wait_timeout} seconds for elements "{self.remark}" to be "{status}".'
         if Timeout.reraise(reraise):
-            self._logger.exception(exc.msg, stacklevel=2)
+            self.logger.exception(exc.msg, stacklevel=2)
             raise exc
-        self._logger.warning(exc.msg, exc_info=True, stacklevel=2)
+        self.logger.warning(exc.msg, exc_info=True, stacklevel=2)
         return False
 
     def wait_all_present(
@@ -293,7 +303,7 @@ class Elements:
             elements = self.wait(timeout).until(
                 ecex.presence_of_all_elements_located(self.locator)
             )
-            self._logger.debug(f'Locator -> AllPresentE = {elements}')
+            self.logger.debug(f'Locator -> AllPresentE = {elements}')
             return elements
         except TimeoutException as exc:
             return self._timeout_process('all present', exc, reraise)
@@ -328,7 +338,7 @@ class Elements:
             true: Literal[True] = self.wait(timeout).until(
                 ecex.absence_of_all_elements_located(self.locator)
             )
-            self._logger.debug(f'Locator -> AllAbsent = {true}')
+            self.logger.debug(f'Locator -> AllAbsent = {true}')
             return true
         except TimeoutException as exc:
             return self._timeout_process('all absent', exc, reraise)
@@ -364,7 +374,7 @@ class Elements:
             elements = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
                 ecex.visibility_of_all_elements_located(self.locator)
             )
-            self._logger.debug(f'locator -> AllVisibleE : {elements}')
+            self.logger.debug(f'locator -> AllVisibleE : {elements}')
             return elements
         except TimeoutException as exc:
             return self._timeout_process('all visible', exc, reraise)
@@ -400,7 +410,7 @@ class Elements:
             elements = self.wait(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
                 ecex.visibility_of_any_elements_located(self.locator)
             )
-            self._logger.debug(f'locator -> AnyVisibleE : {elements}')
+            self.logger.debug(f'locator -> AnyVisibleE : {elements}')
             return elements
         except TimeoutException as exc:
             return self._timeout_process('any visible', exc, reraise)
@@ -444,9 +454,9 @@ class Elements:
         elements = self.all_present
         for index, element in enumerate(elements, 1):
             if not element.is_displayed():
-                self._logger.debug(f'Element {index} is invisible.')
+                self.logger.debug(f'Element {index} is invisible.')
                 return False
-        self._logger.debug(f'All {len(elements)} elements are visible.')
+        self.logger.debug(f'All {len(elements)} elements are visible.')
         return True
 
     def are_any_visible(self) -> bool:
@@ -461,9 +471,9 @@ class Elements:
         elements = self.all_present
         visible_elements = [element for element in elements if element.is_displayed()]
         if visible_elements:
-            self._logger.debug(f'Among all {len(elements)} elements, {len(visible_elements)} are visible.')
+            self.logger.debug(f'Among all {len(elements)} elements, {len(visible_elements)} are visible.')
             return True
-        self._logger.debug(f'All {len(elements)} elements are invisible.')
+        self.logger.debug(f'All {len(elements)} elements are invisible.')
         return False
 
     @property
