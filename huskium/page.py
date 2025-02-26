@@ -43,8 +43,8 @@ class Page:
         _wait_reraise: bool
 
     def __init__(
-        self, 
-        driver: WebDriver, 
+        self,
+        driver: WebDriver,
         timeout: int | float = 30,
         reraise: bool = True,
         remark: str = 'Page'
@@ -73,12 +73,12 @@ class Page:
     def driver(self) -> WebDriver:
         """The `driver` attribute of the `Page`."""
         return self._driver
-    
+
     @property
     def timeout(self) -> int | float:
         """The `timeout` attribute of the `Page`."""
         return self._timeout
-    
+
     @property
     def reraise(self) -> bool:
         """The `reraise` attribute of the `Page`."""
@@ -93,7 +93,7 @@ class Page:
     def action(self) -> ActionChains:
         """The `ActionChains` object of the `Page`."""
         return self._action
-    
+
     @property
     def logger(self) -> PageElementLoggerAdapter:
         """The `logger` object of the `Page`."""
@@ -114,12 +114,12 @@ class Page:
     def wait_timeout(self) -> int | float | None:
         """The final waiting timeout."""
         return getattr(self, _Name._wait_timeout, None)
-    
+
     def _timeout_reraise(self, reraise: bool | None) -> bool:
         """The final reraise decision."""
         self._wait_reraise = self.reraise if reraise is None else reraise
         return self._wait_reraise
-    
+
     @property
     def wait_reraise(self) -> bool | None:
         """The final reraise value."""
