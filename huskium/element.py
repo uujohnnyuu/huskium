@@ -233,12 +233,12 @@ class Element:
     def cache(self) -> bool:
         """If initial cache is `None`, return `Cache.ELEMENT`."""
         return Cache.ELEMENT if self._cache is None else self._cache
-    
+
     @property
     def logger(self) -> PageElementLoggerAdapter:
         """The `logger` attribute of the `Element`."""
         return self._logger
-    
+
     @property
     def page(self) -> Page:
         """The `page` object from descriptor."""

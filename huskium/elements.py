@@ -172,12 +172,12 @@ class Elements:
     def remark(self) -> str:
         """If initial remark is None, return (by="{by}", value="{value}")."""
         return self._remark or f'(by="{self._by}", value="{self._value}")'
-    
+
     @property
     def logger(self) -> PageElementLoggerAdapter:
         """The `logger` attribute of the `Elements`."""
         return self._logger
-    
+
     @property
     def page(self) -> Page:
         """The `page` object from descriptor."""
