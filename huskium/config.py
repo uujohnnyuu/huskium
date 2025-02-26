@@ -61,34 +61,6 @@ class Cache:
     """`True` (default) to enable cache in `Element`."""
 
 
-class Timeout:
-    """ Timeout settings."""
-
-    DEFAULT: int | float = 30
-    """Default is 30 seconds."""
-
-    RERAISE: bool = True
-    """
-    When a timeout occurs,
-    `True` raises a `TimeoutException`; otherwise, returns `False`.
-    """
-
-    @classmethod
-    def reraise(cls, switch: bool | None = None) -> bool:
-        """
-        When a timeout occurs, used to determine whether to re-raise
-        a `TimeoutException` or return `False`.
-        Typically used in wait-related methods within `Element` or `Elements`.
-
-        Args:
-            switch (bool, None): When a timeout occurs,
-                `None`: Follows `Timeout.RERAISE`;
-                `True`: Raises a `TimeoutException`;
-                `False`: Returns `False`.
-        """
-        return cls.RERAISE if switch is None else switch
-
-
 class Appium:
     """General settings for Appium."""
 
