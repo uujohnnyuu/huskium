@@ -165,8 +165,8 @@ class Elements:
 
     @property
     def timeout(self) -> int | float:
-        """If initial timeout is None, return `Timeout.DEFAULT`."""
-        return Timeout.DEFAULT if self._timeout is None else self._timeout
+        """If initial timeout is None, return `page.timeout`."""
+        return self._page._timeout if self._timeout is None else self._timeout
 
     @property
     def remark(self) -> str:
@@ -258,6 +258,16 @@ class Elements:
         If no any element action has been executed yet, it will return None.
         """
         return getattr(self, _Name._wait_timeout, None)
+    
+    def _timeout_reraise(self, reraise: bool | None) -> bool:
+        """The final reraise decision."""
+        self._wait_reraise = self.page.reraise if reraise is None else reraise
+        return self._wait_reraise
+
+    @property
+    def wait_reraise(self) -> bool | None:
+        """The final reraise value."""
+        return getattr(self, _Name._wait_reraise, None)
 
     def _timeout_process(
         self,

@@ -52,6 +52,10 @@ class Page:
         """
         Args:
             driver: The WebDriver object of Selenium or Appium.
+            timeout: Maximum wait time in seconds.
+            reraise: The behavior when timed out. 
+                `True` to raise `TimeoutException`,
+                `False` to return `False`.
             remark: Custom remark for identification or logging.
         """
         if not isinstance(driver, WebDriver):
@@ -71,33 +75,43 @@ class Page:
 
     @property
     def driver(self) -> WebDriver:
-        """The `driver` attribute of the `Page`."""
+        """The initial `driver`."""
         return self._driver
 
     @property
     def timeout(self) -> int | float:
-        """The `timeout` attribute of the `Page`."""
+        """The initial `timeout`."""
         return self._timeout
 
     @property
     def reraise(self) -> bool:
-        """The `reraise` attribute of the `Page`."""
+        """The initial `reraise`."""
         return self._reraise
 
     @property
     def remark(self) -> str:
-        """The `remark` attribute of the `Page`."""
+        """The initial `remark`."""
         return self._remark
 
     @property
     def action(self) -> ActionChains:
-        """The `ActionChains` object of the `Page`."""
+        """The initial `ActionChains`."""
         return self._action
 
     @property
     def logger(self) -> PageElementLoggerAdapter:
-        """The `logger` object of the `Page`."""
+        """The initial `logger`."""
         return self._logger
+    
+    @property
+    def wait_timeout(self) -> int | float | None:
+        """The final waiting timeout."""
+        return getattr(self, _Name._wait_timeout, None)
+    
+    @property
+    def wait_reraise(self) -> bool | None:
+        """The final reraise value."""
+        return getattr(self, _Name._wait_reraise, None)
 
     def wait(self, timeout: int | float | None = None) -> WebDriverWait:
         """
@@ -105,25 +119,18 @@ class Page:
 
         Args:
             timeout: Maximum wait time in seconds.
-                If `None`, it initializes with `Timeout.DEFAULT`.
+                If `None`, it initializes with `self.timeout`.
         """
         self._wait_timeout = self.timeout if timeout is None else timeout
         return WebDriverWait(self.driver, self._wait_timeout)
 
-    @property
-    def wait_timeout(self) -> int | float | None:
-        """The final waiting timeout."""
-        return getattr(self, _Name._wait_timeout, None)
-
     def _timeout_reraise(self, reraise: bool | None) -> bool:
-        """The final reraise decision."""
+        """
+        The final reraise decision when a timeout occurs.
+        If `reraise=None`, use `self.reraise`. 
+        """
         self._wait_reraise = self.reraise if reraise is None else reraise
         return self._wait_reraise
-
-    @property
-    def wait_reraise(self) -> bool | None:
-        """The final reraise value."""
-        return getattr(self, _Name._wait_reraise, None)
 
     def _timeout_process(
         self,
