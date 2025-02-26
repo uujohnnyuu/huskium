@@ -26,7 +26,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from . import ec_extension as ecex
-from .config import Log, Timeout, Offset, Area
+from .config import Log, Offset, Area
 from .logging import PageElementLoggerAdapter
 from .types import WebDriver, WebElement, TupleCoordinate, Coordinate
 from .shared import _Name
@@ -40,8 +40,15 @@ class Page:
 
     if TYPE_CHECKING:
         _wait_timeout: int | float
+        _wait_reraise: bool
 
-    def __init__(self, driver: WebDriver, remark: str = 'Page') -> None:
+    def __init__(
+        self, 
+        driver: WebDriver, 
+        timeout: int | float = 30,
+        reraise: bool = True,
+        remark: str = 'Page'
+    ) -> None:
         """
         Args:
             driver: The WebDriver object of Selenium or Appium.
@@ -49,9 +56,15 @@ class Page:
         """
         if not isinstance(driver, WebDriver):
             raise TypeError(f'The "driver" must be "WebDriver", not {type(driver).__name__}.')
+        if not isinstance(timeout, (int, float)):
+            raise TypeError(f'The "timeout" must be "int" or "float", not {type(timeout).__name__}.')
+        if not isinstance(reraise, bool):
+            raise TypeError(f'The "reraise" must be "bool", not {type(reraise).__name__}.')
         if not isinstance(remark, str):
             raise TypeError(f'The "remark" must be "str", not {type(remark).__name__}.')
         self._driver = driver
+        self._timeout = timeout
+        self._reraise = reraise
         self._remark = remark
         self._action = ActionChains(driver)
         self._logger = PageElementLoggerAdapter(LOGGER, self)
@@ -60,6 +73,16 @@ class Page:
     def driver(self) -> WebDriver:
         """The `driver` attribute of the `Page`."""
         return self._driver
+    
+    @property
+    def timeout(self) -> int | float:
+        """The `timeout` attribute of the `Page`."""
+        return self._timeout
+    
+    @property
+    def reraise(self) -> bool:
+        """The `reraise` attribute of the `Page`."""
+        return self._reraise
 
     @property
     def remark(self) -> str:
@@ -70,6 +93,11 @@ class Page:
     def action(self) -> ActionChains:
         """The `ActionChains` object of the `Page`."""
         return self._action
+    
+    @property
+    def logger(self) -> PageElementLoggerAdapter:
+        """The `logger` object of the `Page`."""
+        return self._logger
 
     def wait(self, timeout: int | float | None = None) -> WebDriverWait:
         """
@@ -79,13 +107,23 @@ class Page:
             timeout: Maximum wait time in seconds.
                 If `None`, it initializes with `Timeout.DEFAULT`.
         """
-        self._wait_timeout = Timeout.DEFAULT if timeout is None else timeout
+        self._wait_timeout = self.timeout if timeout is None else timeout
         return WebDriverWait(self.driver, self._wait_timeout)
 
     @property
     def wait_timeout(self) -> int | float | None:
         """The final waiting timeout."""
         return getattr(self, _Name._wait_timeout, None)
+    
+    def _timeout_reraise(self, reraise: bool | None) -> bool:
+        """The final reraise decision."""
+        self._wait_reraise = self.reraise if reraise is None else reraise
+        return self._wait_reraise
+    
+    @property
+    def wait_reraise(self) -> bool | None:
+        """The final reraise value."""
+        return getattr(self, _Name._wait_reraise, None)
 
     def _timeout_process(
         self,
@@ -95,10 +133,10 @@ class Page:
     ) -> Literal[False]:
         """Handling a TimeoutException after it occurs."""
         exc.msg = status
-        if Timeout.reraise(reraise):
-            self._logger.exception(exc.msg, stacklevel=2)
+        if self._timeout_reraise(reraise):
+            self.logger.exception(exc.msg, stacklevel=2)
             raise exc
-        self._logger.warning(exc.msg, exc_info=True, stacklevel=2)
+        self.logger.warning(exc.msg, exc_info=True, stacklevel=2)
         return False
 
     @property
@@ -242,7 +280,7 @@ class Page:
         except TimeoutException as exc:
             current_url = self.driver.current_url
             status = (
-                f'Timed out waiting {self._wait_timeout} seconds for url to be "{url}". '
+                f'Timed out waiting {self.wait_timeout} seconds for url to be "{url}". '
                 f'The current url is "{current_url}".'
             )
             return self._timeout_process(status, exc, reraise)
@@ -262,7 +300,7 @@ class Page:
         except TimeoutException as exc:
             current_url = self.driver.current_url
             status = (
-                f'Timed out waiting {self._wait_timeout} seconds for url contains "{url}". '
+                f'Timed out waiting {self.wait_timeout} seconds for url contains "{url}". '
                 f'The current url is "{current_url}".'
             )
             return self._timeout_process(status, exc, reraise)
@@ -279,7 +317,7 @@ class Page:
         except TimeoutException as exc:
             current_url = self.driver.current_url
             status = (
-                f'Timed out waiting {self._wait_timeout} seconds for url matches pattern "{pattern}". '
+                f'Timed out waiting {self.wait_timeout} seconds for url matches pattern "{pattern}". '
                 f'The current url is "{current_url}".'
             )
             return self._timeout_process(status, exc, reraise)
@@ -299,7 +337,7 @@ class Page:
         except TimeoutException as exc:
             current_url = self.driver.current_url
             status = (
-                f'Timed out waiting {self._wait_timeout} seconds for url changes. '
+                f'Timed out waiting {self.wait_timeout} seconds for url changes. '
                 f'The current url is still "{current_url}".'
             )
             return self._timeout_process(status, exc, reraise)
@@ -321,7 +359,7 @@ class Page:
         except TimeoutException as exc:
             current_title = self.driver.title
             status = (
-                f'Timed out waiting {self._wait_timeout} seconds for title to be "{title}". '
+                f'Timed out waiting {self.wait_timeout} seconds for title to be "{title}". '
                 f'The current title is "{current_title}".'
             )
             return self._timeout_process(status, exc, reraise)
@@ -341,7 +379,7 @@ class Page:
         except TimeoutException as exc:
             current_title = self.driver.title
             status = (
-                f'Timed out waiting {self._wait_timeout} seconds for title contains "{title}". '
+                f'Timed out waiting {self.wait_timeout} seconds for title contains "{title}". '
                 f'The current title is "{current_title}".'
             )
             return self._timeout_process(status, exc, reraise)
@@ -496,7 +534,7 @@ class Page:
         except TimeoutException as exc:
             current_num_windows = len(self.driver.window_handles)
             status = (
-                f'Timed out waiting {self._wait_timeout} seconds for number of windows to be "{num_windows}". '
+                f'Timed out waiting {self.wait_timeout} seconds for number of windows to be "{num_windows}". '
                 f'The current number of windows is "{current_num_windows}".'
             )
             return self._timeout_process(status, exc, reraise)
@@ -513,7 +551,7 @@ class Page:
         except TimeoutException as exc:
             current_num_windows = len(self.driver.window_handles)
             status = (
-                f'Timed out waiting {self._wait_timeout} seconds for new window is opened. '
+                f'Timed out waiting {self.wait_timeout} seconds for new window is opened. '
                 f'The current number of windows is "{current_num_windows}".'
             )
             return self._timeout_process(status, exc, reraise)
@@ -593,7 +631,7 @@ class Page:
                 my_page.perform()
 
         """
-        self._action.perform()
+        self.action.perform()
 
     def reset_actions(self) -> None:
         """
@@ -610,11 +648,11 @@ class Page:
                 my_page.reset_actions()
 
         """
-        self._action.reset_actions()
+        self.action.reset_actions()
 
     def click(self) -> Self:
         """ActionChains API. Clicks on current mouse position."""
-        self._action.click()
+        self.action.click()
         return self
 
     def click_and_hold(self) -> Self:
@@ -622,7 +660,7 @@ class Page:
         ActionChains API.
         Holds down the left mouse button on current mouse position.
         """
-        self._action.click_and_hold()
+        self.action.click_and_hold()
         return self
 
     def context_click(self) -> Self:
@@ -630,12 +668,12 @@ class Page:
         ActionChains API.
         Performs a context-click (right click) on current mouse position.
         """
-        self._action.context_click()
+        self.action.context_click()
         return self
 
     def double_click(self) -> Self:
         """ActionChains API. Double-clicks on current mouse position."""
-        self._action.double_click()
+        self.action.double_click()
         return self
 
     def key_down(self, value: str) -> Self:
@@ -647,7 +685,7 @@ class Page:
         Args:
             value: The modifier key to send. Values are defined in Keys class.
         """
-        self._action.key_down(value)
+        self.action.key_down(value)
         return self
 
     def key_up(self, value: str) -> Self:
@@ -658,7 +696,7 @@ class Page:
         Args:
             value: The modifier key to send. Values are defined in Keys class.
         """
-        self._action.key_up(value)
+        self.action.key_up(value)
         return self
 
     def move_by_offset(self, xoffset: int, yoffset: int) -> Self:
@@ -670,7 +708,7 @@ class Page:
             xoffset: X offset to move to, as a positive or negative integer.
             yoffset: Y offset to move to, as a positive or negative integer.
         """
-        self._action.move_by_offset(xoffset, yoffset)
+        self.action.move_by_offset(xoffset, yoffset)
         return self
 
     def pause(self, seconds: int | float) -> Self:
@@ -678,7 +716,7 @@ class Page:
         ActionChains API.
         Pause all inputs for the specified duration in seconds.
         """
-        self._action.pause(seconds)
+        self.action.pause(seconds)
         return self
 
     def release(self) -> Self:
@@ -686,7 +724,7 @@ class Page:
         ActionChains API.
         Releasing a held mouse button on current mouse position.
         """
-        self._action.release()
+        self.action.release()
         return self
 
     def send_keys(self, *keys_to_send: str) -> Self:
@@ -694,7 +732,7 @@ class Page:
         ActionChains API.
         Sends keys to current focused element.
         """
-        self._action.send_keys(*keys_to_send)
+        self.action.send_keys(*keys_to_send)
         return self
 
     def scroll_by_amount(self, delta_x: int, delta_y: int) -> Self:
@@ -709,7 +747,7 @@ class Page:
             delta_y: Distance along Y axis to scroll using the wheel.
                 A negative value scrolls up.
         """
-        self._action.scroll_by_amount(delta_x, delta_y)
+        self.action.scroll_by_amount(delta_x, delta_y)
         return self
 
     def scroll_from_origin(
@@ -737,7 +775,7 @@ class Page:
                 outside the viewport.
         """
         scroll_origin = ScrollOrigin.from_viewport(x_offset, y_offset)
-        self._action.scroll_from_origin(scroll_origin, delta_x, delta_y)
+        self.action.scroll_from_origin(scroll_origin, delta_x, delta_y)
         return self
 
     def tap(
@@ -999,7 +1037,7 @@ class Page:
                 'and should be between "0.0" and "1.0".'
             )
 
-        self._logger.debug(f'{name} origin: {coordinate}')
+        self.logger.debug(f'{name} origin: {coordinate}')
         return coordinate
 
     def _get_area(self, area: Coordinate) -> tuple[int, int, int, int]:
@@ -1014,7 +1052,7 @@ class Page:
             area_height = int(window_height * area_height)
 
         area = (area_x, area_y, area_width, area_height)
-        self._logger.debug(f'area actual (x, y, w, h): {area}')
+        self.logger.debug(f'area actual (x, y, w, h): {area}')
         return cast(tuple[int, int, int, int], area)
 
     def _get_offset(
@@ -1033,7 +1071,7 @@ class Page:
             end_y = int(area_y + area_height * end_y)
 
         offset = (start_x, start_y, end_x, end_y)
-        self._logger.debug(f'offset actual (sx, sy, ex, ey): {offset}')
+        self.logger.debug(f'offset actual (sx, sy, ex, ey): {offset}')
         return cast(tuple[int, int, int, int], offset)
 
     def draw_lines(self, dots: list[dict[str, int]], duration: int = 1000) -> None:
@@ -1113,7 +1151,7 @@ class Page:
         try:
             return self.wait(timeout).until(ec.alert_is_present())
         except TimeoutException as exc:
-            status = f'Timed out waiting {self._wait_timeout} seconds for alert to be present.'
+            status = f'Timed out waiting {self.wait_timeout} seconds for alert to be present.'
             return self._timeout_process(status, exc, reraise)
 
     def switch_to_default_content(self) -> None:
@@ -1202,7 +1240,7 @@ class Page:
         try:
             return self.wait(timeout).until(ecex.webview_is_present(switch, index))
         except TimeoutException as exc:
-            status = f'Timed out waiting {self._wait_timeout} seconds for WEBVIEW to be present.'
+            status = f'Timed out waiting {self.wait_timeout} seconds for WEBVIEW to be present.'
             return self._timeout_process(status, exc, reraise)
 
     def switch_to_app(self) -> Any | str:
