@@ -264,7 +264,7 @@ class Element:
         if isinstance(self.index, int):
             return self.driver.find_elements(*self.locator)[self.index]
         return self.driver.find_element(*self.locator)
-    
+
     @property
     def wait_timeout(self) -> int | float | None:
         """
