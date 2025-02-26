@@ -197,7 +197,7 @@ class Elements:
         if isinstance(index, int):
             return self.driver.find_elements(*self.locator)[index]
         return self.driver.find_elements(*self.locator)
-    
+
     @property
     def wait_timeout(self) -> int | float | None:
         """
@@ -205,7 +205,7 @@ class Elements:
         If no any element action has been executed yet, it will return None.
         """
         return getattr(self, _Name._wait_timeout, None)
-    
+
     @property
     def wait_reraise(self) -> bool | None:
         """The final reraise value."""
@@ -250,7 +250,7 @@ class Elements:
             raise exc
         self.logger.warning(exc.msg, exc_info=True, stacklevel=2)
         return False
-    
+
     def find(
         self,
         index: int | None = None,
