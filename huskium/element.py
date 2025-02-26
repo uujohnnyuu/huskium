@@ -1028,16 +1028,15 @@ class Element:
         Checks if the current element is visible on the mobile screen.
         """
         element = self.wait_present(timeout, False)
-        if element and element.is_displayed():
+        result = element and element.is_displayed()
+        if result:
             if self.cache:
-                self._visible_cache = element
-                self.logger.debug(f'Locator -> PresentC -> VisibleC = {self._visible_cache}')
+                self._visible_cache = self._present_cache
+                self.logger.debug(f'PresentC -> VisibleC = {self._visible_cache}')
             else:
-                self.logger.debug(f'Locator -> VisibleE = {element}')
-            self.logger.debug('Finding one is viewable.')
-            return True
-        self.logger.debug('Finding one is unviewable.')
-        return False
+                self.logger.debug(f'PresentE -> VisibleE = {element}')
+        self.logger.debug(f'is_viewable: {result}')
+        return result
 
     def swipe_by(
         self,
