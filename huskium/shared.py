@@ -18,7 +18,6 @@ EXTENDED_IGNORED_EXCEPTIONS = (StaleElementReferenceException,)
 class _Name:
     _page = '_page'
     _wait_timeout = '_wait_timeout'
-    _wait_reraise = '_wait_reraise'
     _present_cache = '_present_cache'
     _visible_cache = '_visible_cache'
     _clickable_cache = '_clickable_cache'

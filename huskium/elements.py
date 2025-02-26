@@ -206,11 +206,6 @@ class Elements:
         """
         return getattr(self, _Name._wait_timeout, None)
 
-    @property
-    def wait_reraise(self) -> bool | None:
-        """The final reraise value."""
-        return getattr(self, _Name._wait_reraise, None)
-
     def wait(
         self,
         timeout: int | float | None = None,
@@ -232,11 +227,6 @@ class Elements:
             ignored_exceptions=ignored_exceptions
         )
 
-    def _timeout_reraise(self, reraise: bool | None) -> bool:
-        """The final reraise decision."""
-        self._wait_reraise = self.page.reraise if reraise is None else reraise
-        return self._wait_reraise
-
     def _timeout_process(
         self,
         status: str,
@@ -245,7 +235,7 @@ class Elements:
     ) -> Literal[False]:
         """Handling a TimeoutException after it occurs."""
         exc.msg = f'Timed out waiting {self.wait_timeout} seconds for elements "{self.remark}" to be "{status}".'
-        if self._timeout_reraise(reraise):
+        if self.page._timeout_reraise(reraise):
             self.logger.exception(exc.msg, stacklevel=2)
             raise exc
         self.logger.warning(exc.msg, exc_info=True, stacklevel=2)

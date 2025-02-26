@@ -40,7 +40,6 @@ class Page:
 
     if TYPE_CHECKING:
         _wait_timeout: int | float
-        _wait_reraise: bool
 
     def __init__(
         self,
@@ -108,29 +107,33 @@ class Page:
         """The final waiting timeout."""
         return getattr(self, _Name._wait_timeout, None)
 
-    @property
-    def wait_reraise(self) -> bool | None:
-        """The final reraise value."""
-        return getattr(self, _Name._wait_reraise, None)
-
-    def wait(self, timeout: int | float | None = None) -> WebDriverWait:
+    def wait(
+        self, 
+        timeout: int | float | None = None,
+        ignored_exceptions: WaitExcTypes | None = None
+    ) -> WebDriverWait:
         """
         Get a WebDriverWait object.
 
         Args:
             timeout: Maximum wait time in seconds.
                 If `None`, it initializes with `self.timeout`.
+            ignored_exceptions: Iterable ignored exception classes.
+                If `None`, it contains `NoSuchElementException` only.
         """
         self._wait_timeout = self.timeout if timeout is None else timeout
-        return WebDriverWait(self.driver, self._wait_timeout)
+        return WebDriverWait(
+            driver=self.driver, 
+            timeout=self._wait_timeout,
+            ignored_exceptions=ignored_exceptions
+        )
 
     def _timeout_reraise(self, reraise: bool | None) -> bool:
         """
         The final reraise decision when a timeout occurs.
         If `reraise=None`, use `self.reraise`.
         """
-        self._wait_reraise = self.reraise if reraise is None else reraise
-        return self._wait_reraise
+        return self.reraise if reraise is None else reraise
 
     def _timeout_process(
         self,
