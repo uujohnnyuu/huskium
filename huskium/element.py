@@ -1271,65 +1271,53 @@ class Element:
         min_distance: int,
     ) -> tuple[int, int, int, int] | None:
 
-        def dist(delta) -> int:
-            return int(max(abs(delta), min_distance) * (1 if delta >= 0 else -1))
-
         # original offset
-        start_x, start_y, end_x, end_y = offset
-        self.logger.debug(f'OriginalOffset(sx, sy, ex, ey): {offset}')
+        osx, osy, oex, oey = offset
+        self.logger.debug(f'O(sx, sy, ex, ey): {offset}')
 
         # area border
-        area_left, area_top, area_width, area_height = area
-        area_right = area_left + area_width
-        area_bottom = area_top + area_height
-        self.logger.debug(f'Area(l, r, t, b): {(area_left, area_right, area_top, area_bottom)}')
+        al, at, aw, ah = area
+        ar = al + aw
+        ab = at + ah
+        self.logger.debug(f'A(l, r, t, b): {(al, ar, at, ab)}')
 
         # element border
-        element_left, element_right, element_top, element_bottom = self.border.values()
-        self.logger.debug(f'Element(l, r, t, b): {(element_left, element_right, element_top, element_bottom)}')
+        el, er, et, eb = self.border.values()
+        self.logger.debug(f'E(l, r, t, b): {(el, er, et, eb)}')
 
         # delta = (area - element)
-        delta_left = area_left - element_left
-        delta_right = area_right - element_right
-        delta_top = area_top - element_top
-        delta_bottom = area_bottom - element_bottom
-        self.logger.debug(f'Delta(A-E)(l, r, t, b): {(delta_left, delta_right, delta_top, delta_bottom)}')
+        dl = al - el
+        dr = ar - er
+        dt = at - et
+        db = ab - eb
+        self.logger.debug(f'D(l, r, t, b): {(dl, dr, dt, db)}')
 
-        # adjust action, note that this must use delta to judge
-        adjust_action = ((delta_left > 0), (delta_right < 0), (delta_top > 0), (delta_bottom < 0))
-        self.logger.debug(f'AdjustAction(l>0, r<0, t>0, b<0): {adjust_action}')
+        # update delta with min_distance
+        if dl > 0:
+            dl = self._adjust_distance(dl, min_distance)
+            oex = osx + dl
+        if dr < 0:
+            dr = self._adjust_distance(dr, min_distance)
+            oex = osx + dr
+        if dt > 0:
+            dt = self._adjust_distance(dt, min_distance)
+            oey = osy + dt
+        if db < 0:
+            db = self._adjust_distance(db, min_distance)
+            oey = osy + db
+        self.logger.debug(f'D{min_distance}(l, r, t, b): {(dl, dr, dt, db)}')
 
-        # compare delta with min_distance
-        dist_left = dist(delta_left)
-        dist_right = dist(delta_right)
-        dist_top = dist(delta_top)
-        dist_bottom = dist(delta_bottom)
-        self.logger.debug(
-            f'AdjustDistance(min={min_distance})(l, r, t, b): '
-            f'{(dist_left, dist_right, dist_top, dist_bottom)}'
-        )
-        adjust_actions = {
-            (True, False, True, False): (dist_left, dist_top),
-            (False, False, True, False): (0, dist_top),
-            (False, True, True, False): (dist_right, dist_top),
-            (True, False, False, False): (dist_left, 0),
-            (False, True, False, False): (dist_right, 0),
-            (True, False, False, True): (dist_left, dist_bottom),
-            (False, False, False, True): (0, dist_bottom),
-            (False, True, False, True): (dist_right, dist_bottom),
-        }
-        delta_x, delta_y = adjust_actions.get(adjust_action, (0, 0))
-        self.logger.debug(f'End(dx, dy): {(delta_x, delta_y)}')
-
-        # return
-        if delta_x == 0 and delta_y == 0:
-            self.logger.debug('No further adjustment needed.')
+        # check if adjustment is needed
+        adjusted_offset = (osx, osy, oex, oey)
+        if adjusted_offset == offset:
+            self.logger.debug('All the element border is in Area, no adjustment required.')
             return None
-        end_x, end_y = (start_x + delta_x), (start_y + delta_y)
-        adjusted_offset = (start_x, start_y, end_x, end_y)
-        self.logger.debug(f'OriginalOffset(sx, sy, ex, ey): {offset}')
-        self.logger.debug(f'AdjustedOffset(sx, sy, ex, ey): {adjusted_offset}')
+        self.logger.debug(f'AO(sx, sy, ex, ey): {adjusted_offset}')
         return adjusted_offset
+    
+    def _adjust_distance(self, delta, min_distance) -> int:
+        """Usage of `_get_adjusted_offset`."""
+        return int(max(abs(delta), min_distance) * (1 if delta >= 0 else -1))
 
     def clear(self) -> Self:
         """
