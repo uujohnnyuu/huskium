@@ -1028,7 +1028,7 @@ class Element:
         Checks if the current element is visible on the mobile screen.
         """
         element = self.wait_present(timeout, False)
-        result: bool = element and element.is_displayed()
+        result = bool(element and element.is_displayed())
         if result:
             if self.cache:
                 self._visible_cache = self._present_cache
