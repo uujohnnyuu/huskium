@@ -1305,13 +1305,13 @@ class Element:
         if db < 0:
             db = self._adjust_distance(db, min_distance)
             oey = osy + db
-        self.logger.debug(f'D{min_distance}(l, r, t, b): {(dl, dr, dt, db)}')
 
         # check if adjustment is needed
         adjusted_offset = (osx, osy, oex, oey)
         if adjusted_offset == offset:
             self.logger.debug('All the element border is in Area, no adjustment required.')
             return None
+        self.logger.debug(f'D{min_distance}(l, r, t, b): {(dl, dr, dt, db)}')
         self.logger.debug(f'AO(sx, sy, ex, ey): {adjusted_offset}')
         return adjusted_offset
 
