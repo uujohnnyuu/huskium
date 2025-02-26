@@ -1314,7 +1314,7 @@ class Element:
             return None
         self.logger.debug(f'AO(sx, sy, ex, ey): {adjusted_offset}')
         return adjusted_offset
-    
+
     def _adjust_distance(self, delta, min_distance) -> int:
         """Usage of `_get_adjusted_offset`."""
         return int(max(abs(delta), min_distance) * (1 if delta >= 0 else -1))
