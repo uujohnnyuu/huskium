@@ -258,7 +258,7 @@ class Elements:
         If no any element action has been executed yet, it will return None.
         """
         return getattr(self, _Name._wait_timeout, None)
-    
+
     def _timeout_reraise(self, reraise: bool | None) -> bool:
         """The final reraise decision."""
         self._wait_reraise = self.page.reraise if reraise is None else reraise

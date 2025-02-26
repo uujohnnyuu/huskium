@@ -53,7 +53,7 @@ class Page:
         Args:
             driver: The WebDriver object of Selenium or Appium.
             timeout: Maximum wait time in seconds.
-            reraise: The behavior when timed out. 
+            reraise: The behavior when timed out.
                 `True` to raise `TimeoutException`,
                 `False` to return `False`.
             remark: Custom remark for identification or logging.
@@ -102,12 +102,12 @@ class Page:
     def logger(self) -> PageElementLoggerAdapter:
         """The initial `logger`."""
         return self._logger
-    
+
     @property
     def wait_timeout(self) -> int | float | None:
         """The final waiting timeout."""
         return getattr(self, _Name._wait_timeout, None)
-    
+
     @property
     def wait_reraise(self) -> bool | None:
         """The final reraise value."""
@@ -127,7 +127,7 @@ class Page:
     def _timeout_reraise(self, reraise: bool | None) -> bool:
         """
         The final reraise decision when a timeout occurs.
-        If `reraise=None`, use `self.reraise`. 
+        If `reraise=None`, use `self.reraise`.
         """
         self._wait_reraise = self.reraise if reraise is None else reraise
         return self._wait_reraise
