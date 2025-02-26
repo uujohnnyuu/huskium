@@ -22,7 +22,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from . import ec_extension as ecex
 from .by import ByAttribute
-from .config import Log, Timeout
+from .config import Log
 from .logging import PageElementLoggerAdapter
 from .page import Page
 from .types import WebDriver, WebElement
@@ -55,7 +55,7 @@ class Elements:
             by: Use `from huskium import By` for all locators.
             value: The locator value.
             timeout: The maximum time in seconds to find the element.
-                If `None`, use `Timeout.DEFAULT`.
+                If `None`, use `page.timeout` from descriptor.
             remark: Custom remark for identification or logging. If `None`,
                 record as `(by="{by}", value="{value}")`.
         """
@@ -148,44 +148,44 @@ class Elements:
 
     @property
     def by(self) -> str | None:
-        """The `by` attribute of the `Elements`."""
+        """The initial `by`."""
         return self._by
 
     @property
     def value(self) -> str | None:
-        """The `value` attribute of the `Elements`."""
+        """The initial `value`."""
         return self._value
 
     @property
     def locator(self) -> tuple[str, str]:
-        """(by, value)"""
+        """The locator `(by, value)`"""
         if self._by and self._value:
             return (self._by, self._value)
         raise ValueError('"by" and "value" cannot be None when performing element operations.')
 
     @property
     def timeout(self) -> int | float:
-        """If initial timeout is None, return `page.timeout`."""
+        """If initial `timeout=None`, return `page.timeout`."""
         return self._page._timeout if self._timeout is None else self._timeout
 
     @property
     def remark(self) -> str:
-        """If initial remark is None, return (by="{by}", value="{value}")."""
+        """If initial `remark=None`, return (by="{by}", value="{value}")."""
         return self._remark or f'(by="{self._by}", value="{self._value}")'
 
     @property
     def logger(self) -> PageElementLoggerAdapter:
-        """The `logger` attribute of the `Elements`."""
+        """The initial `logger`."""
         return self._logger
 
     @property
     def page(self) -> Page:
-        """The `page` object from descriptor."""
+        """The `page` from descriptor."""
         return self._page
 
     @property
     def driver(self) -> WebDriver:
-        """The `driver` object from `page`."""
+        """The `driver` from `page`."""
         return self._driver
 
     def find_elements(self, index: int | None = None) -> list[WebElement] | WebElement:
@@ -197,38 +197,19 @@ class Elements:
         if isinstance(index, int):
             return self.driver.find_elements(*self.locator)[index]
         return self.driver.find_elements(*self.locator)
-
-    def find(
-        self,
-        index: int | None = None,
-        timeout: int | float | None = None,
-        reraise: bool | None = None
-    ) -> list[WebElement] | WebElement | Literal[False]:
+    
+    @property
+    def wait_timeout(self) -> int | float | None:
         """
-        Waits for the element or elements to be present.
-
-        Args:
-            index: `None` for all elemets.
-            timeout: Maximum wait time in seconds.
-                If `None`, uses `self.timeout` or `Timeout.DEFAULT`.
-                If set, overrides with this value.
-            reraise: Defines behavior when timed out.
-                If `None`, follows `Timeout.RERAISE`.
-                If `True`, raises `TimeoutException`;
-                if `False`, returns `False`.
-
-        Returns:
-            (list[WebElement] | WebElement | False):
-                The `list[WebElement]` for `index=None`;
-                the `WebElement` for `index=int`;
-                `False` if no any element.
-
+        The final waiting timeout of the element.
+        If no any element action has been executed yet, it will return None.
         """
-        elements = self.wait_all_present(timeout, reraise)
-        if isinstance(elements, list) and isinstance(index, int):
-            # Raise an IndexError directly if the index has no corresponding element.
-            return elements[index]
-        return elements
+        return getattr(self, _Name._wait_timeout, None)
+    
+    @property
+    def wait_reraise(self) -> bool | None:
+        """The final reraise value."""
+        return getattr(self, _Name._wait_reraise, None)
 
     def wait(
         self,
@@ -251,23 +232,10 @@ class Elements:
             ignored_exceptions=ignored_exceptions
         )
 
-    @property
-    def wait_timeout(self) -> int | float | None:
-        """
-        The final waiting timeout of the element.
-        If no any element action has been executed yet, it will return None.
-        """
-        return getattr(self, _Name._wait_timeout, None)
-
     def _timeout_reraise(self, reraise: bool | None) -> bool:
         """The final reraise decision."""
         self._wait_reraise = self.page.reraise if reraise is None else reraise
         return self._wait_reraise
-
-    @property
-    def wait_reraise(self) -> bool | None:
-        """The final reraise value."""
-        return getattr(self, _Name._wait_reraise, None)
 
     def _timeout_process(
         self,
@@ -276,12 +244,44 @@ class Elements:
         reraise: bool | None
     ) -> Literal[False]:
         """Handling a TimeoutException after it occurs."""
-        exc.msg = f'Timed out waiting {self._wait_timeout} seconds for elements "{self.remark}" to be "{status}".'
-        if Timeout.reraise(reraise):
+        exc.msg = f'Timed out waiting {self.wait_timeout} seconds for elements "{self.remark}" to be "{status}".'
+        if self._timeout_reraise(reraise):
             self.logger.exception(exc.msg, stacklevel=2)
             raise exc
         self.logger.warning(exc.msg, exc_info=True, stacklevel=2)
         return False
+    
+    def find(
+        self,
+        index: int | None = None,
+        timeout: int | float | None = None,
+        reraise: bool | None = None
+    ) -> list[WebElement] | WebElement | Literal[False]:
+        """
+        Waits for the element or elements to be present.
+
+        Args:
+            index: `None` for all elemets.
+            timeout: Maximum wait time in seconds.
+                If `None`, uses `self.timeout`.
+                If set, overrides with this value.
+            reraise: Defines behavior when timed out.
+                If `None`, follows `page.reraise`.
+                If `True`, raises `TimeoutException`;
+                if `False`, returns `False`.
+
+        Returns:
+            (list[WebElement] | WebElement | False):
+                The `list[WebElement]` for `index=None`;
+                the `WebElement` for `index=int`;
+                `False` if no any element.
+
+        """
+        elements = self.wait_all_present(timeout, reraise)
+        if isinstance(elements, list) and isinstance(index, int):
+            # Raise an IndexError directly if the index has no corresponding element.
+            return elements[index]
+        return elements
 
     def wait_all_present(
         self,
@@ -293,10 +293,10 @@ class Elements:
 
         Args:
             timeout: Maximum wait time in seconds.
-                If `None`, uses `self.timeout` or `Timeout.DEFAULT`.
+                If `None`, uses `self.timeout`.
                 If set, overrides with this value.
             reraise: Defines behavior when timed out.
-                If `None`, follows `Timeout.RERAISE`.
+                If `None`, follows `page.reraise`.
                 If `True`, raises `TimeoutException`;
                 if `False`, returns `False`.
 
@@ -328,10 +328,10 @@ class Elements:
 
         Args:
             timeout: Maximum wait time in seconds.
-                If `None`, uses `self.timeout` or `Timeout.DEFAULT`.
+                If `None`, uses `self.timeout`.
                 If set, overrides with this value.
             reraise: Defines behavior when timed out.
-                If `None`, follows `Timeout.RERAISE`.
+                If `None`, follows `page.reraise`.
                 If `True`, raises `TimeoutException`;
                 if `False`, returns `False`.
 
@@ -363,10 +363,10 @@ class Elements:
 
         Args:
             timeout: Maximum wait time in seconds.
-                If `None`, uses `self.timeout` or `Timeout.DEFAULT`.
+                If `None`, uses `self.timeout`.
                 If set, overrides with this value.
             reraise: Defines behavior when timed out.
-                If `None`, follows `Timeout.RERAISE`.
+                If `None`, follows `page.reraise`.
                 If `True`, raises `TimeoutException`;
                 if `False`, returns `False`.
 
@@ -399,10 +399,10 @@ class Elements:
 
         Args:
             timeout: Maximum wait time in seconds.
-                If `None`, uses `self.timeout` or `Timeout.DEFAULT`.
+                If `None`, uses `self.timeout`.
                 If set, overrides with this value.
             reraise: Defines behavior when timed out.
-                If `None`, follows `Timeout.RERAISE`.
+                If `None`, follows `page.reraise`.
                 If `True`, raises `TimeoutException`;
                 if `False`, returns `False`.
 
