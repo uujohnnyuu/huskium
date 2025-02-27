@@ -1071,11 +1071,11 @@ class Element:
             max_round: Maximum number of swipe attempts.
             max_align: Maximum attempts to align all borders of the element
                 within the area (view) border.
-            min_xycmp: Minimum x and y components to avoid being mistaken  
-                as a click **during alignment**.  
+            min_xycmp: Minimum x and y components to avoid being mistaken
+                as a click **during alignment**.
                 Should be considered along with `duration`.
-            duration: Swipe and alignment duration in milliseconds.  
-                If too short, it may be mistaken as a click.  
+            duration: Swipe and alignment duration in milliseconds.
+                If too short, it may be mistaken as a click.
                 Should be considered along with `offset` and `min_xycmp`.
 
         Examples:
@@ -1151,11 +1151,11 @@ class Element:
             max_round: Maximum number of flick attempts.
             max_align: Maximum attempts to align all borders of the element
                 within the area (view) border.
-            min_xycmp: Minimum x and y components to avoid being mistaken  
-                as a click **during alignment**.  
+            min_xycmp: Minimum x and y components to avoid being mistaken
+                as a click **during alignment**.
                 Should be considered along with `duration`.
-            duration: **Alignment** (not flick) duration in milliseconds.  
-                If too short, it may be mistaken as a click.  
+            duration: **Alignment** (not flick) duration in milliseconds.
+                If too short, it may be mistaken as a click.
                 Should be considered along with `min_xycmp`.
 
         Examples:
@@ -1265,7 +1265,7 @@ class Element:
             return None
         self.logger.debug('Start adjusting.')
 
-        #----
+        # ----
 
         # area border and center
         al, at, aw, ah = area
@@ -1278,7 +1278,7 @@ class Element:
         fix = fxy * 2
         self.logger.debug(f'F(sx, sy, ex, ey): {fix}')
 
-        #----
+        # ----
 
         round = 0
         while (adjusted_offset := self._get_aligned_vector(area_border, fxy, min_xycmp)):
@@ -1297,7 +1297,7 @@ class Element:
         fxy: tuple[int, int],
         min_xycmp: int,
     ) -> tuple[int, int, int, int] | None:
-        
+
         al, ar, at, ab = area_border
         vx, vy = fx, fy = fxy
 
