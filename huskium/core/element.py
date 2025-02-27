@@ -1265,20 +1265,14 @@ class Element:
             return None
         self.logger.debug('Start adjusting.')
 
-        # ----
-
-        # area border and center
+        # Area border and center
         al, at, aw, ah = area
-        ar = al + aw
-        ab = at + ah
+        ar, ab = al + aw, at + ah
         area_border = (al, ar, at, ab)
         self.logger.debug(f'A(l, r, t, b): {area_border}')
-
-        fxy = (int(al + aw / 2), int(at + ah / 2))
-        fix = fxy * 2
+        fxy = (al + aw // 2, at + ah // 2)  # Integer division avoids float conversion
+        fix = (*fxy, *fxy)  # Equivalent to (fxy[0], fxy[1], fxy[0], fxy[1])
         self.logger.debug(f'F(sx, sy, ex, ey): {fix}')
-
-        # ----
 
         round = 0
         while (adjusted_offset := self._get_aligned_vector(area_border, fxy, min_xycmp)):
@@ -1332,11 +1326,10 @@ class Element:
             self.logger.debug(f'V1(ey) = V(sy) + D{min_xycmp}(b) = {fy} + {db} = {vy}')
 
         # check if adjustment is needed
-        vector = (fx, fy, vx, vy)
-        vxy = (vx, vy)
-        if vxy == fxy:
+        if (vx, vy) == fxy:
             self.logger.debug('All the element border is in Area, no adjustment required.')
             return None
+        vector = (fx, fy, vx, vy)
         self.logger.debug(f'V(sx, sy, ex, ey): {vector}')
         return vector
 
