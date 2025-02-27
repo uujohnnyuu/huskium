@@ -1071,10 +1071,12 @@ class Element:
             max_round: Maximum number of swipe attempts.
             max_align: Maximum attempts to align all borders of the element
                 within the area (view) border.
-            min_xycmp: Minimum x and y components to prevent misinterpretation
-                as a click. Should be considered along with `duration`.
-            duration: Swipe duration in ms; if too short, it may be mistaken
-                as a click. Should be considered along with `min_xycmp`.
+            min_xycmp: Minimum x and y components to avoid being mistaken  
+                as a click **during alignment**.  
+                Should be considered along with `duration`.
+            duration: Swipe and alignment duration in milliseconds.  
+                If too short, it may be mistaken as a click.  
+                Should be considered along with `offset` and `min_xycmp`.
 
         Examples:
             ::
@@ -1134,7 +1136,7 @@ class Element:
         timeout: int | float = 3,
         max_round: int = 10,
         max_align: int = 2,
-        xycmp: int = 100,
+        min_xycmp: int = 100,
         duration: int = 1000
     ) -> Self:
         """
@@ -1149,10 +1151,12 @@ class Element:
             max_round: Maximum number of flick attempts.
             max_align: Maximum attempts to align all borders of the element
                 within the area (view) border.
-            min_xycmp: Minimum x and y components to prevent misinterpretation
-                as a click. Should be considered along with `duration`.
-            duration: Swipe duration in ms; if too short, it may be mistaken
-                as a click. Should be considered along with `min_xycmp`.
+            min_xycmp: Minimum x and y components to avoid being mistaken  
+                as a click **during alignment**.  
+                Should be considered along with `duration`.
+            duration: **Alignment** (not flick) duration in milliseconds.  
+                If too short, it may be mistaken as a click.  
+                Should be considered along with `min_xycmp`.
 
         Examples:
             ::
@@ -1202,7 +1206,7 @@ class Element:
         area = self.page._get_area(area)
         offset = self.page._get_offset(offset, area)
         self._flick_by(offset, timeout, max_round)
-        self._align_by(area, max_align, xycmp, duration)
+        self._align_by(area, max_align, min_xycmp, duration)
         return self
 
     def _swipe_by(
@@ -1260,8 +1264,24 @@ class Element:
             self.logger.debug(f'For max_adjustment is {max_align}, no adjustment performed.')
             return None
         self.logger.debug('Start adjusting.')
+
+        #----
+
+        # area border and center
+        al, at, aw, ah = area
+        ar = al + aw
+        ab = at + ah
+        area_border = (al, ar, at, ab)
+        self.logger.debug(f'A(l, r, t, b): {area_border}')
+
+        fxy = (int(al + aw / 2), int(at + ah / 2))
+        fix = fxy * 2
+        self.logger.debug(f'F(sx, sy, ex, ey): {fix}')
+
+        #----
+
         round = 0
-        while (adjusted_offset := self._get_aligned_offset(area, min_xycmp)):
+        while (adjusted_offset := self._get_aligned_vector(area_border, fxy, min_xycmp)):
             if round == max_align:
                 self.logger.debug(f'Stop adjusting after max {max_align} rounds.\n')
                 return round
@@ -1271,22 +1291,15 @@ class Element:
         self.logger.debug(f'Stop adjusting after {round} round.\n')
         return round
 
-    def _get_aligned_offset(
+    def _get_aligned_vector(
         self,
-        area: tuple[int, int, int, int],
+        area_border: tuple[int, int, int, int],
+        fxy: tuple[int, int],
         min_xycmp: int,
     ) -> tuple[int, int, int, int] | None:
-
-        # area border and center
-        al, at, aw, ah = area
-        ar = al + aw
-        ab = at + ah
-        v1ex = v0ex = vsx = int(al + aw / 2)
-        v1ey = v0ey = vsy = int(at + ah / 2)
-        vector0 = (vsx, vsy, v0ex, v0ey)
-        area_border = (al, ar, at, ab)
-        self.logger.debug(f'V0(sx, sy, ex, ey): {vector0}')
-        self.logger.debug(f'A(l, r, t, b): {area_border}')
+        
+        al, ar, at, ab = area_border
+        vx, vy = fx, fy = fxy
 
         # element border
         element_border = el, er, et, eb = self.border.values()
@@ -1303,28 +1316,29 @@ class Element:
         # update delta with min_distance
         if dl > 0:
             dl = max(dl, min_xycmp)
-            v1ex = vsx + dl
-            self.logger.debug(f'V1(ex) = V(sx) + D{min_xycmp}(l) = {vsx} + {dl} = {v1ex}')
+            vx = fx + dl
+            self.logger.debug(f'V1(ex) = V(sx) + D{min_xycmp}(l) = {fx} + {dl} = {vx}')
         if dr < 0:
             dr = min(dr, -min_xycmp)
-            v1ex = vsx + dr
-            self.logger.debug(f'V1(ex) = V(sx) + D{min_xycmp}(r) = {vsx} + {dr} = {v0ex}')
+            vx = fx + dr
+            self.logger.debug(f'V1(ex) = V(sx) + D{min_xycmp}(r) = {fx} + {dr} = {vx}')
         if dt > 0:
             dt = max(dt, min_xycmp)
-            v1ey = vsy + dt
-            self.logger.debug(f'V1(ey) = V(sy) + D{min_xycmp}(t) = {vsy} + {dt} = {v0ey}')
+            vy = fy + dt
+            self.logger.debug(f'V1(ey) = V(sy) + D{min_xycmp}(t) = {fy} + {dt} = {vy}')
         if db < 0:
             db = min(db, -min_xycmp)
-            v1ey = vsy + db
-            self.logger.debug(f'V1(ey) = V(sy) + D{min_xycmp}(b) = {vsy} + {db} = {v0ey}')
+            vy = fy + db
+            self.logger.debug(f'V1(ey) = V(sy) + D{min_xycmp}(b) = {fy} + {db} = {vy}')
 
         # check if adjustment is needed
-        vector1 = (vsx, vsy, v1ex, v1ey)
-        if vector1 == vector0:
+        vector = (fx, fy, vx, vy)
+        vxy = (vx, vy)
+        if vxy == fxy:
             self.logger.debug('All the element border is in Area, no adjustment required.')
             return None
-        self.logger.debug(f'V1(sx, sy, ex, ey): {vector1}')
-        return vector1
+        self.logger.debug(f'V(sx, sy, ex, ey): {vector}')
+        return vector
 
     def clear(self) -> Self:
         """
