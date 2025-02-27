@@ -5,6 +5,7 @@
 
 
 from .logging import LogConfig, PrefixFilter, FuncPrefixFilter, FilePrefixFilter
+from .core.common import Offset, Area
 from .core.page import Page
 from .core.element import Element
 from .core.elements import Elements

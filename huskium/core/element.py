@@ -890,7 +890,7 @@ class Element:
         }
 
     @property
-    def border(self) -> dict:
+    def border(self) -> dict[str, int]:
         """
         The border of the element.
         For example: `{'left': 150, 'right': 250, 'top': 200, 'bottom': 400}`.
@@ -907,7 +907,7 @@ class Element:
         }
 
     @property
-    def center(self) -> dict:
+    def center(self) -> dict[str, int]:
         """
         The center location of the element.
         For example: `{'x': 80, 'y': 190}`.
@@ -1055,8 +1055,8 @@ class Element:
         area: Coordinate = Area.FULL,
         timeout: int | float = 3,
         max_round: int = 10,
-        max_adjustment: int = 2,
-        min_distance: int = 100,
+        max_align: int = 2,
+        min_xycmp: int = 100,
         duration: int = 1000
     ) -> Self:
         """
@@ -1065,16 +1065,16 @@ class Element:
         the element becomes visible within the specified area.
 
         Args:
-            offset: `(start_x, start_y, end_x, end_y)`.
-            area: `(x, y, width, height)`.
+            offset: `(start_x, start_y, end_x, end_y)` or `(sx, sy, ex, ey)`.
+            area: `(x, y, width, height)` or `(x, y, w, h)`.
             timeout: Maximum wait time in seconds.
-            max_round: The maximum number of swipes allowed.
-            max_adjustment: The maximum number of adjustments
-                to align all borders of the element within the view border.
-            min_distance: Minimum swipe distance to avoid misinterpretation
+            max_round: Maximum number of swipe attempts.
+            max_align: Maximum attempts to align all borders of the element  
+                within the area (view) border.
+            min_xycmp: Minimum x and y components to prevent misinterpretation  
                 as a click. Should be considered along with `duration`.
-            duration: Swipe duration in ms; if too short, it may be mistaken
-                as a click. Should be considered along with `min_distance`.
+            duration: Swipe duration in ms; if too short, it may be mistaken  
+                as a click. Should be considered along with `min_xycmp`.
 
         Examples:
             ::
@@ -1123,8 +1123,8 @@ class Element:
         """
         area = self.page._get_area(area)
         offset = self.page._get_offset(offset, area)
-        self._start_swiping_by(offset, duration, timeout, max_round)
-        self._start_adjusting_by(offset, area, max_adjustment, min_distance, duration)
+        self._swipe_by(offset, duration, timeout, max_round)
+        self._align_by(area, max_align, min_xycmp, duration)
         return self
 
     def flick_by(
@@ -1133,8 +1133,8 @@ class Element:
         area: Coordinate = Area.FULL,
         timeout: int | float = 3,
         max_round: int = 10,
-        max_adjustment: int = 2,
-        min_distance: int = 100,
+        max_align: int = 2,
+        xycmp: int = 100,
         duration: int = 1000
     ) -> Self:
         """
@@ -1143,18 +1143,16 @@ class Element:
         the element becomes visible within the specified area.
 
         Args:
-            offset: `(start_x, start_y, end_x, end_y)`.
-            area: `(x, y, width, height)`.
+            offset: `(start_x, start_y, end_x, end_y)` or `(sx, sy, ex, ey)`.
+            area: `(x, y, width, height)` or `(x, y, w, h)`.
             timeout: Maximum wait time in seconds.
-            max_round: The maximum number of flicks allowed.
-            max_adjustment: The maximum number of adjustments
-                to align all borders of the element within the view border.
-            min_distance: Minimum swipe (not flick) distance to avoid
-                misinterpretation as a click. This will be considered along
-                with `duration` in adjustment process.
-            duration: Swipe (not flick) duration in ms; if too short,
-                it may be mistaken as a click. This will be considered along
-                with `min_distance` in adjustment process.
+            max_round: Maximum number of flick attempts.
+            max_align: Maximum attempts to align all borders of the element  
+                within the area (view) border.
+            min_xycmp: Minimum x and y components to prevent misinterpretation  
+                as a click. Should be considered along with `duration`.
+            duration: Swipe duration in ms; if too short, it may be mistaken  
+                as a click. Should be considered along with `min_xycmp`.
 
         Examples:
             ::
@@ -1203,11 +1201,11 @@ class Element:
         """
         area = self.page._get_area(area)
         offset = self.page._get_offset(offset, area)
-        self._start_flicking_by(offset, timeout, max_round)
-        self._start_adjusting_by(offset, area, max_adjustment, min_distance, duration)
+        self._flick_by(offset, timeout, max_round)
+        self._align_by(area, max_align, xycmp, duration)
         return self
 
-    def _start_swiping_by(
+    def _swipe_by(
         self,
         offset: tuple[int, int, int, int],
         duration: int,
@@ -1229,7 +1227,7 @@ class Element:
         self.logger.debug(f'Stop swiping. Element is viewable after {round} rounds.\n')
         return round
 
-    def _start_flicking_by(
+    def _flick_by(
         self,
         offset: tuple[int, int, int, int],
         timeout: int | float,
@@ -1251,22 +1249,21 @@ class Element:
         self.logger.debug(f'Stop flicking. Element is viewable after {round} rounds.\n')
         return round
 
-    def _start_adjusting_by(
+    def _align_by(
         self,
-        offset: tuple[int, int, int, int],
         area: tuple[int, int, int, int],
-        max_adjustment: int,
-        min_distance: int,
+        max_align: int,
+        min_xycmp: int,
         duration: int
     ) -> int | None:
-        if not max_adjustment:
-            self.logger.debug(f'For max_adjustment is {max_adjustment}, no adjustment performed.')
+        if not max_align:
+            self.logger.debug(f'For max_adjustment is {max_align}, no adjustment performed.')
             return None
         self.logger.debug('Start adjusting.')
         round = 0
-        while (adjusted_offset := self._get_adjusted_offset(offset, area, min_distance)):
-            if round == max_adjustment:
-                self.logger.debug(f'Stop adjusting after max {max_adjustment} rounds.\n')
+        while (adjusted_offset := self._get_aligned_offset(area, min_xycmp)):
+            if round == max_align:
+                self.logger.debug(f'Stop adjusting after max {max_align} rounds.\n')
                 return round
             self.driver.swipe(*adjusted_offset, duration)  # type: ignore[attr-defined]
             round += 1
@@ -1274,60 +1271,60 @@ class Element:
         self.logger.debug(f'Stop adjusting after {round} round.\n')
         return round
 
-    def _get_adjusted_offset(
+    def _get_aligned_offset(
         self,
-        offset: tuple[int, int, int, int],
         area: tuple[int, int, int, int],
-        min_distance: int,
+        min_xycmp: int,
     ) -> tuple[int, int, int, int] | None:
 
-        # original offset
-        osx, osy, oex, oey = offset
-        self.logger.debug(f'O(sx, sy, ex, ey): {offset}')
-
-        # area border
+        # area border and center
         al, at, aw, ah = area
         ar = al + aw
         ab = at + ah
-        self.logger.debug(f'A(l, r, t, b): {(al, ar, at, ab)}')
+        v1ex = v0ex = vsx = int(al + aw/2)
+        v1ey = v0ey = vsy = int(at + ah/2)
+        vector0 = (vsx, vsy, v0ex, v0ey)
+        area_border = (al, ar, at, ab)
+        self.logger.debug(f'V0(sx, sy, ex, ey): {vector0}')
+        self.logger.debug(f'A(l, r, t, b): {area_border}')
 
         # element border
-        el, er, et, eb = self.border.values()
-        self.logger.debug(f'E(l, r, t, b): {(el, er, et, eb)}')
+        element_border = el, er, et, eb = self.border.values()
+        self.logger.debug(f'E(l, r, t, b): {(element_border)}')
 
         # delta = (area - element)
         dl = al - el
         dr = ar - er
         dt = at - et
         db = ab - eb
-        self.logger.debug(f'D(l, r, t, b): {(dl, dr, dt, db)}')
+        delta_border = (dl, dr, dt, db)
+        self.logger.debug(f'D(l, r, t, b): {delta_border}')
 
         # update delta with min_distance
         if dl > 0:
-            dl = self._adjust_distance(dl, min_distance)
-            oex = osx + dl
+            dl = max(dl, min_xycmp)
+            v1ex = vsx + dl
+            self.logger.debug(f'V1(ex) = V(sx) + D{min_xycmp}(l) = {vsx} + {dl} = {v1ex}')
         if dr < 0:
-            dr = self._adjust_distance(dr, min_distance)
-            oex = osx + dr
+            dr = min(dr, -min_xycmp)
+            v1ex = vsx + dr
+            self.logger.debug(f'V1(ex) = V(sx) + D{min_xycmp}(r) = {vsx} + {dr} = {v0ex}')
         if dt > 0:
-            dt = self._adjust_distance(dt, min_distance)
-            oey = osy + dt
+            dt = max(dt, min_xycmp)
+            v1ey = vsy + dt
+            self.logger.debug(f'V1(ey) = V(sy) + D{min_xycmp}(t) = {vsy} + {dt} = {v0ey}')
         if db < 0:
-            db = self._adjust_distance(db, min_distance)
-            oey = osy + db
+            db = min(db, -min_xycmp)
+            v1ey = vsy + db
+            self.logger.debug(f'V1(ey) = V(sy) + D{min_xycmp}(b) = {vsy} + {db} = {v0ey}')
 
         # check if adjustment is needed
-        adjusted_offset = (osx, osy, oex, oey)
-        if adjusted_offset == offset:
+        vector1 = (vsx, vsy, v1ex, v1ey)
+        if vector1 == vector0:
             self.logger.debug('All the element border is in Area, no adjustment required.')
             return None
-        self.logger.debug(f'D{min_distance}(l, r, t, b): {(dl, dr, dt, db)}')
-        self.logger.debug(f'AO(sx, sy, ex, ey): {adjusted_offset}')
-        return adjusted_offset
-
-    def _adjust_distance(self, delta, min_distance) -> int:
-        """Usage of `_get_adjusted_offset`."""
-        return int(max(abs(delta), min_distance) * (1 if delta >= 0 else -1))
+        self.logger.debug(f'V1(sx, sy, ex, ey): {vector1}')
+        return vector1
 
     def clear(self) -> Self:
         """
