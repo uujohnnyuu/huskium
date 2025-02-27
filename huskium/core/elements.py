@@ -20,17 +20,16 @@ from selenium.types import WaitExcTypes
 from selenium.webdriver.remote.shadowroot import ShadowRoot
 from selenium.webdriver.support.ui import WebDriverWait
 
+from ..logging import LogConfig, PageElementLoggerAdapter
+from ..types import WebDriver, WebElement
 from . import ec_extension as ecex
+from .common import EXTENDED_IGNORED_EXCEPTIONS, _Name
 from .by import ByAttribute
-from .config import Log
-from .logging import PageElementLoggerAdapter
 from .page import Page
-from .types import WebDriver, WebElement
-from .shared import EXTENDED_IGNORED_EXCEPTIONS, _Name
 
 
 LOGGER = logging.getLogger(__name__)
-LOGGER.addFilter(Log.PREFIX_FILTER)
+LOGGER.addFilter(LogConfig.PREFIX_FILTER)
 
 
 class Elements:

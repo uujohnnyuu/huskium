@@ -4,62 +4,25 @@
 # GitHub: https://github.com/uujohnnyuu/huskium
 
 
-from __future__ import annotations
+from selenium.common.exceptions import StaleElementReferenceException
 
-import logging
-
-from .logging import PrefixFilter
+from ..exception import NoSuchCacheException
 
 
-class Log:
-    """General log settings."""
-
-    # prefix filter object
-    PREFIX_FILTER = PrefixFilter('test')
-    """
-    Internal debug logging filter.
-
-    Examples:
-        ::
-
-            from huskium import Log
-
-            # Finds frames with the prefix "run".
-            Log.PREFIX_FILTER.prefix = 'run'
-
-            # Makes the prefix "run" case-sensitive.
-            Log.PREFIX_FILTER.lower = False
-
-            # Finds the file (module) frame using the prefix "run".
-            Log.PREFIX_FILTER.funcframe = False
-
-    """
-
-    # Deprecation of logstack
-    _PREFIX = 'test'
-    _LOWER = True
-
-    # basicConfig
-    FILENAME = './log.log'
-    FILEMODE = 'w'
-    FORMAT = '%(asctime)s | %(levelname)s | %(filename)s:%(lineno)d | %(funcName)s | %(message)s'
-    DATEFMT = '%Y-%m-%d %H:%M:%S'
-    LEVEL = logging.DEBUG
-    BASIC_CONFIG = {
-        "filename": FILENAME,
-        "filemode": FILEMODE,
-        "format": FORMAT,
-        "datefmt": DATEFMT,
-        "level": LEVEL
-    }
+# exception
+ELEMENT_REFERENCE_EXCEPTIONS = (NoSuchCacheException, StaleElementReferenceException)
+EXTENDED_IGNORED_EXCEPTIONS = (StaleElementReferenceException,)
 
 
-class Appium:
-    """General settings for Appium."""
-
-    LOCALHOST: str = 'http://127.0.0.1'
-    PORT_4723: str = ':4723'
-    WD_HUB: str = '/wd/hub'
+# Page, Element, Elements
+class _Name:
+    _page = '_page'
+    _wait_timeout = '_wait_timeout'
+    _present_cache = '_present_cache'
+    _visible_cache = '_visible_cache'
+    _clickable_cache = '_clickable_cache'
+    _select_cache = '_select_cache'
+    _caches = [_present_cache, _visible_cache, _clickable_cache, _select_cache]
 
 
 class Offset:
@@ -103,3 +66,4 @@ class Area:
 
     FULL: tuple = (0.0, 0.0, 1.0, 1.0)
     """Full window size."""
+

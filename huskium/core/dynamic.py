@@ -8,7 +8,8 @@ from __future__ import annotations
 
 from functools import wraps
 
-from . import Element, Elements
+from .element import Element
+from .elements import Elements
 
 
 def dynamic(func):

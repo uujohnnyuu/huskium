@@ -29,7 +29,7 @@ from typing import Callable, Literal
 
 from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
 
-from .types import AppiumWebDriver, WebDriver, WebElement
+from ..types import AppiumWebDriver, WebDriver, WebElement
 
 
 def _find_element_by(

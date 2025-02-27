@@ -4,13 +4,12 @@
 # GitHub: https://github.com/uujohnnyuu/huskium
 
 
-from .config import Log, Appium, Area, Offset
-from .logging import PrefixFilter, FuncPrefixFilter, FilePrefixFilter
-from .page import Page
-from .element import Element
-from .elements import Elements
-from .by import By
-from .decorator import dynamic
+from .logging import LogConfig, PrefixFilter, FuncPrefixFilter, FilePrefixFilter
+from .core.page import Page
+from .core.element import Element
+from .core.elements import Elements
+from .core.by import By
+from .core.dynamic import dynamic
 
 
 # `from huskium import *` to easily access core functionalities.

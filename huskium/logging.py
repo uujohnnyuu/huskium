@@ -188,3 +188,41 @@ class PageElementLoggerAdapter(logging.LoggerAdapter):
 
     def process(self, msg, kwargs):
         return f'{self.extra["petype"]}({self.extra["remark"]}): {msg}', kwargs
+
+
+class LogConfig:
+    """General log configuration."""
+
+    PREFIX_FILTER = PrefixFilter('test')
+    """
+    Internal debug logging filter.
+
+    Examples:
+        ::
+
+            from huskium import Log
+
+            # Finds frames with the prefix "run".
+            Log.PREFIX_FILTER.prefix = 'run'
+
+            # Makes the prefix "run" case-sensitive.
+            Log.PREFIX_FILTER.lower = False
+
+            # Finds the file (module) frame using the prefix "run".
+            Log.PREFIX_FILTER.funcframe = False
+
+    """
+
+    # basicConfig
+    FILENAME = './log.log'
+    FILEMODE = 'w'
+    FORMAT = '%(asctime)s | %(levelname)s | %(filename)s:%(lineno)d | %(funcName)s | %(message)s'
+    DATEFMT = '%Y-%m-%d %H:%M:%S'
+    LEVEL = logging.DEBUG
+    BASIC_CONFIG = {
+        "filename": FILENAME,
+        "filemode": FILEMODE,
+        "format": FORMAT,
+        "datefmt": DATEFMT,
+        "level": LEVEL
+    }

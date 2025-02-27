@@ -25,15 +25,14 @@ from selenium.webdriver.remote.script_key import ScriptKey
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
+from ..logging import LogConfig, PageElementLoggerAdapter
+from ..types import WebDriver, WebElement, TupleCoordinate, Coordinate
 from . import ec_extension as ecex
-from .config import Log, Offset, Area
-from .logging import PageElementLoggerAdapter
-from .types import WebDriver, WebElement, TupleCoordinate, Coordinate
-from .shared import _Name
+from .common import _Name, Offset, Area
 
 
 LOGGER = logging.getLogger(__name__)
-LOGGER.addFilter(Log.PREFIX_FILTER)
+LOGGER.addFilter(LogConfig.PREFIX_FILTER)
 
 
 class Page:

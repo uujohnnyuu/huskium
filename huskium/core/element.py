@@ -21,18 +21,17 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.ui import WebDriverWait
 
+from ..logging import LogConfig, PageElementLoggerAdapter
+from ..exception import NoSuchCacheException
+from ..types import WebDriver, WebElement, Coordinate
 from . import ec_extension as ecex
+from .common import ELEMENT_REFERENCE_EXCEPTIONS, EXTENDED_IGNORED_EXCEPTIONS, _Name, Offset, Area
 from .by import ByAttribute
-from .config import Log, Offset, Area
-from .logging import PageElementLoggerAdapter
 from .page import Page
-from .exception import NoSuchCacheException
-from .types import WebDriver, WebElement, Coordinate
-from .shared import ELEMENT_REFERENCE_EXCEPTIONS, EXTENDED_IGNORED_EXCEPTIONS, _Name
 
 
 LOGGER = logging.getLogger(__name__)
-LOGGER.addFilter(Log.PREFIX_FILTER)
+LOGGER.addFilter(LogConfig.PREFIX_FILTER)
 
 
 class Element:
