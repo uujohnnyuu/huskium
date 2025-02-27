@@ -1069,11 +1069,11 @@ class Element:
             area: `(x, y, width, height)` or `(x, y, w, h)`.
             timeout: Maximum wait time in seconds.
             max_round: Maximum number of swipe attempts.
-            max_align: Maximum attempts to align all borders of the element  
+            max_align: Maximum attempts to align all borders of the element
                 within the area (view) border.
-            min_xycmp: Minimum x and y components to prevent misinterpretation  
+            min_xycmp: Minimum x and y components to prevent misinterpretation
                 as a click. Should be considered along with `duration`.
-            duration: Swipe duration in ms; if too short, it may be mistaken  
+            duration: Swipe duration in ms; if too short, it may be mistaken
                 as a click. Should be considered along with `min_xycmp`.
 
         Examples:
@@ -1147,11 +1147,11 @@ class Element:
             area: `(x, y, width, height)` or `(x, y, w, h)`.
             timeout: Maximum wait time in seconds.
             max_round: Maximum number of flick attempts.
-            max_align: Maximum attempts to align all borders of the element  
+            max_align: Maximum attempts to align all borders of the element
                 within the area (view) border.
-            min_xycmp: Minimum x and y components to prevent misinterpretation  
+            min_xycmp: Minimum x and y components to prevent misinterpretation
                 as a click. Should be considered along with `duration`.
-            duration: Swipe duration in ms; if too short, it may be mistaken  
+            duration: Swipe duration in ms; if too short, it may be mistaken
                 as a click. Should be considered along with `min_xycmp`.
 
         Examples:
@@ -1281,8 +1281,8 @@ class Element:
         al, at, aw, ah = area
         ar = al + aw
         ab = at + ah
-        v1ex = v0ex = vsx = int(al + aw/2)
-        v1ey = v0ey = vsy = int(at + ah/2)
+        v1ex = v0ex = vsx = int(al + aw / 2)
+        v1ey = v0ey = vsy = int(at + ah / 2)
         vector0 = (vsx, vsy, v0ex, v0ey)
         area_border = (al, ar, at, ab)
         self.logger.debug(f'V0(sx, sy, ex, ey): {vector0}')
