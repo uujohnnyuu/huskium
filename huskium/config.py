@@ -54,13 +54,6 @@ class Log:
     }
 
 
-class Cache:
-    """General cache settings."""
-
-    ELEMENT: bool = True
-    """`True` (default) to enable cache in `Element`."""
-
-
 class Appium:
     """General settings for Appium."""
 

@@ -4,7 +4,7 @@
 # GitHub: https://github.com/uujohnnyuu/huskium
 
 
-from .config import Log, Cache, Appium, Area, Offset
+from .config import Log, Appium, Area, Offset
 from .logging import PrefixFilter, FuncPrefixFilter, FilePrefixFilter
 from .page import Page
 from .element import Element

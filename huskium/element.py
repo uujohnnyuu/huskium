@@ -23,7 +23,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from . import ec_extension as ecex
 from .by import ByAttribute
-from .config import Log, Cache, Offset, Area
+from .config import Log, Offset, Area
 from .logging import PageElementLoggerAdapter
 from .page import Page
 from .exception import NoSuchCacheException
@@ -45,6 +45,18 @@ class Element:
         _visible_cache: WebElement
         _clickable_cache: WebElement
         _select_cache: Select
+
+    _CACHE: bool = True
+
+    @classmethod
+    def enable_cache(cls) -> None:
+        """Enable cache for all objects of Element."""
+        cls._CACHE = True
+
+    @classmethod
+    def disable_cache(cls) -> None:
+        """Disable cache for all objects of Element."""
+        cls._CACHE = False
 
     def __init__(
         self,
@@ -231,8 +243,8 @@ class Element:
 
     @property
     def cache(self) -> bool:
-        """If initial `cache=None`, return `Cache.ELEMENT`."""
-        return Cache.ELEMENT if self._cache is None else self._cache
+        """If initial `cache=None`, return Element global CACHE."""
+        return type(self)._CACHE if self._cache is None else self._cache
 
     @property
     def logger(self) -> PageElementLoggerAdapter:
