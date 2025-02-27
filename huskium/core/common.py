@@ -66,4 +66,3 @@ class Area:
 
     FULL: tuple = (0.0, 0.0, 1.0, 1.0)
     """Full window size."""
-
