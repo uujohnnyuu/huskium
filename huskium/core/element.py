@@ -103,7 +103,7 @@ class Element:
         return self
 
     def __set__(self, instance: Page, value: Element) -> None:
-        """Set dynamic element by `self.element = Element(...)` pattern."""
+        """Set dynamic element by `page.element = Element(...)` pattern."""
         if not isinstance(value, Element):
             raise TypeError('Only "Element" objects are allowed to be assigned.')
         # Avoid using __init__() here, as it may reset the descriptor.
@@ -294,7 +294,7 @@ class Element:
 
         Args:
             timeout: Maximum wait time in seconds.
-                If `None`, it initializes with the element timeout.
+                If `None`, it initializes with `element.timeout`.
             ignored_exceptions: Iterable ignored exception classes.
                 If `None`, it contains `NoSuchElementException` only.
         """
@@ -334,7 +334,7 @@ class Element:
 
         Args:
             timeout: Maximum wait time in seconds.
-                If `None`, uses `self.timeout`.
+                If `None`, uses `element.timeout`.
                 If set, overrides with this value.
             reraise: Defines behavior when timed out.
                 If `None`, follows `page.reraise`.
@@ -373,7 +373,7 @@ class Element:
 
         Args:
             timeout: Maximum wait time in seconds.
-                If `None`, uses `self.timeout`.
+                If `None`, uses `element.timeout`.
                 If set, overrides with this value.
             reraise: Defines behavior when timed out.
                 If `None`, follows `page.reraise`.
@@ -408,7 +408,7 @@ class Element:
 
         Args:
             timeout: Maximum wait time in seconds.
-                If `None`, uses `self.timeout`.
+                If `None`, uses `element.timeout`.
                 If set, overrides with this value.
             reraise: Defines behavior when timed out.
                 If `None`, follows `page.reraise`.
@@ -456,7 +456,7 @@ class Element:
 
         Args:
             timeout: Maximum wait time in seconds.
-                If `None`, uses `self.timeout`.
+                If `None`, uses `element.timeout`.
                 If set, overrides with this value.
             present: Specifies whether the element must be present.
                 If `True`, the element must be present.
@@ -506,7 +506,7 @@ class Element:
 
         Args:
             timeout: Maximum wait time in seconds.
-                If `None`, uses `self.timeout`.
+                If `None`, uses `element.timeout`.
                 If set, overrides with this value.
             reraise: Defines behavior when timed out.
                 If `None`, follows `page.reraise`.
@@ -554,7 +554,7 @@ class Element:
 
         Args:
             timeout: Maximum wait time in seconds.
-                If `None`, uses `self.timeout`.
+                If `None`, uses `element.timeout`.
                 If set, overrides with this value.
             present: Specifies whether the element must be present.
                 If `True`, the element must be present.
@@ -604,7 +604,7 @@ class Element:
 
         Args:
             timeout: Maximum wait time in seconds.
-                If `None`, uses `self.timeout`.
+                If `None`, uses `element.timeout`.
                 If set, overrides with this value.
             reraise: Defines behavior when timed out.
                 If `None`, follows `page.reraise`.
@@ -651,7 +651,7 @@ class Element:
 
         Args:
             timeout: Maximum wait time in seconds.
-                If `None`, uses `self.timeout`.
+                If `None`, uses `element.timeout`.
                 If set, overrides with this value.
             reraise: Defines behavior when timed out.
                 If `None`, follows `page.reraise`.

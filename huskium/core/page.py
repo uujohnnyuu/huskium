@@ -116,7 +116,7 @@ class Page:
 
         Args:
             timeout: Maximum wait time in seconds.
-                If `None`, it initializes with `self.timeout`.
+                If `None`, it initializes with `page.timeout`.
             ignored_exceptions: Iterable ignored exception classes.
                 If `None`, it contains `NoSuchElementException` only.
         """
@@ -130,7 +130,7 @@ class Page:
     def _timeout_reraise(self, reraise: bool | None) -> bool:
         """
         The final reraise decision when a timeout occurs.
-        If `reraise=None`, use `self.reraise`.
+        If `reraise=None`, use `page.reraise`.
         """
         return self.reraise if reraise is None else reraise
 
