@@ -1061,7 +1061,7 @@ class Page:
             area_height = int(window_height * area_height)
 
         area = (area_x, area_y, area_width, area_height)
-        self.logger.debug(f'area actual (x, y, w, h): {area}')
+        self.logger.debug(f'A(x, y, w, h) = {area}')
         return cast(tuple[int, int, int, int], area)
 
     def _get_offset(
@@ -1080,7 +1080,7 @@ class Page:
             end_y = int(area_y + area_height * end_y)
 
         offset = (start_x, start_y, end_x, end_y)
-        self.logger.debug(f'offset actual (sx, sy, ex, ey): {offset}')
+        self.logger.debug(f'O(sx, sy, ex, ey) = {offset}')
         return cast(tuple[int, int, int, int], offset)
 
     def draw_lines(self, dots: list[dict[str, int]], duration: int = 1000) -> None:

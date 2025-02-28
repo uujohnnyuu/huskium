@@ -1125,7 +1125,7 @@ class Element:
         """
         area = self.page._get_area(area)
         offset = self.page._get_offset(offset, area)
-        self._swipe_by(offset, duration, timeout, max_round)
+        self._swipe_by(offset, timeout, max_round, duration)
         self._align_by(area, max_align, min_xycmp, duration)
         return self
 
@@ -1212,9 +1212,9 @@ class Element:
     def _swipe_by(
         self,
         offset: tuple[int, int, int, int],
-        duration: int,
         timeout: int | float,
-        max_round: int
+        max_round: int,
+        duration: int
     ) -> int | None:
         if not max_round:
             self.logger.warning(f'For max_round is {max_round}, no swiping performed.')
@@ -1273,11 +1273,11 @@ class Element:
         ahw, ahh = int(aw / 2), int(ah / 2)  # half_width, half_height
         acx, acy = (al + ahw), (at + ahh)  # center_x, center_y
         area_border = (al, ar, at, ab)
-        self.logger.debug(f'A(l, r, t, b): {area_border}')
+        self.logger.debug(f'A(l, r, t, b) = {area_border}')
         area_halfwh = (ahw, ahh)
-        self.logger.debug(f'A(hw, hh): {area_halfwh}')
+        self.logger.debug(f'A(hw, hh) = {area_halfwh}')
         area_center = (acx, acy)
-        self.logger.debug(f'A(cx, cy): {area_center}')
+        self.logger.debug(f'A(cx, cy) = {area_center}')
 
         round = 0
         while (aligned_offset := self._get_aligned_offset(area_border, area_halfwh, area_center, min_xycmp)):
@@ -1305,11 +1305,11 @@ class Element:
 
         # element border
         element_border = el, er, et, eb = self.border.values()
-        self.logger.debug(f'E(l, r, t, b): {(element_border)}')
+        self.logger.debug(f'E(l, r, t, b) = {(element_border)}')
 
         # delta = (area - element)
         delta_border = dl, dr, dt, db = (al - el), (ar - er), (at - et), (ab - eb)
-        self.logger.debug(f'D(l, r, t, b): {delta_border}')
+        self.logger.debug(f'D(l, r, t, b) = {delta_border}')
 
         # update delta with min_distance
         if dl > 0:
@@ -1334,7 +1334,7 @@ class Element:
             self.logger.debug('All the element border is in Area, no alignment required.')
             return None
         offset = (acx, acy, oex, oey)
-        self.logger.debug(f'O(sx, sy, ex, ey): {offset}')
+        self.logger.debug(f'O(sx, sy, ex, ey) = {offset}')
         return offset
 
     def clear(self) -> Self:
