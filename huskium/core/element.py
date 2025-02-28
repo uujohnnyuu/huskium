@@ -1260,78 +1260,82 @@ class Element:
         min_xycmp: int,
         duration: int
     ) -> int | None:
-        if not max_align:
-            self.logger.debug(f'For max_adjustment is {max_align}, no adjustment performed.')
-            return None
-        self.logger.debug('Start adjusting.')
 
-        # Area border and center
-        al, at, aw, ah = area
-        ar, ab = al + aw, at + ah
+        if not max_align:
+            self.logger.debug(f'For max_align is {max_align}, no alignment performed.')
+            return None
+
+        self.logger.debug('Start aligning.')
+
+        # Area critical points
+        al, at, aw, ah = area  # rect
+        ar, ab = (al + aw), (at + ah)  # right, bottom
+        ahw, ahh = int(aw / 2), int(ah / 2)  # half_width, half_height
+        acx, acy = (al + ahw), (at + ahh)  # center_x, center_y
         area_border = (al, ar, at, ab)
         self.logger.debug(f'A(l, r, t, b): {area_border}')
-        fxy = (al + aw // 2, at + ah // 2)  # Integer division avoids float conversion
-        fix = (*fxy, *fxy)  # Equivalent to (fxy[0], fxy[1], fxy[0], fxy[1])
-        self.logger.debug(f'F(sx, sy, ex, ey): {fix}')
+        area_halfwh = (ahw, ahh)
+        self.logger.debug(f'A(hw, hh): {area_halfwh}')
+        area_center = (acx, acy)
+        self.logger.debug(f'A(cx, cy): {area_center}')
 
         round = 0
-        while (adjusted_offset := self._get_aligned_vector(area_border, fxy, min_xycmp)):
+        while (aligned_offset := self._get_aligned_offset(area_border, area_halfwh, area_center, min_xycmp)):
             if round == max_align:
-                self.logger.debug(f'Stop adjusting after max {max_align} rounds.\n')
+                self.logger.debug(f'Stop aligning after max {max_align} rounds.\n')
                 return round
-            self.driver.swipe(*adjusted_offset, duration)  # type: ignore[attr-defined]
+            self.driver.swipe(*aligned_offset, duration)  # type: ignore[attr-defined]
             round += 1
-            self.logger.debug(f'Adjusting round {round} done.\n')
-        self.logger.debug(f'Stop adjusting after {round} round.\n')
+            self.logger.debug(f'Aligning round {round} done.\n')
+        self.logger.debug(f'Stop aligning after {round} round.\n')
         return round
 
-    def _get_aligned_vector(
+    def _get_aligned_offset(
         self,
         area_border: tuple[int, int, int, int],
-        fxy: tuple[int, int],
+        area_halfwh: tuple[int, int],
+        area_center: tuple[int, int],
         min_xycmp: int,
     ) -> tuple[int, int, int, int] | None:
 
+        # area critical points
         al, ar, at, ab = area_border
-        vx, vy = fx, fy = fxy
+        max_xcmp, max_ycmp = area_halfwh
+        oex, oey = acx, acy = area_center
 
         # element border
         element_border = el, er, et, eb = self.border.values()
         self.logger.debug(f'E(l, r, t, b): {(element_border)}')
 
         # delta = (area - element)
-        dl = al - el
-        dr = ar - er
-        dt = at - et
-        db = ab - eb
-        delta_border = (dl, dr, dt, db)
+        delta_border = dl, dr, dt, db = (al - el), (ar - er), (at - et), (ab - eb)
         self.logger.debug(f'D(l, r, t, b): {delta_border}')
 
         # update delta with min_distance
         if dl > 0:
-            dl = max(dl, min_xycmp)
-            vx = fx + dl
-            self.logger.debug(f'V1(ex) = V(sx) + D{min_xycmp}(l) = {fx} + {dl} = {vx}')
+            dl = max(min(dl, max_xcmp), min_xycmp)  # max_xcmp >= dl >= min_xycmp > 0
+            oex = acx + dl
+            self.logger.debug(f'O(ex) = A(cx) + D{[min_xycmp, max_xcmp]}(l) = {acx} + {dl} = {oex}')
         if dr < 0:
-            dr = min(dr, -min_xycmp)
-            vx = fx + dr
-            self.logger.debug(f'V1(ex) = V(sx) + D{min_xycmp}(r) = {fx} + {dr} = {vx}')
+            dr = min(max(dr, -max_xcmp), -min_xycmp)  # 0 > -min_xycmp >= dr >= -max_xcmp
+            oex = acx + dr
+            self.logger.debug(f'O(ex) = A(cx) + D{[-min_xycmp, -max_xcmp]}(r) = {acx} + {dr} = {oex}')
         if dt > 0:
-            dt = max(dt, min_xycmp)
-            vy = fy + dt
-            self.logger.debug(f'V1(ey) = V(sy) + D{min_xycmp}(t) = {fy} + {dt} = {vy}')
+            dt = max(min(dt, max_ycmp), min_xycmp)  # max_ycmp >= dt >= min_xycmp > 0
+            oey = acy + dt
+            self.logger.debug(f'O(ey) = A(cy) + D{[min_xycmp, max_ycmp]}(t) = {acy} + {dt} = {oey}')
         if db < 0:
-            db = min(db, -min_xycmp)
-            vy = fy + db
-            self.logger.debug(f'V1(ey) = V(sy) + D{min_xycmp}(b) = {fy} + {db} = {vy}')
+            db = min(max(db, -max_ycmp), -min_xycmp)  # 0 > -min_xycmp >= db >= -max_ycmp
+            oey = acy + db
+            self.logger.debug(f'O(ey) = A(cy) + D{[-min_xycmp, -max_ycmp]}(b) = {acy} + {db} = {oey}')
 
         # check if adjustment is needed
-        if (vx, vy) == fxy:
-            self.logger.debug('All the element border is in Area, no adjustment required.')
+        if (oex, oey) == area_center:
+            self.logger.debug('All the element border is in Area, no alignment required.')
             return None
-        vector = (fx, fy, vx, vy)
-        self.logger.debug(f'V(sx, sy, ex, ey): {vector}')
-        return vector
+        offset = (acx, acy, oex, oey)
+        self.logger.debug(f'O(sx, sy, ex, ey): {offset}')
+        return offset
 
     def clear(self) -> Self:
         """
