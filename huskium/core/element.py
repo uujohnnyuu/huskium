@@ -64,8 +64,8 @@ class Element:
         index: int | None = None,
         *,
         timeout: int | float | None = None,
-        remark: str | None = None,
-        cache: bool | None = None
+        cache: bool | None = None,
+        remark: str | None = None
     ) -> None:
         """
         Initial Element attributes.
@@ -77,13 +77,13 @@ class Element:
                 If `int`, uses the `find_elements()[index]` strategy.
             timeout: The maximum time in seconds to find the element.
                 If `None`, use `page.timeout` from descriptor.
-            remark: Custom remark for identification or logging. If `None`,
-                record as `(by="{by}", value="{value}", index={index})`.
             cache: `True` to cache the located WebElement for reuse; otherwise,
                 locate the element every time. If `None`, use `Cache.Element`.
+            remark: Custom remark for identification or logging. If `None`,
+                record as `(by="{by}", value="{value}", index={index})`.
         """
-        self._verify_data(by, value, index, timeout, remark, cache)
-        self._set_data(by, value, index, timeout, remark, cache)
+        self._verify_data(by, value, index, timeout, cache, remark)
+        self._set_data(by, value, index, timeout, cache, remark)
 
     def __get__(self, instance: Page, owner: Type[Page] | None = None) -> Self:
         """Make "Element" a descriptor of "Page"."""
@@ -108,7 +108,7 @@ class Element:
             raise TypeError('Only "Element" objects are allowed to be assigned.')
         # Avoid using __init__() here, as it may reset the descriptor.
         # Do not call dynamic, as it will duplicate the verification.
-        self._set_data(value.by, value.value, value.index, value.timeout, value.remark, value.cache)
+        self._set_data(value.by, value.value, value.index, value.timeout, value.cache, value.remark)
         self._if_clear_caches('[__set__]')  # dynamic should clear caches.
         self.logger.debug('[__set__] Dynamic element set.')
 
@@ -119,8 +119,8 @@ class Element:
         index: int | None = None,
         *,
         timeout: int | float | None = None,
-        remark: str | None = None,
-        cache: bool | None = None
+        cache: bool | None = None,
+        remark: str | None = None
     ) -> Self:
         """
         Set dynamic elements as `page.element.dynamic(...)` pattern.
@@ -155,35 +155,35 @@ class Element:
 
         """
         # Avoid using __init__() here, as it will reset the descriptor.
-        self._verify_data(by, value, index, timeout, remark, cache)
-        self._set_data(by, value, index, timeout, remark, cache)
+        self._verify_data(by, value, index, timeout, cache, remark)
+        self._set_data(by, value, index, timeout, cache, remark)
         self._if_clear_caches('[dynamic]')  # dynamic should clear caches.
         self.logger.debug('[dynamic] Dynamic element set.')
         return self
 
-    def _verify_data(self, by, value, index, timeout, remark, cache) -> None:
+    def _verify_data(self, by, value, index, timeout, cache, remark) -> None:
         """Verify basic attributes."""
         if by not in ByAttribute.VALUES_WITH_NONE:
             raise ValueError(f'The "by" strategy "{by}" is undefined.')
         if not isinstance(value, (str, type(None))):
-            raise TypeError(f'The "value" type must be "str", not "{type(value).__name__}".')
+            raise TypeError(f'The "value" type must be "str" or "None", not "{type(value).__name__}".')
         if not isinstance(index, (int, type(None))):
-            raise TypeError(f'The "index" type must be "int", not "{type(index).__name__}".')
+            raise TypeError(f'The "index" type must be "int" or "None", not "{type(index).__name__}".')
         if not isinstance(timeout, (int, float, type(None))):
-            raise TypeError(f'The "timeout" type must be "int" or "float", not "{type(timeout).__name__}".')
-        if not isinstance(remark, (str, type(None))):
-            raise TypeError(f'The "remark" type must be "str", not "{type(remark).__name__}".')
+            raise TypeError(f'The "timeout" type must be "int", "float" or "None", not "{type(timeout).__name__}".')
         if not isinstance(cache, (bool, type(None))):
-            raise TypeError(f'The "cache" type must be "bool", not "{type(cache).__name__}".')
+            raise TypeError(f'The "cache" type must be "bool" or "None", not "{type(cache).__name__}".')
+        if not isinstance(remark, (str, type(None))):
+            raise TypeError(f'The "remark" type must be "str" or "None", not "{type(remark).__name__}".')
 
-    def _set_data(self, by, value, index, timeout, remark, cache) -> None:
+    def _set_data(self, by, value, index, timeout, cache, remark) -> None:
         """Set basic attributes."""
         self._by = by
         self._value = value
         self._index = index
         self._timeout = timeout
-        self._remark = remark
         self._cache = cache
+        self._remark = remark or {"by": self._by, "value": self._value, "index": self._index}
         self._logger = PageElementLoggerAdapter(LOGGER, self)
 
     def _if_clear_caches(self, logtag: str = '[CLEAR]') -> None:
@@ -233,17 +233,17 @@ class Element:
         return self._page._timeout if self._timeout is None else self._timeout
 
     @property
-    def remark(self) -> str:
-        """
-        If initial `remark=None`,
-        return `(by="{by}", value="{value}", index={index})`.
-        """
-        return self._remark or f'(by="{self._by}", value="{self._value}", index={self._index})'
-
-    @property
     def cache(self) -> bool:
         """If initial `cache=None`, return Element global CACHE."""
         return type(self)._CACHE if self._cache is None else self._cache
+
+    @property
+    def remark(self) -> str | dict:
+        """
+        If initial `remark=None`, 
+        return `{"by": by, "value": value, "index": index}`.
+        """
+        return self._remark
 
     @property
     def logger(self) -> PageElementLoggerAdapter:

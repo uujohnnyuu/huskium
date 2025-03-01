@@ -142,7 +142,7 @@ class Elements:
         self._by = by
         self._value = value
         self._timeout = timeout
-        self._remark = remark
+        self._remark = remark or {"by": self._by, "value": self._value}
         self._logger = PageElementLoggerAdapter(LOGGER, self)
 
     @property
@@ -168,9 +168,9 @@ class Elements:
         return self._page._timeout if self._timeout is None else self._timeout
 
     @property
-    def remark(self) -> str:
-        """If initial `remark=None`, return (by="{by}", value="{value}")."""
-        return self._remark or f'(by="{self._by}", value="{self._value}")'
+    def remark(self) -> str | dict:
+        """If initial `remark=None`, return `{"by": by, "value": value}`."""
+        return self._remark
 
     @property
     def logger(self) -> PageElementLoggerAdapter:
