@@ -240,7 +240,7 @@ class Element:
     @property
     def remark(self) -> str | dict:
         """
-        If initial `remark=None`, 
+        If initial `remark=None`,
         return `{"by": by, "value": value, "index": index}`.
         """
         return self._remark
