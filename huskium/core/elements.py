@@ -79,7 +79,7 @@ class Elements:
             raise TypeError('Only "Elements" objects are allowed to be assigned.')
         # Avoid using __init__() here, as it may reset the descriptor.
         # Do not call dynamic, as it will duplicate the verification.
-        self._set_data(value.by, value.value, value.timeout, value.remark)
+        self._set_data(value._by, value._value, value._timeout, value._remark)
         self.logger.debug('[__set__] Dynamic element set.')
 
     def dynamic(

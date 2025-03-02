@@ -48,13 +48,13 @@ class Element:
     _CACHE: bool = True
 
     @classmethod
-    def enableCache(cls) -> None:
-        """Enable cache for all objects of Element."""
+    def enable_default_cache(cls) -> None:
+        """Set default cache to `True` for all Element objects."""
         cls._CACHE = True
 
     @classmethod
-    def disableCache(cls) -> None:
-        """Disable cache for all objects of Element."""
+    def disable_default_cache(cls) -> None:
+        """Set default cache to `False` for all Element objects."""
         cls._CACHE = False
 
     def __init__(
@@ -108,7 +108,7 @@ class Element:
             raise TypeError('Only "Element" objects are allowed to be assigned.')
         # Avoid using __init__() here, as it may reset the descriptor.
         # Do not call dynamic, as it will duplicate the verification.
-        self._set_data(value.by, value.value, value.index, value.timeout, value.cache, value.remark)
+        self._set_data(value._by, value._value, value._index, value._timeout, value._cache, value._remark)
         self._if_clear_caches('[__set__]')  # dynamic should clear caches.
         self.logger.debug('[__set__] Dynamic element set.')
 
@@ -237,15 +237,15 @@ class Element:
         """If initial `cache=None`, return Element global CACHE."""
         return type(self)._CACHE if self._cache is None else self._cache
 
-    def enable_cache(self):
+    def enable_cache(self) -> None:
         """`element.cache = True`"""
         self._cache = True
 
-    def disable_cache(self):
+    def disable_cache(self) -> None:
         """`element.cache = False`"""
         self._cache = False
 
-    def unset_cache(self):
+    def unset_cache(self) -> None:
         """`element.cache = None`"""
         self._cache = None
 
