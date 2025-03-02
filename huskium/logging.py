@@ -102,7 +102,7 @@ class PrefixFilter(BasePrefixFilter):
             islower: `True` for case-insensitive; `False` for case-sensitive.
             isfunc: `True` to filter function frames;
                 `False` to filter file (module) frames.
-            torecord: Whether to save the `LogRecord` info. 
+            torecord: Whether to save the `LogRecord` info.
         """
         super().__init__(prefix, islower, torecord)
         self._set_isfunc(isfunc)
