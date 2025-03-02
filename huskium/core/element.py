@@ -48,12 +48,12 @@ class Element:
     _CACHE: bool = True
 
     @classmethod
-    def enable_cache(cls) -> None:
+    def enableCache(cls) -> None:
         """Enable cache for all objects of Element."""
         cls._CACHE = True
 
     @classmethod
-    def disable_cache(cls) -> None:
+    def disableCache(cls) -> None:
         """Disable cache for all objects of Element."""
         cls._CACHE = False
 
@@ -236,6 +236,18 @@ class Element:
     def cache(self) -> bool:
         """If initial `cache=None`, return Element global CACHE."""
         return type(self)._CACHE if self._cache is None else self._cache
+
+    def enable_cache(self):
+        """`element.cache = True`"""
+        self._cache = True
+
+    def disable_cache(self):
+        """`element.cache = False`"""
+        self._cache = False
+
+    def unset_cache(self):
+        """`element.cache = None`"""
+        self._cache = None
 
     @property
     def remark(self) -> str | dict:
