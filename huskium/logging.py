@@ -11,25 +11,25 @@ import os
 
 # Filter
 class BasePrefixFilter(logging.Filter):
+    """
+    The base prefix filter.
+
+    Attributes:
+        prefix: The frame prefix.
+        islower: `True` for case-insensitive; `False` for case-sensitive.
+        torecord: Whether to save the `LogRecord` info.
+        record (LogRecord | None): If `torecord=True`, save the `LogRecord` info.
+    """
 
     def __init__(
         self,
         prefix: str | None = None,
-        lower: bool = True,
+        islower: bool = True,
         torecord: bool = False
     ):
-        """
-        The base prefix filter.
-
-        Attributes:
-            prefix: The frame prefix.
-            lower: `True` for case-insensitive; `False` for case-sensitive.
-            torecord: Whether to save the `LogRecord` info.
-            record (LogRecord | None): If `torecord=True`, save the `LogRecord` info.
-        """
         super().__init__()
         self._set_prefix(prefix)
-        self._set_lower(lower)
+        self._set_islower(islower)
         self._set_torecord(torecord)
         self._record: logging.LogRecord | None = None
 
@@ -46,13 +46,13 @@ class BasePrefixFilter(logging.Filter):
     def prefix(self):
         return self._prefix
 
-    def _set_lower(self, value: bool):
-        self._verify('lower', value, bool)
-        self._lower = value
+    def _set_islower(self, value: bool):
+        self._verify('islower', value, bool)
+        self._islower = value
 
     @property
-    def lower(self):
-        return self._lower
+    def islower(self):
+        return self._islower
 
     def _set_torecord(self, value: bool):
         self._verify('torecord', value, bool)
@@ -92,21 +92,21 @@ class PrefixFilter(BasePrefixFilter):
     def __init__(
         self,
         prefix: str | None = None,
-        lower: bool = True,
-        torecord: bool = False,
-        isfunc: bool = True
+        islower: bool = True,
+        isfunc: bool = True,
+        torecord: bool = False
     ):
         """
         Args:
             prefix: The frame prefix.
-            lower: `True` for case-insensitive; `False` for case-sensitive.
-            torecord: Whether to save the `LogRecord` info.
+            islower: `True` for case-insensitive; `False` for case-sensitive.
             isfunc: `True` to filter function frames;
                 `False` to filter file (module) frames.
+            torecord: Whether to save the `LogRecord` info. 
         """
-        super().__init__(prefix, lower, torecord)
+        super().__init__(prefix, islower, torecord)
         self._set_isfunc(isfunc)
-        self._set_framefilter()
+        self._set_prefixfilter()
 
     def _set_isfunc(self, value):
         self._verify('isfunc', value, bool)
@@ -116,49 +116,49 @@ class PrefixFilter(BasePrefixFilter):
     def isfunc(self):
         return self._isfunc
 
-    def _set_framefilter(self):
+    def _set_prefixfilter(self):
         if self._isfunc:
-            self._framefilter = FuncPrefixFilter(self._prefix, self._lower, self._torecord)
+            self._prefixfilter = FuncPrefixFilter(self._prefix, self._islower, self._torecord)
         else:
-            self._framefilter = FilePrefixFilter(self._prefix, self._lower, self._torecord)
+            self._prefixfilter = FilePrefixFilter(self._prefix, self._islower, self._torecord)
 
     @property
-    def framefilter(self):
-        return self._framefilter
+    def prefixfilter(self):
+        return self._prefixfilter
 
     def reset(
         self,
         prefix: str | None = None,
-        lower: bool = True,
-        torecord: bool = False,
-        isfunc: bool = True
+        islower: bool = True,
+        isfunc: bool = True,
+        torecord: bool = False
     ):
         """Reset all filter settings."""
         self._set_prefix(prefix)
-        self._set_lower(lower)
-        self._set_torecord(torecord)
+        self._set_islower(islower)
         self._set_isfunc(isfunc)
-        self._set_framefilter()
+        self._set_torecord(torecord)
+        self._set_prefixfilter()
 
     def reset_prefix(self, value: str | None):
         self._set_prefix(value)
-        self._set_framefilter()
+        self._set_prefixfilter()
 
-    def reset_lower(self, value: bool):
-        self._set_lower(value)
-        self._set_framefilter()
-
-    def reset_torecord(self, value: bool):
-        self._set_torecord(value)
-        self._set_framefilter()
+    def reset_islower(self, value: bool):
+        self._set_islower(value)
+        self._set_prefixfilter()
 
     def reset_isfunc(self, value: bool):
         self._set_isfunc(value)
-        self._set_framefilter()
+        self._set_prefixfilter()
+
+    def reset_torecord(self, value: bool):
+        self._set_torecord(value)
+        self._set_prefixfilter()
 
     def filter(self, record):
-        self._framefilter.filter(record)
-        self._record = self._framefilter._record
+        self._prefixfilter.filter(record)
+        self._record = self._prefixfilter._record
         return True
 
 
@@ -186,12 +186,12 @@ class FuncPrefixFilter(BasePrefixFilter):
 
     def filter(self, record):
         if self._prefix:
-            prefix = self._prefix.lower() if self._lower else self._prefix
+            prefix = self._prefix.lower() if self._islower else self._prefix
             # Do not use inspect.stack() as it is costly.
             frame = inspect.currentframe()
             while frame:
                 funcname = original_funcname = frame.f_code.co_name
-                if self._lower:
+                if self._islower:
                     funcname = funcname.lower()
                 if funcname.startswith(prefix):
                     record.filename = os.path.basename(frame.f_code.co_filename)
@@ -227,12 +227,12 @@ class FilePrefixFilter(BasePrefixFilter):
 
     def filter(self, record):
         if self._prefix:
-            prefix = self._prefix.lower() if self._lower else self._prefix
+            prefix = self._prefix.lower() if self._islower else self._prefix
             # Do not use inspect.stack() as it is costly.
             frame = inspect.currentframe()
             while frame:
                 filename = original_filename = os.path.basename(frame.f_code.co_filename)
-                if self._lower:
+                if self._islower:
                     filename = filename.lower()
                 if filename.startswith(prefix):
                     record.filename = original_filename
