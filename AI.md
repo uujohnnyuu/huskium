@@ -5,8 +5,8 @@
 ### 二元邏輯 (Binary Logic)
 在傳統的二元邏輯中，所有判斷都是 **非黑即白**，只能是 **真（True, T）** 或 **假（False, F）**：
 ```
-**0 = FALSE**
-**1 = TRUE**
+0 = FALSE
+1 = TRUE
 ```
 
 ### 模糊邏輯 (Fuzzy Logic)
@@ -26,33 +26,33 @@ P:  Posibility, 事件為 True 的可能性。
 Q:  共軛 P 值, 用於計算 期望事件數(E)。
     Q = 1 - P ; 0 <= P < 0.5
     Q = P     ; 0.5 <= P <= 1
-E:  Event, 可能性 P 下的期望事件數。
+E:  Event, 可能性 P 下的 期望事件數。
     E = 1 / Q
 ```
 
-| **P**  | **P'** | **E**  |
-|--------|--------|--------|
-| 0      | 1.0    | 1      |
-| 0.2    | 0.8    | 1.25   |
-| 0.5    | 0.5    | 2      |
-| 0.7    | 0.7    | 1.43   |
-| 1      | 1.0    | 1      |
+| **P** | **Q** | **E** |
+|-------|-------|-------|
+| 0     | 1.0   | 1     |
+| 0.2   | 0.8   | 1.25  |
+| 0.5   | 0.5   | 2     |
+| 0.7   | 0.7   | 1.43  |
+| 1     | 1.0   | 1     |
 
 ---
 
 ## 2. 模糊邏輯應用
 
 ### 頻率 (Frequency)
-| **D(單元謂語)** | **P(可能性)** | **P'(共軛可能性)** | **E(事件數)** |
+| **D(單元謂語)** | **P** | **Q** | **E** |
 |---|---|---|---|
-| 不會 (Not)                               | 0     | 1     | 1     |
-| 偶爾 (Occasionally; Sometimes)           | 0.2   | 0.8   | 1.25  |
-| 時常 (Frequently; Often)                 | 0.5   | 0.5   | 2     |
-| 經常 (Regularly; Usually)                | 0.8   | 0.8   | 1.25  |
-| 總是 (Always)                            | 1     | 1     | 1     |
+| 不會 (Not)                     | 0     | 1     | 1     |
+| 偶爾 (Occasionally; Sometimes) | 0.2   | 0.8   | 1.25  |
+| 時常 (Frequently; Often)       | 0.5   | 0.5   | 2     |
+| 經常 (Regularly; Usually)      | 0.8   | 0.8   | 1.25  |
+| 總是 (Always)                  | 1     | 1     | 1     |
 
 ### 可能性 (Probability)，注意與 P (Possibility) 不同。
-| **D(單元謂語)** | **P(可能性)** | **P'(共軛可能性)** | **E(事件數)** |
+| **D(單元謂語)** | **P** | **Q** | **E** |
 |---|---|---|---|
 | 不可能 (Impossible; No chance)            | 0     | 1     | 1     |
 | 幾乎不 (Highly unlikely; Barely possible) | 0.1   | 0.9   | 1.11  |
@@ -62,7 +62,7 @@ E:  Event, 可能性 P 下的期望事件數。
 | 幾乎會 (Highly likely; Very probable)     | 0.9   | 0.9   | 1.11  |
 | 必然會 (Certain; Inevitable; Guaranteed)  | 1     | 1     | 1     |
 
-### **模糊隸屬函數(Membership Function, MF)**
+### 模糊隸屬函數(Membership Function, MF)
 模糊邏輯的實際值，就是利用各種 **MF** 取得，比如 `MF1(偶爾) = 0.2`, `MF2(偶爾) = 0.3`。常見如下: 
 - 階梯函數 (Step Membership Function, SMF)
 - 線性函數 (Linear Membership Function, LMF)
@@ -71,7 +71,7 @@ E:  Event, 可能性 P 下的期望事件數。
 
 ---
 
-## 3. 事件數組合 (AI回答問題的核心基礎)
+## 3. 事件數組合 (AI學習的核心基礎)
 
 ### 越模糊的論述有越多的事件數。
 | **D(組合謂語)** | **E1** | **E2** | **E(E1xE2)** |
