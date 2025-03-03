@@ -36,37 +36,35 @@
 
 ## **4. 模糊狀態舉例**
 
-### 頻率
-- 不會(Not): 0
-- 偶爾(Occasionally / Sometimes): 0.2
-- 時常(Frequently / Often): 0.5
-- 經常(Regularly / Usually): 0.8
-- 總是(Always): 1
+### **頻率 (Frequency)**
+| **頻率** | **P** | **P'** | **E** |
+|----------|------|------|------|
+| 不會 (Not) | 0    | 1    | 1     |
+| 偶爾 (Occasionally / Sometimes) | 0.2  | 0.8  | 1.25  |
+| 時常 (Frequently / Often) | 0.5  | 0.5  | 2     |
+| 經常 (Regularly / Usually) | 0.8  | 0.8  | 1.25  |
+| 總是 (Always) | 1    | 1    | 1     |
 
-### 可能性
-- 不可能(Impossible / No chance): 0
-- 幾乎不可能(Highly unlikely / Barely possible): 0.1
-- 有可能(Possibly / Might / Could): 0.3
-- 不一定(Fifty-fifty): 0.5
-- 可能(Likely / Probably): 0.7
-- 幾乎會(Highly likely / Very probable): 0.9
-- 必然(Certain / Inevitable / Guaranteed): 1
+### **可能性 (Probability)**
+| **可能性** | **P** | **P'** | **E** |
+|------------|------|------|------|
+| 不可能 (Impossible / No chance) | 0    | 1    | 1     |
+| 幾乎不可能 (Highly unlikely / Barely possible) | 0.1  | 0.9  | 1.11  |
+| 有可能 (Possibly / Might / Could) | 0.3  | 0.7  | 1.43  |
+| 不一定 (Fifty-fifty) | 0.5  | 0.5  | 2     |
+| 可能 (Likely / Probably) | 0.7  | 0.7  | 1.43  |
+| 幾乎會 (Highly likely / Very probable) | 0.9  | 0.9  | 1.11  |
+| 必然 (Certain / Inevitable / Guaranteed) | 1    | 1    | 1     |
 
 ---
 
-## **5. 模糊狀態事件數**
+## **5. 事件數組合**
 
-### 以頻率為例
-- 不會: 0 -> 事件數: 1/(1-0) = 1
-- 偶爾: 0.2
-    - 事件數: 1/(1-0.2) = 1.25
-- 時常(Frequently / Often): 0.5
-    - 事件數: 1/0.5 = 2
-- 經常(Regularly / Usually): 0.8
-    - 事件數: 1/(0.8) = 1.25
-- 總是(Always): 1
-    - 事件數: 1/1 = 1
-
-
+### 越模糊的論述會造成越多的事件數。
+| **C** | **E1** | **E2** | **E(E1xE2)** |
+|---------|------|------|------|
+| 不一定總是 (Not always) | 2 | 1 | 2 |
+| 偶爾可能 (Sometimes it may) | 1.25 | 1.43 | 1.7875 |
+| 幾乎必然 (Almostly) | 1.11 | 1 | 1.11 |
 
 ---
