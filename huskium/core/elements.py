@@ -65,7 +65,7 @@ class Elements:
         """Make "Elements" a descriptor of "Page"."""
         if not isinstance(instance, Page):
             raise TypeError(f'"{type(self).__name__}" must be used with a "Page" instance.')
-        if getattr(self, _Name._page, None) != instance:
+        if getattr(self, _Name._page, None) is not instance:
             self._page = instance
             self._driver = instance._driver
             self.logger.debug(f'[__get__] Driver updated: {self._driver}.')

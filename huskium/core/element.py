@@ -93,7 +93,7 @@ class Element:
         # it indicates the driver has been updated.
         # Assign the current value to _page and
         # clear all caches to avoid InvalidSessionIdException.
-        if getattr(self, _Name._page, None) != instance:
+        if getattr(self, _Name._page, None) is not instance:
             self._page = instance
             self._driver = instance._driver
             self.logger.debug(f'[__get__] Driver updated: {self._driver}.')
