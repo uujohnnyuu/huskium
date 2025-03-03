@@ -100,7 +100,7 @@ E:  Event, 可能性 P 下的 期望事件數。
 - pep8: 格式調整
 - mypy: 靜態型別檢查
 - flake8: 除 mypy 外的靜態檢查
-- sphinx(https://uujohnnyuu.github.io/huskium/): 配合 gh-pages 分支生成 html 文件
+- [sphinx](https://uujohnnyuu.github.io/huskium/): 配合 gh-pages 分支生成 html 文件
 - TestPyPI: 正式上 PyPI 前的功能測試
 - PyPI: 正式上 PyPI
 
