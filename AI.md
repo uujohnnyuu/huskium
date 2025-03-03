@@ -93,14 +93,70 @@ E:  Event, 可能性 P 下的 期望事件數。
 
 ---
 
-## 4. huskium 受到的幫助
-1. 
+## 4. huskium 受到的幫助與未來規劃
 
+### CICD 輔助
+- git: 上版流程
+- pep8: 格式調整
+- mypy: 靜態型別檢查
+- flake8: 除 mypy 外的靜態檢查
+- sphinx(https://uujohnnyuu.github.io/huskium/): 配合 gh-pages 分支生成 html 文件
+- TestPyPI: 正式上 PyPI 前的功能測試
+- PyPI: 正式上 PyPI
+
+### 即時功能變更與技術革新
+- python 3.11 以後的重大功能優化 (huskium 已綁定需 v3.11.0 以上)
+- Selenium/Appium v4 新功能和bug修正
+- ios XCUITest 更新與bug修正
+- android UIAutomator2 更新與bug修正
+
+### 套件層面
+以下依最重要者先排序
+- 程式優化: 諸如更精簡效能更好的寫法
+- 新功能建構: 參照最新資訊建構新功能
+- 整體架構調整: 目前框架面還是人類較強，我先確立好架構，再逐步提出可優化處讓AI學習判斷
+- [TODO]PyPI setup 調整為 pyproject.toml
+
+### 自動生成腳本層面
+讓 AI 直接參照 PyPI 專案學習 `page.method()` 和 `page.element.method()` 的建構方式
+- 設定手勢: huksytc/testcase/test_flow/test_app_flow/test_draw_gesture
+- [TODO]: 腳本邏輯問題不大，但 page object 的建構尚不穩定，目前高達 40% 機率會誤用 By 元素定位邏輯，且會自己建構無效的顯性等待方式。
+- [FUTURE1]: 希望能正確建立 page object 並能 100% 正確執行。
+- [FUTURE2]: 終極目標很難但試試看 -> 能即時取用 selenium/appium 最新版本更新 huskium 功能與邏輯。
+
+### 手勢設定舉例
+```python
+@pytest.mark.p0
+@pytest.mark.app
+class TestApp:
+
+    def test_draw_gesture(self, iphone, login):
+
+        page = AppPage(iphone)
+
+        # 首頁 -> 更多 -> 設定 -> 快速設定 -> 手勢設定頁面
+        page.amounts.wait_any_visible()
+        page.more_button.click()
+        page.general_settings.swipe_by().click()
+        page.fast_login.click()
+        page.gesture_login.click()
+
+        # 設定手勢，並故意失敗
+        dots = page.dots.centers
+        page.draw_gesture(dots, '1235789')  # Z字型
+        page.draw_gesture(dots, '598753215')  # 沙漏型
+        assert page.wrong_gesture_info.is_present()
+```
 ---
 
 ## 5. 其他 受到的幫助
-1. 
-
+內網API框架: 如同先前上版和 wiki 提到的功能，框架面幫助有限，但程式面可以有較多優化。
+- python/playwright 共用
+- playwright inner fetch 分析調試擴充功能
+- 超類可新增的介面提示
+- 其他程式面的優化
+- [FUTURE1]: 與 huskium 相同，讓其自行建構腳本
+- [FUTURE2]: 調查能否直接利用 K6 撰寫自動化腳本即可，壓測腳本參數調整成單位 thread 就是自動化腳本了，可以省去再寫 python 的功夫。
 ---
 
 ## 6. 結論
@@ -118,7 +174,7 @@ E:  Event, 可能性 P 下的 期望事件數。
 ### D. 個人評價目前 GPT-4o 的表現:
 | **項目** | **評分(-100~100)** | **理由** |
 |---|---|---|
-| 綜合評價 | ✅ 70 | 大致表現良好，偶有幻覺，現階段自身還是要有足夠豐富且正確的辨別能力。期待 AI 未來能把剩下的 30 分補足 |
+| **綜合評價** | ✅ **70** | 大致表現良好，偶有幻覺，現階段自身還是要有足夠豐富且正確的辨別能力。期待 AI 未來能把剩下的 30 分補足 |
 | 非模糊學習力 | ✅ 70 ~ 95 | 很適合作為 **窗口** 查找必要功能與資訊，但程式學習面尚待穩定 |
 | 模糊前四迭代 | ⭕️ 60 ~ 80 | 如初始論述有較多模糊邏輯，可重複收斂問題，前四次大致上都能得到滿意的答案 |
 | 模糊超四迭代 | ❌ **-100** ~ 60 | 如超過四次則高機率出現錯誤雜亂資訊，也就是**幻覺**，需盡量避免模糊邏輯 |
