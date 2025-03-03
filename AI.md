@@ -101,8 +101,8 @@ E:  Event, 可能性 P 下的 期望事件數。
 - mypy: 靜態型別檢查
 - flake8: 除 mypy 外的靜態檢查
 - [sphinx](https://uujohnnyuu.github.io/huskium/): 配合 gh-pages 分支生成 html 文件
-- TestPyPI: 正式上 PyPI 前的功能測試
-- PyPI: 正式上 PyPI
+- [TestPyPI](https://test.pypi.org/project/huskium/): 正式上 PyPI 前的功能測試
+- [PyPI](https://pypi.org/project/huskium/): 正式上 PyPI
 
 ### 即時功能變更與技術革新
 - python 3.11 以後的重大功能優化 (huskium 已綁定需 v3.11.0 以上)
