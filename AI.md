@@ -5,8 +5,8 @@
 ### 二元邏輯 (Binary Logic)
 在傳統的二元邏輯中，所有判斷都是 **非黑即白**，只能是 **真（True, T）** 或 **假（False, F）**：
 ```
-0 = FALSE
-1 = TRUE
+**0 = FALSE**
+**1 = TRUE**
 ```
 
 ### 模糊邏輯 (Fuzzy Logic)
@@ -20,13 +20,13 @@ FUZZY 值代表的是 **邏輯為 True 的可能性 P (Possibility)**。
 False < Possibility < True
 ```
 
-### 可能性(P) 與 事件數(E)
+### 可能性(P) 與 期望事件數(E)
 ```
 P:  Posibility, 事件為 True 的可能性。
-Q:  共軛 P 值, 用於計算 事件數(E)。
+Q:  共軛 P 值, 用於計算 期望事件數(E)。
     Q = 1 - P ; 0 <= P < 0.5
     Q = P     ; 0.5 <= P <= 1
-E:  Event, 可能性 P 下的事件數。
+E:  Event, 可能性 P 下的期望事件數。
     E = 1 / Q
 ```
 
