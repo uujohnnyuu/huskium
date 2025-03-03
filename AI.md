@@ -155,8 +155,9 @@ class TestApp:
 - playwright inner fetch 分析調試擴充功能
 - 超類可新增的介面提示
 - 其他程式面的優化
-- [FUTURE1]: 與 huskium 相同，讓其自行建構腳本
-- [FUTURE2]: 調查能否直接利用 K6 撰寫自動化腳本即可，壓測腳本參數調整成單位 thread 就是自動化腳本了，可以省去再寫 python 的功夫。
+- [FUTURE1]: 至少建立 mypy return 相關的靜態檢查，此項對於找到潛在 bug 很有幫助。
+- [FUTURE2]: 與 huskium 相同，讓其自行建構腳本
+- [FUTURE3]: 調查能否直接利用 K6 撰寫自動化腳本即可，壓測腳本參數調整成單位 thread 就是自動化腳本了，可以省去再寫 python 的功夫。
 ---
 
 ## 6. 結論
