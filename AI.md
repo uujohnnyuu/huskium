@@ -149,20 +149,39 @@ class TestApp:
 
     def test_draw_gesture(self, iphone, login):
 
+        # driver 初始化 AppPage，並建立 AppPage 的 page 物件。
         page = AppPage(iphone)
+        
+        # 以下流程請絕對遵守 page.method() 和 page.element.method() 形式撰寫腳本。
 
-        # Direct to the gesture setting page.
+        # 等待 some1 直到至少一個元素 visible。
         page.some1.wait_any_visible()
+
+        # 點擊 some2。
         page.some2.click()
+
+        # 往下滑動直到 some3 visible，並點擊。
         page.some3.swipe_by().click()
+
+        # 點擊 some4。
         page.some4.click()
+
+        # 點擊 some5。
         page.some5.click()
 
-        # Get the nine-dots and drawing with fail scenario.
+        # 取得九宮格中心點座標，並儲存於 dots。
         dots = page.dots.centers
+
+        # 利用 dots 繪製手勢 1235789 (Z字型)
         page.draw_gesture(dots, '1235789')  # Z-shape
-        page.draw_gesture(dots, '598753215')  # Hourglass
+
+        # 利用 dots 繪製手勢 598753215 (沙漏型)
+        page.draw_gesture(dots, '598753215')
+
+        # 驗證 some6 必須存在
         assert page.some6.is_present()
+
+        # 結束此測試函數內的所有流程，不准再寫任何程式碼
 ```
 ---
 
