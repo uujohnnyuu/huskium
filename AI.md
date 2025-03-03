@@ -1,37 +1,32 @@
-# AI GPT-4o
+# 模糊邏輯 (Fuzzy Logic)
+
+## **1. 基礎二元邏輯**
+在傳統的二元邏輯中，所有判斷都是 **非黑即白**，只能是 **真（True, T）** 或 **假（False, F）**：
+- **0** → `FALSE (F)`
+- **1** → `TRUE (T)`
 
 ---
 
-# 模糊邏輯(Fuzzy logic)
+## **2. 模糊邏輯 (Fuzzy Logic)**
+模糊邏輯允許**不確定的模糊狀態**，無法以二元方式簡單判斷「是或否」。  
+這種概念是**人工智慧（AI）的核心基礎理論**，應用於機器學習、控制系統等領域。
 
-## 0: False
-## 0~1: Fuzzy
-## 1: True
-
-Fuzzy 表示不確定的模糊狀態，不能二元地判斷是或否，這也是AI的核心基礎理論。
-
----
-
-## 模糊狀態舉例:
-
-不會(Not): 0
-偶爾(Occasionally / Sometimes): 0.2
-時常(Frequently / Often): 0.5
-經常(Regularly / Usually): 0.8
-總是(Always): 1
-
-不可能(Impossible / No chance): 0%
-幾乎不可能(Highly unlikely / Barely possible): 0.1
-有可能(Possibly / Might / Could): 0.3
-不一定(Fifty-fifty): 0.5
-可能(Likely / Probably): 0.7
-幾乎會(Highly likely / Very probable): 0.9
-必然(Certain / Inevitable / Guaranteed): 1
+### **數值範圍**
+- **0~1** → `FUZZY (Possibility, P)`
+- **P 的值** 表示「為 T 的可能性」，即：
+  - **0 表示完全不成立（False 100%）**
+  - **1 表示完全成立（True 100%）**
+  - **介於 0 和 1 之間的值表示部分成立**
 
 ---
 
-## 模糊狀態數值意義
-
-
+## **3. 可能性（P）的意義**
+| **P 值** | **T（True）的可能性** | **F（False）的可能性** |
+|---------|-----------------|-----------------|
+| 0.0     | 0%   | 100% |
+| 0.2     | 20%  | 80%  |
+| 0.5     | 50%  | 50%  |
+| 0.7     | 70%  | 30%  |
+| 1.0     | 100% | 0%   |
 
 ---
