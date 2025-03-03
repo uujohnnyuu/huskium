@@ -124,7 +124,8 @@ E:  Event, 可能性 P 下的 期望事件數。
 - [FUTURE1]: 希望能正確建立 page object 並能 100% 正確執行。
 - [FUTURE2]: 終極目標很難但試試看 -> 能即時取用 selenium/appium 最新版本更新 huskium 功能與邏輯。
 
-### 手勢設定舉例
+### 手勢設定舉例(UI執行過程請見DEMO影片)
+元素變數名稱請 AI 命名成 `someN` 形式，做好保密。
 ```python
 @pytest.mark.p0
 @pytest.mark.app
@@ -134,18 +135,18 @@ class TestApp:
 
         page = AppPage(iphone)
 
-        # 首頁 -> 更多 -> 設定 -> 快速設定 -> 手勢設定頁面
-        page.amounts.wait_any_visible()
-        page.more_button.click()
-        page.general_settings.swipe_by().click()
-        page.fast_login.click()
-        page.gesture_login.click()
+        # Direct to the gesture setting page.
+        page.some1.wait_any_visible()
+        page.some2.click()
+        page.some3.swipe_by().click()
+        page.some4.click()
+        page.some5.click()
 
-        # 設定手勢，並故意失敗
+        # Get the nine-dots and drawing with fail scenario.
         dots = page.dots.centers
-        page.draw_gesture(dots, '1235789')  # Z字型
-        page.draw_gesture(dots, '598753215')  # 沙漏型
-        assert page.wrong_gesture_info.is_present()
+        page.draw_gesture(dots, '1235789')  # Z-shape
+        page.draw_gesture(dots, '598753215')  # Hourglass
+        assert page.some6.is_present()
 ```
 ---
 
