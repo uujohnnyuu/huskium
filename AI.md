@@ -169,7 +169,7 @@ class TestApp:
         # 點擊 some5。
         page.some5.click()
 
-        # 取得九宮格中心點座標，並儲存於 dots。
+        # 利用 centers 取得九宮格九個點各自的中心點座標，一定要儲存於 dots。
         dots = page.dots.centers
 
         # 利用 dots 繪製手勢 1235789 (Z字型)
