@@ -3,8 +3,7 @@
 *__pycache__*
 *mypy*
 *flake8*
-*verify*
-*sphinx*
+verify_commit
 
 log.log
 try*.py
