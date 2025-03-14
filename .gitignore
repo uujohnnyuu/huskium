@@ -1,0 +1,21 @@
+*DS_Store*
+*vscode*
+*__pycache__*
+
+# verify
+.mypy_cache
+verify_commit
+
+# Testcase
+huskytc/
+log*.log
+
+# PyPI
+dist/
+huskium.egg-info/
+
+# sphinx
+docs
+
+# try
+try*.py

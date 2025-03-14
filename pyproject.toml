@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=42"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "huskium"
+dynamic = ["version"]
+description = "UI Automation Page Objects design pattern."
+authors = [
+    {name = "Johnny", email = "johnny071531@gmail.com"}
+]
+dependencies = [
+    "Appium-Python-Client >=4.0.0"
+]
+requires-python = ">= 3.11"
+readme = "README.md"
+license = {text = "Apache-2.0"}
+keywords = ["huskium", "huskypo", "selenium", "appium", "page object", "automation"]
+
+[project.urls]
+Homepage = "https://github.com/uujohnnyuu/huskium"
+
+[tool.setuptools]
+packages = ["huskium", "huskium.core"]
+
+[tool.setuptools.dynamic]
+version = {attr = "huskium.version.__version__"}
+
+[tool.setuptools.package-data]
+huskium = ["*.py"]
