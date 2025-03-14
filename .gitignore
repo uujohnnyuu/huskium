@@ -1,0 +1,17 @@
+*DS_Store*
+*vscode*
+*__pycache__*
+*mypy*
+*flake8*
+*verify*
+*sphinx*
+
+log.log
+try*.py
+
+huskytc/
+build/
+dist/
+huskium.egg-info/
+
+example_google.py

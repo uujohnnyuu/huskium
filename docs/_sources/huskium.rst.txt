@@ -1,0 +1,53 @@
+huskium package
+===============
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   huskium.core
+
+Submodules
+----------
+
+huskium.exception module
+------------------------
+
+.. automodule:: huskium.exception
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+huskium.logging module
+----------------------
+
+.. automodule:: huskium.logging
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+huskium.types module
+--------------------
+
+.. automodule:: huskium.types
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+huskium.version module
+----------------------
+
+.. automodule:: huskium.version
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Module contents
+---------------
+
+.. automodule:: huskium
+   :members:
+   :show-inheritance:
+   :undoc-members:
