@@ -205,7 +205,7 @@ my_page.my_element.disable_cache()  # my_element does not cache
 
 ### 3. Cache Priority
 - **P1**: Element-Object-Level (`Element(..., cache=False, ...)`)
-- **P2**: Element-Global-Level (`Element.enable_cache()`)
+- **P2**: Element-Global-Level (`Element.enable_default_cache()`)
 
 ---
 

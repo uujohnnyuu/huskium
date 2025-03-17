@@ -6,16 +6,8 @@
 
 from typing import Type
 
-from selenium.common.exceptions import StaleElementReferenceException
-
-from ..exception import NoSuchCacheException
 from ..types import WebDriver
 from .by import ByAttribute
-
-
-# exception
-ELEMENT_REFERENCE_EXCEPTIONS = (NoSuchCacheException, StaleElementReferenceException)
-EXTENDED_IGNORED_EXCEPTIONS = (StaleElementReferenceException,)
 
 
 # Page, Element, Elements

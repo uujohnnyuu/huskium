@@ -15,16 +15,16 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING, cast, Literal, Self, Type
 
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 from selenium.types import WaitExcTypes
 from selenium.webdriver.remote.shadowroot import ShadowRoot
 
 from ..logging import LogConfig, PageElementLoggerAdapter
 from ..types import WebDriver, WebElement
 from . import ec_extension as ecex
-from .wait import Wait
-from .common import EXTENDED_IGNORED_EXCEPTIONS, _Name, _Verify
+from .common import _Name, _Verify
 from .page import Page
+from .wait import Wait
 
 
 LOGGER = logging.getLogger(__name__)
@@ -369,7 +369,7 @@ class Elements:
                 after the timeout(`reraise=True`).
         """
         try:
-            return self.waiting(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
+            return self.waiting(timeout, StaleElementReferenceException).until(
                 ecex.visibility_of_all_elements_located(self.locator)
             )
         except TimeoutException as exc:
@@ -403,7 +403,7 @@ class Elements:
                 after the timeout(`reraise=True`).
         """
         try:
-            return self.waiting(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
+            return self.waiting(timeout, StaleElementReferenceException).until(
                 ecex.visibility_of_any_elements_located(self.locator)
             )
         except TimeoutException as exc:

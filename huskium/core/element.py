@@ -11,7 +11,7 @@ import platform
 import time
 from typing import TYPE_CHECKING, Any, cast, Literal, Self, Type
 
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 from selenium.types import WaitExcTypes
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.actions.wheel_input import ScrollOrigin
@@ -20,14 +20,16 @@ from selenium.webdriver.remote.shadowroot import ShadowRoot
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.select import Select
 
-from ..logging import LogConfig, PageElementLoggerAdapter
 from ..exception import NoSuchCacheException
+from ..logging import LogConfig, PageElementLoggerAdapter
 from ..types import WebDriver, WebElement, Coordinate
 from . import ec_extension as ecex
-from .wait import Wait
-from .common import ELEMENT_REFERENCE_EXCEPTIONS, EXTENDED_IGNORED_EXCEPTIONS, _Name, _Verify, Offset, Area
+from .common import _Name, _Verify, Offset, Area
 from .page import Page
+from .wait import Wait
 
+
+ELEMENT_REFERENCE_EXCEPTIONS = (NoSuchCacheException, StaleElementReferenceException)
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.addFilter(LogConfig.PREFIX_FILTER)
@@ -531,7 +533,7 @@ class Element:
                 )
                 return self._visible_cache
             except ELEMENT_REFERENCE_EXCEPTIONS:
-                element = self.waiting(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
+                element = self.waiting(timeout, StaleElementReferenceException).until(
                     ecex.visibility_of_element_located(self.locator, self.index)
                 )
                 self._cache_visible_element(element)
@@ -579,7 +581,7 @@ class Element:
                     )
                 )
             except ELEMENT_REFERENCE_EXCEPTIONS:
-                element_or_true: WebElement | Literal[True] = self.waiting(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
+                element_or_true: WebElement | Literal[True] = self.waiting(timeout, StaleElementReferenceException).until(
                     ecex.invisibility_of_element_located(self.locator, self.index, present)
                 )
                 self._cache_present_element(element_or_true)
@@ -621,7 +623,7 @@ class Element:
                 )
                 return self._clickable_cache
             except ELEMENT_REFERENCE_EXCEPTIONS:
-                element = self.waiting(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
+                element = self.waiting(timeout, StaleElementReferenceException).until(
                     ecex.element_located_to_be_clickable(self.locator, self.index)
                 )
                 self._cache_clickable_element(element)
@@ -669,7 +671,7 @@ class Element:
                     )
                 )
             except ELEMENT_REFERENCE_EXCEPTIONS:
-                element_or_true: WebElement | Literal[True] = self.waiting(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
+                element_or_true: WebElement | Literal[True] = self.waiting(timeout, StaleElementReferenceException).until(
                     ecex.element_located_to_be_unclickable(self.locator, self.index, present)
                 )
                 self._cache_present_element(element_or_true)
@@ -710,7 +712,7 @@ class Element:
                     ecex.element_to_be_selected(self.present_try)
                 )
             except ELEMENT_REFERENCE_EXCEPTIONS:
-                element = self.waiting(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
+                element = self.waiting(timeout, StaleElementReferenceException).until(
                     ecex.element_located_to_be_selected(self.locator, self.index)
                 )
                 self._cache_present_element(element)
@@ -751,7 +753,7 @@ class Element:
                     ecex.element_to_be_unselected(self.present_try)
                 )
             except ELEMENT_REFERENCE_EXCEPTIONS:
-                element = self.waiting(timeout, EXTENDED_IGNORED_EXCEPTIONS).until(
+                element = self.waiting(timeout, StaleElementReferenceException).until(
                     ecex.element_located_to_be_unselected(self.locator, self.index)
                 )
                 self._cache_present_element(element)
