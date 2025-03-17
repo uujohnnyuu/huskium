@@ -18,6 +18,12 @@ class BasePrefixFilter(logging.Filter):
         islower: bool = True,
         torecord: bool = False
     ):
+        """
+        Args:
+            prefix: The frame prefix.
+            islower: `True` for case-insensitive; `False` for case-sensitive.
+            torecord: Whether to save the `LogRecord` info.
+        """
         super().__init__()
         self._set_prefix(prefix)
         self._set_islower(islower)

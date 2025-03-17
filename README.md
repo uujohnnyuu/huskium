@@ -226,21 +226,22 @@ LogConfig.PREFIX_FILTER.reset_islower(True)
 # If False, filtering is based on file (module) name instead.
 LogConfig.PREFIX_FILTER.reset_isfunc(True)
 
-# Whether to record current frame info in the record object.
+# Whether to record current frame info in the record (LogRecord) object.
 # This is useful for assert exception messages for quicker debugging.
 LogConfig.PREFIX_FILTER.reset_torecord(True)
-assert condition, LogConfig.PREFIX_FILTER.record
+record = LogConfig.PREFIX_FILTER.record
+assert condition, (record.filename, record.lineno, record.funcName)
 ```
 
 ### 2. Debug Log Display Example
 
-When `Log.PREFIX_FILTER.prefix = None`, logging behaves normally, 
+When `LogConfig.PREFIX_FILTER.prefix = None`, logging behaves normally, 
 showing the first frame (stacklevel = 1).
 ```log
 2025-02-11 11:13:08 | DEBUG | element.py:574 | wait_clickable | Element(logout_button): Some message.
 ```
 
-When `Log.PREFIX_FILTER.prefix = 'test'`, 
+When `LogConfig.PREFIX_FILTER.prefix = 'test'`, 
 logs display the first frame with a name starting with 'test' (stacklevel >= 1).
 This helps quickly trace the module and line where the issue occurs.
 ```log
