@@ -13,7 +13,7 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, cast, Literal, Self, Type
+from typing import TYPE_CHECKING, cast, Iterable, Literal, Self, Type
 
 from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 from selenium.types import WaitExcTypes
@@ -210,7 +210,7 @@ class Elements:
     def waiting(
         self,
         timeout: int | float | None = None,
-        ignored_exceptions: WaitExcTypes | None = None
+        ignored_exceptions: Type[Exception] | Iterable[Type[Exception]] | None = None
     ) -> Wait:
         """The final WebDriverWait instance."""
         self._wait.timeout = timeout

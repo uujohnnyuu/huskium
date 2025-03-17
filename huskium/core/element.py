@@ -9,10 +9,9 @@ from __future__ import annotations
 import logging
 import platform
 import time
-from typing import TYPE_CHECKING, Any, cast, Literal, Self, Type
+from typing import TYPE_CHECKING, Any, cast, Iterable, Literal, Self, Type
 
 from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
-from selenium.types import WaitExcTypes
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.actions.wheel_input import ScrollOrigin
 from selenium.webdriver.common.keys import Keys
@@ -293,7 +292,7 @@ class Element:
     def waiting(
         self,
         timeout: int | float | None = None,
-        ignored_exceptions: WaitExcTypes | None = None
+        ignored_exceptions: Type[Exception] | Iterable[Type[Exception]] | None = None
     ) -> Wait:
         """The final WebDriverWait instance."""
         self._wait.timeout = timeout
