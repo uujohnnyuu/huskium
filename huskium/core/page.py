@@ -40,7 +40,7 @@ class Page:
     def __init__(
         self,
         driver: WebDriver,
-        timeout: int | float = 30,
+        timeout: int | float = 10,
         reraise: bool = True,
         remark: str = 'Page'
     ) -> None:
