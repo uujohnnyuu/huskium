@@ -14,4 +14,4 @@ from .core.dynamic import dynamic
 
 
 # `from huskium import *` to easily access core functionalities.
-__all__ = ["Page", "Element", "Elements", "By", "dynamic"]
+__all__ = ['Page', 'Element', 'Elements', 'By', 'dynamic']

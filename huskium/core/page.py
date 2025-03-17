@@ -27,8 +27,8 @@ from selenium.webdriver.support import expected_conditions as ec
 from ..logging import LogConfig, PageElementLoggerAdapter
 from ..types import WebDriver, WebElement, TupleCoordinate, Coordinate
 from . import ec_extension as ecex
-from .wait import Wait
 from .common import _Verify, Offset, Area
+from .wait import Wait
 
 
 LOGGER = logging.getLogger(__name__)

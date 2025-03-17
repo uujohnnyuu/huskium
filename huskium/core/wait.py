@@ -5,8 +5,7 @@
 
 from typing import Iterable, Type
 
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support.wait import IGNORED_EXCEPTIONS
+from selenium.webdriver.support.wait import IGNORED_EXCEPTIONS, WebDriverWait
 
 
 class Wait(WebDriverWait):

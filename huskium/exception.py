@@ -10,6 +10,6 @@ class NoSuchCacheException(Exception):
     If no cache exists, this exception is raised to trigger element relocation.
     """
 
-    def __init__(self, message: str = "No cache available, please relocate the element in except."):
+    def __init__(self, message: str = 'No cache available, please relocate the element in except.'):
         self.message = message
-        super().__init__(self.message)
+        super().__init__(message)
