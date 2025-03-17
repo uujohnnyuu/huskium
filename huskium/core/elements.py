@@ -16,7 +16,6 @@ import logging
 from typing import TYPE_CHECKING, cast, Iterable, Literal, Self, Type
 
 from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
-from selenium.types import WaitExcTypes
 from selenium.webdriver.remote.shadowroot import ShadowRoot
 
 from ..logging import LogConfig, PageElementLoggerAdapter
