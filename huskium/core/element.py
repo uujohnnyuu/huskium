@@ -7,14 +7,12 @@
 from __future__ import annotations
 
 import logging
-import platform
 import time
 from typing import TYPE_CHECKING, Any, cast, Iterable, Literal, Self, Type
 
 from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.actions.wheel_input import ScrollOrigin
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.shadowroot import ShadowRoot
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.select import Select
