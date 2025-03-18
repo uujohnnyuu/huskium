@@ -1000,7 +1000,7 @@ class Page:
     ) -> TupleCoordinate:
 
         # Check coordinate type.
-        if not isinstance(coordinate, (dict, tuple)):
+        if not isinstance(coordinate, dict | tuple):
             raise TypeError(f'"{name}" should be dict or tuple.')
         if isinstance(coordinate, dict):
             coordinate = cast(TupleCoordinate, tuple(coordinate.values()))

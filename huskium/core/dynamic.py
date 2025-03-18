@@ -36,7 +36,7 @@ def dynamic(func):
     @wraps(func)
     def wrapper(self, *args, **kwargs):
         target = func(self, *args, **kwargs)
-        if isinstance(target, (Element, Elements)):
+        if isinstance(target, Element | Elements):
             return target.__get__(self, type(self))
         raise TypeError(
             f'The decorated function "{func.__name__}" must returns an Element or Elements object.'

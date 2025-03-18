@@ -21,7 +21,7 @@ class Wait(WebDriverWait):
     def timeout(self, value: int | float | None):
         if value is None:
             return
-        if not isinstance(value, (int, float)):
+        if not isinstance(value, int | float):
             raise TypeError(f'The "timeout" must be int or float, got {type(value).__name__}')
         self._timeout = value
 
