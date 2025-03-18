@@ -662,6 +662,32 @@ class Page:
         """ActionChains API. Double-clicks on current mouse position."""
         self.action.double_click()
         return self
+    
+    def hotkey(self, *keys: str) -> Self:
+        """
+        ActionChains API. Sends hotkey to the page.
+
+        Examples:
+            ::
+
+                # select all then copy paste
+                page.hotkey(Key.CONTROL, 'a').hotkey(Keys.CONTROL, 'c')
+                page.hotkey(Keys.CONTROL, 'v')
+                page.perform()
+
+                # switch to previous application(command+shift+tab)
+                page.hotkey(Keys.COMMAND, Keys.SHIFT, Keys.TAB).perform()
+
+        """
+        # key_down: The first to the second last key.
+        for key in keys[0:-1]:
+            self.action.key_down(key)
+        # send_keys: The last key.
+        self.action.send_keys(keys[-1])
+        # key_up: The second last key to the first key.
+        for key in keys[-2::-1]:
+            self.action.key_up(key)
+        return self
 
     def key_down(self, value: str) -> Self:
         """

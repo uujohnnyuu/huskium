@@ -1423,9 +1423,6 @@ class Element:
         """
         ActionChains API. Sends hotkey to target element.
 
-        Args:
-            value: The combination of hotkey.
-
         Examples:
             ::
 
