@@ -1419,7 +1419,7 @@ class Element:
             self.action.drag_and_drop_by_offset(self.present, xoffset, yoffset)
         return self
 
-    def hotkey(self, *value: str) -> Self:
+    def hotkey(self, *keys: str) -> Self:
         """
         ActionChains API. Sends hotkey to target element.
 
@@ -1438,18 +1438,18 @@ class Element:
                 page.element.hotkey(Keys.COMMAND, Keys.SHIFT, Keys.TAB).perform()
 
         """
-        # key_down, first to focus target element.
+        # key_down: The first key.
         try:
-            self.action.key_down(value[0], self.present_try)
+            self.action.key_down(keys[0], self.present_try)
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            self.action.key_down(value[0], self.present)
-        # The keys between first and the last.
-        for key in value[1:-1]:
+            self.action.key_down(keys[0], self.present)
+        # key_down: Intermediate keys (excluding first and last).
+        for key in keys[1:-1]:  # ignored if only 2 keys
             self.action.key_down(key)
-        # send_keys
-        self.action.send_keys(value[-1])
-        # key_up
-        for key in value[-2::-1]:
+        # send_keys: The last key.
+        self.action.send_keys(keys[-1])
+        # key_up: All keys except the last, in reverse order.
+        for key in keys[-2::-1]:
             self.action.key_up(key)
         return self
 
