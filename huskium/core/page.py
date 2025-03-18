@@ -662,7 +662,7 @@ class Page:
         """ActionChains API. Double-clicks on current mouse position."""
         self.action.double_click()
         return self
-    
+
     def hotkey(self, *keys: str) -> Self:
         """
         ActionChains API. Sends hotkey to the page.
