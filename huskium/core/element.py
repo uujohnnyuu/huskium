@@ -1258,7 +1258,7 @@ class Element:
         """
         self.action.reset_actions()
 
-    def action_click(self) -> Self:
+    def clicks(self) -> Self:
         """
         ActionChains API. Clicks an element.
 
@@ -1266,13 +1266,13 @@ class Element:
             ::
 
                 # Basic usage
-                my_page.my_element.action_click().perform()
+                my_page.my_element.clicks().perform()
 
                 # Chain with another method
-                my_page.my_element.scroll_to_element().action_click().perform()
+                my_page.my_element.scroll_to_element().clicks().perform()
 
                 # or
-                my_page.my_element1.scroll_to_element().action_click()
+                my_page.my_element1.scroll_to_element().clicks()
                 ...  # other process
                 my_page.perform()
 
@@ -1507,7 +1507,7 @@ class Element:
             self.action.key_up(value)
         return self
 
-    def action_send_keys(self, *keys_to_send: str) -> Self:
+    def sends_keys(self, *keys_to_send: str) -> Self:
         """
         ActionChains API.
         Sends keys to current focused element.
@@ -1521,12 +1521,12 @@ class Element:
             ::
 
                 # Combine with key_down and key_up method
-                page.element.key_down(Keys.COMMAND).action_send_keys('a').key_up(Keys.COMMAND).perform()
+                page.element.key_down(Keys.COMMAND).sends_keys('a').key_up(Keys.COMMAND).perform()
 
                 # Send keys to focused element
                 # This is recommend to use send_keys_to_element() instead.
-                page.element.action_click()  # Need to have focused element first.
-                page.element.action_send_keys('my_keys').perform()
+                page.element.clicks()  # Need to have focused element first.
+                page.element.sends_keys('my_keys').perform()
 
         """
         self.action.send_keys(*keys_to_send)
