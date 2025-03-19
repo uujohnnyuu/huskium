@@ -680,7 +680,7 @@ class Page:
 
         """
         # key_down: The first to the second last key.
-        for key in keys[0:-1]:
+        for key in keys[:-1]:
             self.action.key_down(key)
         # send_keys: The last key.
         self.action.send_keys(keys[-1])
