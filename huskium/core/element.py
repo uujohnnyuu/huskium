@@ -1423,21 +1423,21 @@ class Element:
         """
         ActionChains API.
         Sends the initial hotkey sequence to the target element.
- 
-        This method clicks the element to ensure it is focused 
+
+        This method clicks the element to ensure it is focused
         before sending the hotkey sequence.
-        
-        For additional hotkey sequences without refocusing the element, 
+
+        For additional hotkey sequences without refocusing the element,
         use `hotkeys()`.
- 
+
         Examples:
             ::
- 
+
                 # Chain hotkey actions using hotkey and hotkeys.
                 page.element1.hotkey(Key.CONTROL, 'a').hotkeys(Keys.CONTROL, 'c')
                 page.element2.hotkey(Keys.CONTROL, 'v')
                 page.perform()
- 
+
                 # Alternatively, using separate calls (less streamlined).
                 page.element1.hotkey(Key.CONTROL, 'a')
                 page.hotkey(Keys.CONTROL, 'c')  # page.hotkey() does not click the element
@@ -1459,24 +1459,24 @@ class Element:
         for key in keys[-2::-1]:
             self.action.key_up(key)
         return self
-    
+
     def hotkeys(self, *keys: str) -> Self:
         """
         ActionChains API.
-        Sends a subsequent hotkey sequence to the target element 
+        Sends a subsequent hotkey sequence to the target element
         without clicking it.
- 
-        This method is intended to be used after `hotkey()`, 
+
+        This method is intended to be used after `hotkey()`,
         and it does not perform an initial click on the element.
- 
+
         Examples:
             ::
- 
+
                 # Chain hotkey actions: first hotkey focuses the element, subsequent hotkeys do not click.
                 page.element1.hotkey(Key.CONTROL, 'a').hotkeys(Key.CONTROL, 'c')
                 page.element2.hotkey(Key.CONTROL, 'v')
                 page.perform()
- 
+
                 # Alternatively, using separate calls (less streamlined).
                 page.element1.hotkey(Key.CONTROL, 'a')
                 page.hotkeys(Key.CONTROL, 'c')  # Note: hotkeys() does not click the element
