@@ -1221,15 +1221,15 @@ class Element:
             ::
 
                 # Basic usage. Execute element actions.
-                page.element.scroll_to_element().action_click().perform()
+                page.element.scroll_to_element().clicks().perform()
 
                 # Multiple actions to call, set perform to the last action.
                 # This will execute all actions in page not just page.element2.
-                page.element1.scroll_to_element().action_click()
+                page.element1.scroll_to_element().clicks()
                 page.element2.drag_and_drop(page.element3).perform()
 
                 # As above, it is the same to call perform by page:
-                page.element1.scroll_to_element().action_click()
+                page.element1.scroll_to_element().clicks()
                 page.element2.drag_and_drop(page.element3)
                 page.perform()
 
@@ -1246,12 +1246,12 @@ class Element:
             ::
 
                 # Reset the stored actions by the last reset_actions.
-                page.element1.scroll_to_element().action_click()
+                page.element1.scroll_to_element().clicks()
                 page.element2.click_and_hold().reset_actions()
 
                 # There is a better one structure,
                 # reset all action calls made by page.
-                page.element1.scroll_to_element().action_click()
+                page.element1.scroll_to_element().clicks()
                 page.element2.click_and_hold()
                 page.reset_actions()
 
@@ -1421,18 +1421,28 @@ class Element:
 
     def hotkey(self, *keys: str) -> Self:
         """
-        ActionChains API. Sends hotkey to target element.
-
+        ActionChains API.
+        Sends the initial hotkey sequence to the target element.
+ 
+        This method clicks the element to ensure it is focused 
+        before sending the hotkey sequence.
+        
+        For additional hotkey sequences without refocusing the element, 
+        use `hotkeys()`.
+ 
         Examples:
             ::
-
-                # select all then copy paste
-                page.element1.hotkey(Key.CONTROL, 'a').hotkey(Keys.CONTROL, 'c')
+ 
+                # Chain hotkey actions using hotkey and hotkeys.
+                page.element1.hotkey(Key.CONTROL, 'a').hotkeys(Keys.CONTROL, 'c')
                 page.element2.hotkey(Keys.CONTROL, 'v')
                 page.perform()
-
-                # switch to previous application(command+shift+tab)
-                page.element.hotkey(Keys.COMMAND, Keys.SHIFT, Keys.TAB).perform()
+ 
+                # Alternatively, using separate calls (less streamlined).
+                page.element1.hotkey(Key.CONTROL, 'a')
+                page.hotkey(Keys.CONTROL, 'c')  # page.hotkey() does not click the element
+                page.element2.hotkey(Keys.CONTROL, 'v')
+                page.perform()
 
         """
         # key_down: The first key.
@@ -1446,6 +1456,39 @@ class Element:
         # send_keys: The last key.
         self.action.send_keys(keys[-1])
         # key_up: All keys except the last, in reverse order.
+        for key in keys[-2::-1]:
+            self.action.key_up(key)
+        return self
+    
+    def hotkeys(self, *keys: str) -> Self:
+        """
+        ActionChains API.
+        Sends a subsequent hotkey sequence to the target element 
+        without clicking it.
+ 
+        This method is intended to be used after `hotkey()`, 
+        and it does not perform an initial click on the element.
+ 
+        Examples:
+            ::
+ 
+                # Chain hotkey actions: first hotkey focuses the element, subsequent hotkeys do not click.
+                page.element1.hotkey(Key.CONTROL, 'a').hotkeys(Key.CONTROL, 'c')
+                page.element2.hotkey(Key.CONTROL, 'v')
+                page.perform()
+ 
+                # Alternatively, using separate calls (less streamlined).
+                page.element1.hotkey(Key.CONTROL, 'a')
+                page.hotkeys(Key.CONTROL, 'c')  # Note: hotkeys() does not click the element
+                page.element2.hotkey(Key.CONTROL, 'v')
+                page.perform()
+        """
+        # key_down: The first to the second last key.
+        for key in keys[:-1]:
+            self.action.key_down(key)
+        # send_keys: The last key.
+        self.action.send_keys(keys[-1])
+        # key_up: The second last key to the first key.
         for key in keys[-2::-1]:
             self.action.key_up(key)
         return self
@@ -1466,7 +1509,7 @@ class Element:
             ::
 
                 # copy(control+c)
-                page.element.key_down(Key.CONTROL).action_send_keys('c').key_up(Key.CONTROL)
+                page.element.key_down(Key.CONTROL).sends_keys('c').key_up(Key.CONTROL)
 
         """
         if focus:
@@ -1495,7 +1538,7 @@ class Element:
             ::
 
                 # copy(control+c)
-                page.element.key_down(Key.CONTROL).action_send_keys('c').key_up(Key.CONTROL)
+                page.element.key_down(Key.CONTROL).sends_keys('c').key_up(Key.CONTROL)
 
         """
         if focus:
@@ -1667,10 +1710,10 @@ class Element:
                 page.element.scroll_to_element().perform()
 
                 # Chain with another method
-                page.element.scroll_to_element().action_click().perform()
+                page.element.scroll_to_element().clicks().perform()
 
                 # or
-                page.element1.scroll_to_element().action_click()
+                page.element1.scroll_to_element().clicks()
                 ...  # other process
                 page.perform()
 
@@ -1712,10 +1755,10 @@ class Element:
                 page.element.scroll_from_element(100, 200, -50, -100).perform()
 
                 # Chain with another method
-                page.element.scroll_from_element(-30, -50, 150, 100).action_click().perform()
+                page.element.scroll_from_element(-30, -50, 150, 100).clicks().perform()
 
                 # or
-                page.element.scroll_from_element(-30, -50, 150, 100).action_click()
+                page.element.scroll_from_element(-30, -50, 150, 100).clicks()
                 ...  # other process
                 page.perform()
 
