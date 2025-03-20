@@ -606,16 +606,17 @@ class Page:
 
     def perform(self) -> None:
         """
-        ActionChains API. Performs all stored actions.
-        once called, it will execute all stored actions in page.
+        ActionChains API. 
+        Performs all stored actions.
+        Once called, it will execute all stored actions in page.
 
         Examples:
             ::
 
                 # Perform all saved actions:
-                my_page.my_element1.scroll_to_element().action_click()
-                my_page.my_element2.drag_and_drop(my_page.element3)
-                my_page.perform()
+                page.element1.scroll_to_element().clicks()
+                page.element2.drag_and_drop(page.element3)
+                page.perform()
 
         """
         self.action.perform()
@@ -624,15 +625,15 @@ class Page:
         """
         ActionChains API.
         Clears actions that are already stored in object of Page.
-        once called, it will reset all stored actions in page.
+        Once called, it will reset all stored actions in page.
 
         Examples:
             ::
 
                 # Reset all saved actions:
-                my_page.my_element1.scroll_to_element().action_click()
-                my_page.my_element2.drag_and_drop(my_page.element3)
-                my_page.reset_actions()
+                page.element1.scroll_to_element().clicks()
+                page.element2.drag_and_drop(page.element3)
+                page.reset_actions()
 
         """
         self.action.reset_actions()
@@ -663,20 +664,15 @@ class Page:
         self.action.double_click()
         return self
 
-    def hotkey(self, *keys: str) -> Self:
+    def send_hotkey(self, *keys: str) -> Self:
         """
         ActionChains API. Sends hotkey to the page.
 
         Examples:
             ::
 
-                # select all then copy paste
-                page.hotkey(Key.CONTROL, 'a').hotkey(Keys.CONTROL, 'c')
-                page.hotkey(Keys.CONTROL, 'v')
-                page.perform()
-
-                # switch to previous application(command+shift+tab)
-                page.hotkey(Keys.COMMAND, Keys.SHIFT, Keys.TAB).perform()
+                # ctrl+a, ctrl+c
+                page.send_hotkey(Key.CONTROL, 'a').send_hotkey(Keys.CONTROL, 'c').perform()
 
         """
         # key_down: The first to the second last key.
@@ -689,25 +685,18 @@ class Page:
             self.action.key_up(key)
         return self
 
-    def key_down(self, value: str) -> Self:
+    def key_down(self, key: str) -> Self:
         """
         ActionChains API.
-        Sends a key press only to a focused element, without releasing it.
-        Should only be used with modifier keys (Control, Alt and Shift).
-
-        Args:
-            value: The modifier key to send. Values are defined in Keys class.
+        Sends a modifier key press only to the page, without releasing it.
         """
-        self.action.key_down(value)
+        self.action.key_down(key)
         return self
 
     def key_up(self, value: str) -> Self:
         """
         ActionChains API.
-        Releases a modifier key on a focused element.
-
-        Args:
-            value: The modifier key to send. Values are defined in Keys class.
+        Releases a modifier key on a page.
         """
         self.action.key_up(value)
         return self
@@ -743,7 +732,7 @@ class Page:
     def send_keys(self, *keys: str) -> Self:
         """
         ActionChains API.
-        Sends keys to current focused element.
+        Sends keys to current focused position.
         """
         self.action.send_keys(*keys)
         return self
