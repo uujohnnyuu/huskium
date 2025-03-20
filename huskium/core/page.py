@@ -639,7 +639,16 @@ class Page:
         self.action.reset_actions()
 
     def click(self) -> Self:
-        """ActionChains API. Clicks on current mouse position."""
+        """
+        ActionChains API. 
+        Clicks on current mouse position.
+
+        Examples:
+            ::
+
+                page.move_by_offset(100, 200).click().perform()
+
+        """
         self.action.click()
         return self
 
@@ -647,6 +656,12 @@ class Page:
         """
         ActionChains API.
         Holds down the left mouse button on current mouse position.
+
+        Examples:
+            ::
+
+                page.move_by_offset().click_and_hold().perform()
+
         """
         self.action.click_and_hold()
         return self
@@ -655,18 +670,34 @@ class Page:
         """
         ActionChains API.
         Performs a context-click (right click) on current mouse position.
+
+        Examples:
+            ::
+
+                page.move_by_offset().context_click().perform()
+
         """
         self.action.context_click()
         return self
 
     def double_click(self) -> Self:
-        """ActionChains API. Double-clicks on current mouse position."""
+        """
+        ActionChains API. 
+        Double-clicks on current mouse position.
+
+        Examples:
+            ::
+
+                page.move_by_offset().double_click().perform()
+
+        """
         self.action.double_click()
         return self
 
     def send_hotkey(self, *keys: str) -> Self:
         """
-        ActionChains API. Sends hotkey to the page.
+        ActionChains API. 
+        Sends hotkey to the page.
 
         Examples:
             ::
@@ -689,16 +720,44 @@ class Page:
         """
         ActionChains API.
         Sends a modifier key press only to the page, without releasing it.
+
+        If you want to perform a combination key action, such as copying,
+        it is recommended to use `send_hotkey()` instead.
+
+        Examples:
+            ::
+
+                # ctrl+a, ctrl+c
+                page.key_down(Key.CONTROL).send_keys('a').key_up(Key.CONTROL)\
+                .key_down(Key.CONTROL).send_keys('c').key_up(Key.CONTROL).perform()
+
+                # or using send_hotkey()
+                page.send_hotkey(Key.CONTROL, 'a').send_hotkey(Keys.CONTROL, 'c').perform()
+
         """
         self.action.key_down(key)
         return self
 
-    def key_up(self, value: str) -> Self:
+    def key_up(self, key: str) -> Self:
         """
         ActionChains API.
         Releases a modifier key on a page.
+
+        If you want to perform a combination key action, such as copying,
+        it is recommended to use `send_hotkey()` instead.
+
+        Examples:
+            ::
+
+                # ctrl+a, ctrl+c
+                page.key_down(Key.CONTROL).send_keys('a').key_up(Key.CONTROL)\
+                .key_down(Key.CONTROL).send_keys('c').key_up(Key.CONTROL).perform()
+
+                # or using send_hotkey()
+                page.send_hotkey(Key.CONTROL, 'a').send_hotkey(Keys.CONTROL, 'c').perform()
+
         """
-        self.action.key_up(value)
+        self.action.key_up(key)
         return self
 
     def move_by_offset(self, xoffset: int, yoffset: int) -> Self:
@@ -709,6 +768,12 @@ class Page:
         Args:
             xoffset: X offset to move to, as a positive or negative integer.
             yoffset: Y offset to move to, as a positive or negative integer.
+        
+        Examples:
+            ::
+
+                page.move_by_offset(100, 200).perform()
+
         """
         self.action.move_by_offset(xoffset, yoffset)
         return self
@@ -725,6 +790,12 @@ class Page:
         """
         ActionChains API.
         Releasing a held mouse button on current mouse position.
+
+        Examples:
+            ::
+
+                page.click_and_hold().release().perform()
+
         """
         self.action.release()
         return self
@@ -733,6 +804,13 @@ class Page:
         """
         ActionChains API.
         Sends keys to current focused position.
+
+        Examples:
+            ::
+
+                # combine with key_down and key_up
+                page.key_down(Key.CONTROL).send_keys('a').key_up(Key.CONTROL)
+
         """
         self.action.send_keys(*keys)
         return self
@@ -748,6 +826,12 @@ class Page:
                 A negative value scrolls left.
             delta_y: Distance along Y axis to scroll using the wheel.
                 A negative value scrolls up.
+
+        Examples:
+            ::
+
+                page.scroll_by_amount(100, 200).perform()
+
         """
         self.action.scroll_by_amount(delta_x, delta_y)
         return self
@@ -775,6 +859,12 @@ class Page:
         Raises:
             MoveTargetOutOfBoundsException: If the origin with offset is
                 outside the viewport.
+
+        Examples:
+            ::
+
+                page.scroll_from_origin(150, 100, 100, 200).perform()
+
         """
         scroll_origin = ScrollOrigin.from_viewport(x_offset, y_offset)
         self.action.scroll_from_origin(scroll_origin, delta_x, delta_y)

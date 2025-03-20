@@ -1604,7 +1604,7 @@ class Element:
         Examples:
             ::
 
-                page.element.move_to_element().move_by_offset().perform()
+                page.element.move_to_element().move_by_offset(100, 200).perform()
 
         """
         self.action.move_by_offset(xoffset, yoffset)
