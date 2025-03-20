@@ -1262,7 +1262,7 @@ class Element:
         """
         ActionChains API.
         Moves the mouse to the element's center and clicks it.
- 
+
         Examples:
             ::
 
@@ -1272,17 +1272,17 @@ class Element:
                 page.element.move_to_element().clicks().perform()
 
         """
-        try: 
+        try:
             self.action.click(self.present_try)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.action.click(self.present)
         return self
-    
+
     def clicks(self) -> Self:
         """
         ActionChains API.
         Clicks on the current mouse position.
- 
+
         Examples:
             ::
 
@@ -1298,9 +1298,9 @@ class Element:
     def click_and_hold_on_element(self) -> Self:
         """
         ActionChains API.
-        Moves the mouse to the element's center 
+        Moves the mouse to the element's center
         and holds down the left mouse button it.
- 
+
         Examples:
             ::
 
@@ -1315,17 +1315,17 @@ class Element:
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.action.click_and_hold(self.present)
         return self
-    
+
     def click_and_hold(self) -> Self:
         """
         ActionChains API.
         Holds down the left mouse button on the current mouse position.
- 
+
         Examples:
             ::
 
                 page.element.move_to_element().click_and_hold().perform()
-                
+
                 # or
                 page.element.click_and_hold_on_element().perform()
 
@@ -1336,9 +1336,9 @@ class Element:
     def context_click_on_element(self) -> Self:
         """
         ActionChains API.
-        Moves the mouse to the element's center 
+        Moves the mouse to the element's center
         and performs a context-click (right click) on it.
- 
+
         Examples:
             ::
 
@@ -1353,12 +1353,12 @@ class Element:
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.action.context_click(self.present)
         return self
-    
+
     def context_click(self) -> Self:
         """
         ActionChains API.
         Performs a context-click (right click) on the current mouse position.
- 
+
         Examples:
             ::
 
@@ -1375,27 +1375,27 @@ class Element:
         """
         ActionChains API.
         Moves the mouse to the element's center and double-clicks it.
- 
+
         Examples:
             ::
- 
+
                 page.element.double_click_on_element().perform()
- 
+
                 # or
                 page.element.move_to_element().double_click().perform()
- 
+
         """
         try:
             self.action.double_click(self.present_try)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.action.double_click(self.present)
         return self
-    
+
     def double_click(self) -> Self:
         """
         ActionChains API.
-        Double-clicks an element on the current mouse position. 
- 
+        Double-clicks an element on the current mouse position.
+
         Examples:
             ::
 
@@ -1450,7 +1450,7 @@ class Element:
 
     def send_hotkey_to_element(self, *keys: str) -> Self:
         """
-        ActionChains API. 
+        ActionChains API.
         Clicks the element's center and sends the hotkey sequence to it.
 
         Examples:
@@ -1477,7 +1477,7 @@ class Element:
 
     def send_hotkey(self, *keys: str) -> Self:
         """
-        ActionChains API. 
+        ActionChains API.
         Sends the hotkey sequence to the focused position.
 
         Examples:
@@ -1501,9 +1501,9 @@ class Element:
     def key_down_to_element(self, key: str) -> Self:
         """
         ActionChains API.
-        Clicks the element's center and sends a modifier key press only. 
+        Clicks the element's center and sends a modifier key press only.
 
-        If you want to perform a combination key action, such as copying, 
+        If you want to perform a combination key action, such as copying,
         it is recommended to use `send_hotkey_to_element()` instead.
 
         Examples:
@@ -1522,13 +1522,13 @@ class Element:
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.action.key_down(key, self.present)
         return self
-    
+
     def key_down(self, key: str) -> Self:
         """
         ActionChains API.
         Sends only a modifier key press at the current focused position.
 
-        If you want to perform a combination key action, such as copying, 
+        If you want to perform a combination key action, such as copying,
         it is recommended to use `send_hotkey()` instead.
 
         Examples:
@@ -1550,7 +1550,7 @@ class Element:
         ActionChains API.
         Clicks the element's center and releases a modifier key.
 
-        If you want to perform a combination key action, such as copying, 
+        If you want to perform a combination key action, such as copying,
         it is recommended to use `send_hotkey_to_element()` instead.
 
         Examples:
@@ -1569,13 +1569,13 @@ class Element:
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.action.key_up(key, self.present)
         return self
-    
+
     def key_up(self, key: str) -> Self:
         """
         ActionChains API.
         Releases a modifier key at the current focused position.
 
-        If you want to perform a combination key action, such as copying, 
+        If you want to perform a combination key action, such as copying,
         it is recommended to use `send_hotkey()` instead.
 
         Examples:
@@ -1591,7 +1591,7 @@ class Element:
         """
         self.action.key_up(key)
         return self
-    
+
     def move_by_offset(self, xoffset: int, yoffset: int) -> Self:
         """
         ActionChains API.
@@ -1609,10 +1609,10 @@ class Element:
         """
         self.action.move_by_offset(xoffset, yoffset)
         return self
-    
+
     def move_to_element(self) -> Self:
         """
-        ActionChains API. 
+        ActionChains API.
         Moving the mouse to the middle of an element.
 
         Examples:
@@ -1652,7 +1652,7 @@ class Element:
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.action.move_to_element_with_offset(self.present, xoffset, yoffset)
         return self
-    
+
     def pause(self, seconds: int | float) -> Self:
         """
         ActionChains API.
@@ -1660,10 +1660,10 @@ class Element:
         """
         self.action.pause(seconds)
         return self
-    
+
     def release_on_element(self) -> Self:
         """
-        ActionChains API. 
+        ActionChains API.
         Releasing a held mouse button on an element.
 
         Examples:
@@ -1677,10 +1677,10 @@ class Element:
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.action.release(self.present)
         return self
-    
+
     def release(self) -> Self:
         """
-        ActionChains API. 
+        ActionChains API.
         Releasing a held mouse button on the current position.
 
         Examples:
@@ -1694,7 +1694,7 @@ class Element:
 
     def sends_keys_to_element(self, *keys: str) -> Self:
         """
-        ActionChains API. 
+        ActionChains API.
         Sends keys to an element.
 
         Examples:
@@ -1708,7 +1708,7 @@ class Element:
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.action.send_keys_to_element(self.present, *keys)
         return self
-    
+
     def sends_keys(self, *keys: str) -> Self:
         """
         ActionChains API.
@@ -1741,7 +1741,7 @@ class Element:
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.action.scroll_to_element(self.present)
         return self
-    
+
     def scroll_by_amount(self, delta_x: int, delta_y: int) -> Self:
         """
         ActionChains API.
@@ -1800,7 +1800,7 @@ class Element:
             scroll_origin = ScrollOrigin.from_element(self.present, x_offset, y_offset)
             self.action.scroll_from_origin(scroll_origin, delta_x, delta_y)
         return self
-    
+
     def scroll_from_origin(
         self,
         x_offset: int = 0,
@@ -1829,7 +1829,7 @@ class Element:
             ::
 
                 page.element.scroll_to_element().scroll_from_origin(150, 100, 100, 200).perform()
-                
+
         """
         scroll_origin = ScrollOrigin.from_viewport(x_offset, y_offset)
         self.action.scroll_from_origin(scroll_origin, delta_x, delta_y)
