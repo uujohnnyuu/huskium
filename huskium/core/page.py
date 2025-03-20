@@ -606,7 +606,7 @@ class Page:
 
     def perform(self) -> None:
         """
-        ActionChains API. 
+        ActionChains API.
         Performs all stored actions.
         Once called, it will execute all stored actions in page.
 
