@@ -640,7 +640,7 @@ class Page:
 
     def click(self) -> Self:
         """
-        ActionChains API. 
+        ActionChains API.
         Clicks on current mouse position.
 
         Examples:
@@ -682,7 +682,7 @@ class Page:
 
     def double_click(self) -> Self:
         """
-        ActionChains API. 
+        ActionChains API.
         Double-clicks on current mouse position.
 
         Examples:
@@ -696,7 +696,7 @@ class Page:
 
     def send_hotkey(self, *keys: str) -> Self:
         """
-        ActionChains API. 
+        ActionChains API.
         Sends hotkey to the page.
 
         Examples:
@@ -768,7 +768,7 @@ class Page:
         Args:
             xoffset: X offset to move to, as a positive or negative integer.
             yoffset: Y offset to move to, as a positive or negative integer.
-        
+
         Examples:
             ::
 
