@@ -740,12 +740,12 @@ class Page:
         self.action.release()
         return self
 
-    def send_keys(self, *keys_to_send: str) -> Self:
+    def send_keys(self, *keys: str) -> Self:
         """
         ActionChains API.
         Sends keys to current focused element.
         """
-        self.action.send_keys(*keys_to_send)
+        self.action.send_keys(*keys)
         return self
 
     def scroll_by_amount(self, delta_x: int, delta_y: int) -> Self:

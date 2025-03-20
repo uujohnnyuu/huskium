@@ -1036,7 +1036,7 @@ class Element:
         except ELEMENT_REFERENCE_EXCEPTIONS:
             return self.present.get_dom_attribute(name)
 
-    def get_attribute(self, name: Any | str) -> Any | str | dict | None:
+    def get_attribute(self, name: str) -> str | dict | None:
         """
         This method will first try to return the value of a property with the
         given name. If a property with that name doesn't exist, it returns the
@@ -1258,48 +1258,56 @@ class Element:
         """
         self.action.reset_actions()
 
-    def clicks(self) -> Self:
+    def clicks_on_element(self) -> Self:
         """
-        ActionChains API. Clicks an element.
-
+        ActionChains API.
+        Moves the mouse to the element's center and clicks it.
+ 
         Examples:
             ::
 
-                # Basic usage
-                my_page.my_element.clicks().perform()
-
-                # Chain with another method
-                my_page.my_element.scroll_to_element().clicks().perform()
+                page.element.clicks_on_element().perform()
 
                 # or
-                my_page.my_element1.scroll_to_element().clicks()
-                ...  # other process
-                my_page.perform()
+                page.element.move_to_element().clicks().perform()
 
         """
-        try:
+        try: 
             self.action.click(self.present_try)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.action.click(self.present)
         return self
-
-    def click_and_hold(self) -> Self:
+    
+    def clicks(self) -> Self:
         """
-        ActionChains API. Holds down the left mouse button on an element.
-
+        ActionChains API.
+        Clicks on the current mouse position.
+ 
         Examples:
             ::
 
-                # Basic usage
-                my_page.my_element.click_and_hold().perform()
-
-                # Chain with another method
-                my_page.my_element.scroll_to_element().click_and_hold().perform()
+                page.element.move_to_element().clicks().perform()
 
                 # or
-                my_page.my_element1.scroll_to_element().click_and_hold()
-                ...  # other process
-                my_page.perform()
+                page.element.clicks_on_element().perform()
+
+        """
+        self.action.click()
+        return self
+
+    def click_and_hold_on_element(self) -> Self:
+        """
+        ActionChains API.
+        Moves the mouse to the element's center 
+        and holds down the left mouse button it.
+ 
+        Examples:
+            ::
+
+                page.element.click_and_hold_on_element().perform()
+
+                # or
+                page.element.move_to_element().click_and_hold().perform()
 
         """
         try:
@@ -1307,24 +1315,37 @@ class Element:
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.action.click_and_hold(self.present)
         return self
-
-    def context_click(self) -> Self:
+    
+    def click_and_hold(self) -> Self:
         """
-        ActionChains API. Performs a context-click (right click) on an element.
-
+        ActionChains API.
+        Holds down the left mouse button on the current mouse position.
+ 
         Examples:
             ::
 
-                # Basic usage
-                my_page.my_element.context_click().perform()
+                page.element.move_to_element().click_and_hold().perform()
+                
+                # or
+                page.element.click_and_hold_on_element().perform()
 
-                # Chain with another method
-                my_page.my_element.scroll_to_element().context_click().perform()
+        """
+        self.action.click_and_hold()
+        return self
+
+    def context_click_on_element(self) -> Self:
+        """
+        ActionChains API.
+        Moves the mouse to the element's center 
+        and performs a context-click (right click) on it.
+ 
+        Examples:
+            ::
+
+                page.element.context_click_on_element().perform()
 
                 # or
-                my_page.my_element1.scroll_to_element().context_click()
-                ...  # other process
-                my_page.perform()
+                page.element.move_to_element().context_click().perform()
 
         """
         try:
@@ -1332,30 +1353,59 @@ class Element:
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.action.context_click(self.present)
         return self
-
-    def double_click(self) -> Self:
+    
+    def context_click(self) -> Self:
         """
-        ActionChains API. Double-clicks an element.
-
+        ActionChains API.
+        Performs a context-click (right click) on the current mouse position.
+ 
         Examples:
             ::
 
-                # Basic usage
-                my_page.my_element.double_click()
-
-                # Chain with another method
-                my_page.my_element.scroll_to_element().double_click()
+                page.element.move_to_element().context_click().perform()
 
                 # or
-                my_page.my_element1.scroll_to_element().double_click()
-                ...  # other process
-                my_page.perform()
+                page.element.context_click_on_element().perform()
 
+        """
+        self.action.context_click()
+        return self
+
+    def double_click_on_element(self) -> Self:
+        """
+        ActionChains API.
+        Moves the mouse to the element's center and double-clicks it.
+ 
+        Examples:
+            ::
+ 
+                page.element.double_click_on_element().perform()
+ 
+                # or
+                page.element.move_to_element().double_click().perform()
+ 
         """
         try:
             self.action.double_click(self.present_try)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.action.double_click(self.present)
+        return self
+    
+    def double_click(self) -> Self:
+        """
+        ActionChains API.
+        Double-clicks an element on the current mouse position. 
+ 
+        Examples:
+            ::
+
+                page.element.move_to_element().double_click().perform()
+
+                # or
+                page.element.double_click_on_element().perform()
+
+        """
+        self.action.double_click()
         return self
 
     def drag_and_drop(self, target: Element) -> Self:
@@ -1364,22 +1414,10 @@ class Element:
         Holds down the left mouse button on the source element,
         then moves to the target element and releases the mouse button.
 
-        Args:
-            target: The element to mouse up.
-
         Examples:
             ::
 
-                # Basic usage
                 page.element1.drag_and_drop(page.element2).perform()
-
-                # Chain with another method
-                page.element1.scroll_to_element().drag_and_drop(page.element2).perform()
-
-                # or
-                page.element1.scroll_to_element().drag_and_drop(page.element2)
-                ...  # other process
-                page.perform()
 
         """
         try:
@@ -1401,16 +1439,7 @@ class Element:
         Examples:
             ::
 
-                # Basic usage
                 page.element.drag_and_drop_by_offset(100, 200).perform()
-
-                # Chain with another method
-                page.element.scroll_to_element().drag_and_drop_by_offset(100, 200).perform()
-
-                # or
-                page.element.scroll_to_element().drag_and_drop_by_offset(100, 200)
-                ...  # other process
-                page.perform()
 
         """
         try:
@@ -1419,30 +1448,16 @@ class Element:
             self.action.drag_and_drop_by_offset(self.present, xoffset, yoffset)
         return self
 
-    def hotkey(self, *keys: str) -> Self:
+    def send_hotkey_to_element(self, *keys: str) -> Self:
         """
-        ActionChains API.
-        Sends the initial hotkey sequence to the target element.
-
-        This method clicks the element to ensure it is focused
-        before sending the hotkey sequence.
-
-        For additional hotkey sequences without refocusing the element,
-        use `hotkeys()`.
+        ActionChains API. 
+        Clicks the element's center and sends the hotkey sequence to it.
 
         Examples:
             ::
 
-                # Chain hotkey actions using hotkey and hotkeys.
-                page.element1.hotkey(Key.CONTROL, 'a').hotkeys(Keys.CONTROL, 'c')
-                page.element2.hotkey(Keys.CONTROL, 'v')
-                page.perform()
-
-                # Alternatively, using separate calls (less streamlined).
-                page.element1.hotkey(Key.CONTROL, 'a')
-                page.hotkey(Keys.CONTROL, 'c')  # page.hotkey() does not click the element
-                page.element2.hotkey(Keys.CONTROL, 'v')
-                page.perform()
+                page.element1.send_hotkey_to_element(Key.CONTROL, 'a').send_hotkey(Keys.CONTROL, 'c')
+                page.element2.send_hotkey_to_element(Keys.CONTROL, 'v').perform()
 
         """
         # key_down: The first key.
@@ -1460,28 +1475,18 @@ class Element:
             self.action.key_up(key)
         return self
 
-    def hotkeys(self, *keys: str) -> Self:
+    def send_hotkey(self, *keys: str) -> Self:
         """
-        ActionChains API.
-        Sends a subsequent hotkey sequence to the target element
-        without clicking it.
-
-        This method is intended to be used after `hotkey()`,
-        and it does not perform an initial click on the element.
+        ActionChains API. 
+        Sends the hotkey sequence to the focused position.
 
         Examples:
             ::
 
-                # Chain hotkey actions: first hotkey focuses the element, subsequent hotkeys do not click.
-                page.element1.hotkey(Key.CONTROL, 'a').hotkeys(Key.CONTROL, 'c')
-                page.element2.hotkey(Key.CONTROL, 'v')
-                page.perform()
+                # Ensure that it is already at the target position or element.
+                page.element1.send_hotkey_to_element(Key.CONTROL, 'a').send_hotkey(Keys.CONTROL, 'c')
+                page.element2.send_hotkey_to_element(Keys.CONTROL, 'v').perform()
 
-                # Alternatively, using separate calls (less streamlined).
-                page.element1.hotkey(Key.CONTROL, 'a')
-                page.hotkeys(Key.CONTROL, 'c')  # Note: hotkeys() does not click the element
-                page.element2.hotkey(Key.CONTROL, 'v')
-                page.perform()
         """
         # key_down: The first to the second last key.
         for key in keys[:-1]:
@@ -1493,134 +1498,127 @@ class Element:
             self.action.key_up(key)
         return self
 
-    def key_down(self, value: str, focus: bool = True) -> Self:
+    def key_down_to_element(self, key: str) -> Self:
         """
         ActionChains API.
-        Sends a key press only, without releasing it.
-        Should only be used with modifier keys (Control, Alt and Shift).
-        If you want to perform a hotkey process, use hotkey() instead.
+        Clicks the element's center and sends a modifier key press only. 
 
-        Args:
-            value: The modifier key to send. Values are defined in Keys class.
-            focus: Whether to focus element or not.
-                Default to focus current element.
+        If you want to perform a combination key action, such as copying, 
+        it is recommended to use `send_hotkey_to_element()` instead.
 
         Examples:
             ::
 
-                # copy(control+c)
-                page.element.key_down(Key.CONTROL).sends_keys('c').key_up(Key.CONTROL)
+                # ctrl+a, ctrl+c
+                page.element.key_down_to_element(Key.CONTROL).sends_keys('a').key_up(Key.CONTROL)\
+                .key_down(Key.CONTROL).sends_keys('c').key_up(Key.CONTROL).perform()
 
-        """
-        if focus:
-            try:
-                self.action.key_down(value, self.present_try)
-            except ELEMENT_REFERENCE_EXCEPTIONS:
-                self.action.key_down(value, self.present)
-        else:
-            self.action.key_down(value)
-        return self
-
-    def key_up(self, value: str, focus: bool = False) -> Self:
-        """
-        ActionChains API.
-        Releases a modifier key.
-        Should only be used with modifier keys (Control, Alt and Shift).
-        If you want to perform a hotkey process, use hotkey() instead.
-
-        Args:
-            value: The modifier key to send. Values are defined in Keys class.
-            focus: Whether to focus on the element or not.
-                The default is NOT to focus on the current element
-                as this is generally not the first action.
-
-        Examples:
-            ::
-
-                # copy(control+c)
-                page.element.key_down(Key.CONTROL).sends_keys('c').key_up(Key.CONTROL)
-
-        """
-        if focus:
-            try:
-                self.action.key_up(value, self.present_try)
-            except ELEMENT_REFERENCE_EXCEPTIONS:
-                self.action.key_up(value, self.present)
-        else:
-            self.action.key_up(value)
-        return self
-
-    def sends_keys(self, *keys_to_send: str) -> Self:
-        """
-        ActionChains API.
-        Sends keys to current focused element.
-        Note that it should have focused element first.
-
-        Args:
-            keys_to_send: The keys to send.
-                Modifier keys constants can be found in the 'Keys' class.
-
-        Examples:
-            ::
-
-                # Combine with key_down and key_up method
-                page.element.key_down(Keys.COMMAND).sends_keys('a').key_up(Keys.COMMAND).perform()
-
-                # Send keys to focused element
-                # This is recommend to use send_keys_to_element() instead.
-                page.element.clicks()  # Need to have focused element first.
-                page.element.sends_keys('my_keys').perform()
-
-        """
-        self.action.send_keys(*keys_to_send)
-        return self
-
-    def send_keys_to_element(self, *keys_to_send: str) -> Self:
-        """
-        ActionChains API. Sends keys to an element.
-
-        Args:
-            keys_to_send: The keys to send.
-                Modifier keys constants can be found in the 'Keys' class.
-
-        Examples:
-            ::
-
-                # Basic usage
-                page.element.send_keys_to_element(Keys.ENTER)
-
-                # Chain with another method
-                page.element.scroll_to_element(False).send_keys_to_element(Keys.ENTER)
-
-                # or
-                page.element.scroll_to_element(False).send_keys_to_element(Keys.ENTER)
-                ...  # other process
-                page.perform()
+                # or using send_hotkey()
+                page.element.send_hotkey_to_element(Key.CONTROL, 'a').send_hotkey(Keys.CONTROL, 'c').perform()
 
         """
         try:
-            self.action.send_keys_to_element(self.present_try, *keys_to_send)
+            self.action.key_down(key, self.present_try)
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            self.action.send_keys_to_element(self.present, *keys_to_send)
+            self.action.key_down(key, self.present)
         return self
-
-    def move_to_element(self) -> Self:
+    
+    def key_down(self, key: str) -> Self:
         """
-        ActionChains API. Moving the mouse to the middle of an element.
+        ActionChains API.
+        Sends only a modifier key press at the current focused position.
+
+        If you want to perform a combination key action, such as copying, 
+        it is recommended to use `send_hotkey()` instead.
 
         Examples:
             ::
 
-                # Basic usage
-                page.element.move_to_element().perform()
+                # ctrl+a, ctrl+c
+                page.element.key_down_to_element(Key.CONTROL).sends_keys('a').key_up(Key.CONTROL)\
+                .key_down(Key.CONTROL).sends_keys('c').key_up(Key.CONTROL).perform()
 
-                # Chain with another method
+                # or using send_hotkey()
+                page.element.send_hotkey_to_element(Key.CONTROL, 'a').send_hotkey(Keys.CONTROL, 'c').perform()
+
+        """
+        self.action.key_down(key)
+        return self
+
+    def key_up_to_element(self, key: str) -> Self:
+        """
+        ActionChains API.
+        Clicks the element's center and releases a modifier key.
+
+        If you want to perform a combination key action, such as copying, 
+        it is recommended to use `send_hotkey_to_element()` instead.
+
+        Examples:
+            ::
+
+                # ctrl+a, ctrl+c
+                page.element.key_down_to_element(Key.CONTROL).sends_keys('a').key_up(Key.CONTROL)\
+                .key_down(Key.CONTROL).sends_keys('c').key_up(Key.CONTROL).perform()
+
+                # or using send_hotkey()
+                page.element.send_hotkey_to_element(Key.CONTROL, 'a').send_hotkey(Keys.CONTROL, 'c').perform()
+
+        """
+        try:
+            self.action.key_up(key, self.present_try)
+        except ELEMENT_REFERENCE_EXCEPTIONS:
+            self.action.key_up(key, self.present)
+        return self
+    
+    def key_up(self, key: str) -> Self:
+        """
+        ActionChains API.
+        Releases a modifier key at the current focused position.
+
+        If you want to perform a combination key action, such as copying, 
+        it is recommended to use `send_hotkey()` instead.
+
+        Examples:
+            ::
+
+                # ctrl+a, ctrl+c
+                page.element.key_down_to_element(Key.CONTROL).sends_keys('a').key_up(Key.CONTROL)\
+                .key_down(Key.CONTROL).sends_keys('c').key_up(Key.CONTROL).perform()
+
+                # or using send_hotkey()
+                page.element.send_hotkey_to_element(Key.CONTROL, 'a').send_hotkey(Keys.CONTROL, 'c').perform()
+
+        """
+        self.action.key_up(key)
+        return self
+    
+    def move_by_offset(self, xoffset: int, yoffset: int) -> Self:
+        """
+        ActionChains API.
+        Moving the mouse to an offset from current mouse position.
+
+        Args:
+            xoffset: X offset to move to, as a positive or negative integer.
+            yoffset: Y offset to move to, as a positive or negative integer.
+
+        Examples:
+            ::
+
+                page.element.move_to_element().move_by_offset().perform()
+
+        """
+        self.action.move_by_offset(xoffset, yoffset)
+        return self
+    
+    def move_to_element(self) -> Self:
+        """
+        ActionChains API. 
+        Moving the mouse to the middle of an element.
+
+        Examples:
+            ::
+
                 page.element.scroll_to_element().move_to_element().perform()
-
-                # or
-                page.element.scroll_to_element().move_to_element()
-                ...  # other process
-                page.perform()
 
         """
         try:
@@ -1646,16 +1644,7 @@ class Element:
         Examples:
             ::
 
-                # Basic usage
-                page.element.move_to_element_with_offset(100, 200).perform()
-
-                # Chain with another method
                 page.element.scroll_to_element().move_to_element_with_offset(100, 200).perform()
-
-                # or
-                page.element.scroll_to_element().move_to_element_with_offset(100, 200)
-                ...  # other process
-                page.perform()
 
         """
         try:
@@ -1663,24 +1652,24 @@ class Element:
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.action.move_to_element_with_offset(self.present, xoffset, yoffset)
         return self
-
-    def release(self) -> Self:
+    
+    def pause(self, seconds: int | float) -> Self:
         """
-        ActionChains API. Releasing a held mouse button on an element.
+        ActionChains API.
+        Pause all inputs for the specified duration in seconds.
+        """
+        self.action.pause(seconds)
+        return self
+    
+    def release_on_element(self) -> Self:
+        """
+        ActionChains API. 
+        Releasing a held mouse button on an element.
 
         Examples:
             ::
 
-                # Basic usage
-                page.element.release().perform()
-
-                # Chain with another method
-                page.element.click_and_hold().release().perform()
-
-                # or
-                page.element.click_and_hold().release()
-                ...  # other process
-                page.perform()
+                page.element.release_on_element().perform()
 
         """
         try:
@@ -1688,13 +1677,51 @@ class Element:
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.action.release(self.present)
         return self
+    
+    def release(self) -> Self:
+        """
+        ActionChains API. 
+        Releasing a held mouse button on the current position.
 
-    def pause(self, seconds: int | float) -> Self:
+        Examples:
+            ::
+
+                page.element.click_and_hold_on_element().release().perform()
+
+        """
+        self.action.release()
+        return self
+
+    def sends_keys_to_element(self, *keys: str) -> Self:
+        """
+        ActionChains API. 
+        Sends keys to an element.
+
+        Examples:
+            ::
+
+                page.element.send_keys_to_element('some text', Keys.ENTER)
+
+        """
+        try:
+            self.action.send_keys_to_element(self.present_try, *keys)
+        except ELEMENT_REFERENCE_EXCEPTIONS:
+            self.action.send_keys_to_element(self.present, *keys)
+        return self
+    
+    def sends_keys(self, *keys: str) -> Self:
         """
         ActionChains API.
-        Pause all inputs for the specified duration in seconds.
+        Sends keys to the current focused position.
+
+        Examples:
+            ::
+
+                # Combine with key_down() and key_up()
+                page.element.key_down_to_element(Key.CONTROL).sends_keys('a').key_up(Key.CONTROL).perform()
+
         """
-        self.action.pause(seconds)
+        self.action.send_keys(*keys)
         return self
 
     def scroll_to_element(self) -> Self:
@@ -1706,22 +1733,34 @@ class Element:
         Examples:
             ::
 
-                # Basic usage
-                page.element.scroll_to_element().perform()
-
-                # Chain with another method
                 page.element.scroll_to_element().clicks().perform()
-
-                # or
-                page.element1.scroll_to_element().clicks()
-                ...  # other process
-                page.perform()
 
         """
         try:
             self.action.scroll_to_element(self.present_try)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.action.scroll_to_element(self.present)
+        return self
+    
+    def scroll_by_amount(self, delta_x: int, delta_y: int) -> Self:
+        """
+        ActionChains API.
+        Scrolls by provided amounts with the origin
+        in the top left corner of the viewport.
+
+        Args:
+            delta_x: Distance along X axis to scroll using the wheel.
+                A negative value scrolls left.
+            delta_y: Distance along Y axis to scroll using the wheel.
+                A negative value scrolls up.
+
+        Examples:
+            ::
+
+                page.element.move_to_element().scroll_by_amount(100, 200).perform()
+
+        """
+        self.action.scroll_by_amount(delta_x, delta_y)
         return self
 
     def scroll_from_element(
@@ -1751,16 +1790,7 @@ class Element:
         Examples:
             ::
 
-                # Basic usage
-                page.element.scroll_from_element(100, 200, -50, -100).perform()
-
-                # Chain with another method
                 page.element.scroll_from_element(-30, -50, 150, 100).clicks().perform()
-
-                # or
-                page.element.scroll_from_element(-30, -50, 150, 100).clicks()
-                ...  # other process
-                page.perform()
 
         """
         try:
@@ -1769,6 +1799,40 @@ class Element:
         except ELEMENT_REFERENCE_EXCEPTIONS:
             scroll_origin = ScrollOrigin.from_element(self.present, x_offset, y_offset)
             self.action.scroll_from_origin(scroll_origin, delta_x, delta_y)
+        return self
+    
+    def scroll_from_origin(
+        self,
+        x_offset: int = 0,
+        y_offset: int = 0,
+        delta_x: int = 0,
+        delta_y: int = 0,
+    ) -> Self:
+        """
+        ActionChains API.
+        Scrolls by provided amount based on a provided origin.
+        The scroll origin is the upper left of the viewport plus any offsets.
+
+        Args:
+            x_offset: from origin viewport, a negative value offset left.
+            y_offset: from origin viewport, a negative value offset up.
+            delta_x: Distance along X axis to scroll using the wheel.
+                A negative value scrolls left.
+            delta_y: Distance along Y axis to scroll using the wheel.
+                A negative value scrolls up.
+
+        Raises:
+            MoveTargetOutOfBoundsException: If the origin with offset is
+                outside the viewport.
+
+        Examples:
+            ::
+
+                page.element.scroll_to_element().scroll_from_origin(150, 100, 100, 200).perform()
+                
+        """
+        scroll_origin = ScrollOrigin.from_viewport(x_offset, y_offset)
+        self.action.scroll_from_origin(scroll_origin, delta_x, delta_y)
         return self
 
     def tap(self, duration: int | None = None) -> Self:
