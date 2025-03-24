@@ -60,8 +60,7 @@ class MyPage(Page):
 
 ### 2. Test Script
 
-After defining the page object, you can easily write test scripts (e.g., `test_my_page.py`).
-
+After defining the page object, you can easily write test scripts (e.g., `test_my_page.py`).  
 Initialize the page object with a driver, 
 then use the `page.method()` or `page.element.method()` pattern.
 
@@ -94,7 +93,7 @@ my_page.close()
 Most page objects, as described in the previous section, are called **static element**.  
 In contrast, **dynamic element** are defined at runtime within the test script.
 
-Dynamic element is useful when element locators can't be known beforehand. 
+Dynamic element is useful when element locators can't be known beforehand.  
 For example, in dev environments without stable attributes, or when locators frequently change.
 
 Avoid using dynamic elements unless necessary. If needed, here are three recommended approaches.  
@@ -198,7 +197,7 @@ my_page.my_element.wait_visible(timeout=5)  # 5 seconds for this call only.
 ```
 
 ### P2. Element Level of Timeout Value 
-Sets a specific default timeout for an `Element`.
+Sets a specific default timeout for an `Element`.  
 This **permanently** overrides the `Page` timeout settings. 
 ```python
 my_element = Element(..., timeout=20, ...)
@@ -227,7 +226,7 @@ There are two types of timeout reraise settings, with the following priority:
 - **P2**: Page Level
 
 ### P1. Method Level of Timeout Reraise
-Defines the default reraise behavior for Page and Element methods that accept the reraise parameter.
+Defines the default reraise behavior for Page and Element methods that accept the reraise parameter.  
 If not set, the Page’s reraise state is used.
 ```python
 my_page = MyPage(driver, timeout=30, reraise=True)
@@ -246,7 +245,7 @@ my_page.my_element.wait_present(reraise=False)  # Returns False on timeout.
 If a timeout-related method does not explicitly set the reraise behavior, 
 the page-level reraise setting will be used.
 
-Notice that WebElement methods will **always raise a TimeoutException** on timeout 
+Notice that WebElement methods will **always raise a TimeoutException** on timeout   
 because returning `False` would result in meaningless `AttributeError`.
 
 ```python
@@ -319,7 +318,7 @@ A common scenario where we validate the element’s text before clicking:
 - There's no need to refetch the element or store it in a separate variable.
 - Even if the WebElement reference becomes stale in between, it will automatically recover and refetch as needed.
 ```python
-assert my_page.my_element.text == 'some text'
+assert my_page.my_element.text == 'some text'  # It will cache the WebElement object to reuse.
 my_page.my_element.click()
 ```
 
