@@ -312,10 +312,10 @@ Element.disable_default_cache()  # Disable global default cache
 Element.default_cache()  # Current global default cache setting
 ```
 
-### The Script Example
-This example demonstrates a common scenario where we validate the element’s text before clicking:
-- If the assertion passes, the WebElement object for `my_element` will already be available.
-- When calling `click()`, the cached WebElement will be used directly.
+### Element Cache Example
+A common scenario where we validate the element’s text before clicking:
+- If the assertion passes, **my_element will cache the WebElement object** in the inner attribute.
+- When calling `click()`, **the cached WebElement will be used directly**.
 - There's no need to refetch the element or store it in a separate variable.
 - Even if the WebElement reference becomes stale in between, it will automatically recover and refetch as needed.
 ```python
