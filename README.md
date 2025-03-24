@@ -3,7 +3,7 @@
 ## Table of Contents
 - [Overview](#overview)
 - [Usage](#usage)
-- [Page Object Example Code](#page-object-example-code)
+- [Page Object Example Code](#page-object-and-test-script)
 - [Timeout Value Settings](#timeout-value-settings)
 - [Timeout Reraise Settings](#timeout-reraise-settings)
 - [Cache Settings](#cache-settings)
@@ -31,33 +31,39 @@
 ---
 
 ## Usage
-- **Build page objects** easily with the `Page` and `Element(s)` classes.
-- **Write test scripts** quickly using the constructed Page objects.
+Easily **build page objects** and **write test scripts**, 
+greatly improving stability and performance.
 
 ---
 
-## Page Object Example Code
+## Page Object and Test Script
+
+The core of huskium is to quickly build a **page object** and utilize it to write **test scripts**.  
+Unless specified otherwise, `Element` refers to both `Element` and `Elements`.
 
 ### 1. Page Object
+
+Create a simple page object (e.g., in `my_page.py`) by defining `Element` instances.
+
 ```python
 # my_page.py
 
-from huskium import Page, Element, Elements, By, dynamic
+from huskium import Page, Element, Elements
 
 class MyPage(Page):
 
-    # Static element: standard way to define an element.
+    # Standard way to define an element.
     search_field = Element(By.NAME, 'q', remark='Search input box')
     search_results = Elements(By.TAG_NAME, 'h3', remark='All search results')
     search_result1 = Element(By.XPATH, '(//h3)[1]', remark='First search result')
-
-    # Dynamic element: used when attributes are determined at runtime.
-    @dynamic
-    def search_result(self, order: int = 1):
-        return Element(By.XPATH, f'(//h3)[{order}]', remark=f'Search result no.{order}')
 ```
 
-### 2. Test Case
+### 2. Test Script
+
+After defining the page object, you can easily write test scripts (e.g., in test_my_page.py).
+Initialize the page object with a driver, 
+then use the `page.method()` or `page.element.method()` pattern.
+
 ```python
 # test_my_page.py
 
@@ -77,42 +83,122 @@ my_page.save_screenshot("screenshot.png")
 assert "Selenium" in my_page.search_result1.text
 my_page.search_result1.click()
 
-driver.close()
+my_page.close()
 ```
 
-### 3. Advanced Dynamic Element
+---
+
+## Advanced Dynamic Element
+
+Most page objects, as described in the previous section, are called **static elements**.  
+In contrast, **dynamic elements** are defined at runtime within the test script.
+
+Dynamic element is useful when element locators can't be known beforehand, 
+for example, in dev environments without stable attributes, or when locators frequently change.
+
+Avoid using dynamic elements unless necessary. If needed, here are three recommended approaches.  
+No matter which method you choose, the final usage will still follow the `page.element.method()` pattern.
+
+### 1. Dynamic Decorator
+
+**Pros:** Simple and intuitive; this is the recommended approach.  
+**Cons:** Cannot statically store element info (though the performance impact is minimal).
+
 ```python
+# my_page.py
+from huskium import Page, Element, By, dynamic
+
+class MyPage(Page):
+
+    @dynamic
+    def search_result(self, order: int = 1):
+        return Element(By.XPATH, f'(//h3)[{order}]', remark=f'Search result no.{order}')
+```
+
+Test script still uses `page.element.method()`, but the element is now a function.
+```python
+# test_my_page.py
+my_page.search_result(3).click()
+```
+
+### 2. Dynamic Instance Method
+
+**Pros:** Once executed, the dynamic element is saved as a static element for reuse.  
+**Cons:** Slightly more verbose; requires a corresponding static and dynamic element.
+
+```python
+# my_page.py
 from huskium import Page, Element, By
 
 class MyPage(Page):
-    
-    # Set a static element first. 
-    static_search_result = Element()  
 
-    # Method 1: Call `dynamic` to set `static_search_result`.
+    # Define a static element first.
+    static_search_result = Element()
+
+    # Use `dynamic()` to configure the static element.
     def dynamic_search_result(self, order: int = 1):
         return self.static_search_result.dynamic(By.XPATH, f'(//h3)[{order}]', remark=f'NO.{order}')
+```
 
-    # Method 2: Use the data descriptor mechanism.
+After the first dynamic call, you can reuse the static element:
+```python
+# test_my_page.py
+my_page.dynamic_search_result(3).wait_present()
+my_page.static_search_result.click()
+```
+
+### 3. Data Descriptor Set Method
+
+**Pros:** Stores dynamic results in a static element using proper data descriptor mechanics.  
+**Cons:** Less intuitive and requires understanding Python data descriptor behavior.
+
+```python
+# my_page.py
+from huskium import Page, Element, By
+
+class MyPage(Page):
+
+    # Define a static element first.
+    static_search_result = Element()
+
+    # Use the descriptor's __set__ method by reassigning the element.
     def dynamic_search_result(self, order: int = 1):
         self.static_search_result = Element(By.XPATH, f'(//h3)[{order}]', remark=f'NO.{order}')
         return self.static_search_result
+```
+
+Once set, you can reuse the static element:
+```python
+# test_my_page.py
+my_page.dynamic_search_result(3).wait_present()
+my_page.static_search_result.click()
 ```
 
 ---
 
 ## Timeout Value Settings
 
-### 1. Page Timeout Value Configuration (P3)
-Sets the default timeout for the `Page` and all `Element` objects within it.  
-This value applies if neither the `Element` nor the `wait` method specifies a timeout.
+There are three types of timeout settings, with the following priority:
+- **P1**: Method-Level (`page.element.wait_method(timeout=20)`)
+- **P2**: Element-Level (`Element(..., timeout=10, ...)`)
+- **P3**: Page-Level (`Page(..., timeout=30, ...)`)
+
+### P1. Wait Timeout Value Configuration
+Defines the timeout for a specific `wait` method call.  
+This temporarily overrides both the `Page` and `Element(s)` timeout settings.
+```python
+my_page = MyPage(driver, timeout=10)
+my_page.my_element.wait_visible(timeout=3)  # Timeout is set to 3 seconds for this call only.
+```
+
+### P2. Page Timeout Value Configuration
+Sets the default timeout for the `Page` and all `Element(s)` objects within it.
 ```python
 my_page = MyPage(driver, timeout=10)
 ```
 
-### 2. Element Timeout Value Configuration (P2)
-Sets a specific timeout for an `Element`.  
-This value applies if the `wait` method does not specify a timeout.
+### P3. Element Timeout Value Configuration
+Sets a specific default timeout for an `Element(s)`.  
 ```python
 my_element = Element(..., timeout=20, ...)
 ```
@@ -120,22 +206,6 @@ Or reset element timeout during test execution.
 ```python
 my_page.my_element.reset_timeout(7)
 ```
-
-### 3. Wait Timeout Value Configuration (P1)
-Defines the timeout for a specific `wait` method call.  
-This overrides both the `Page` and `Element` timeout settings but does not persist for future operations.
-```python
-my_page = MyPage(driver, timeout=10)
-
-# Temporarily set my_element's timeout to 3 seconds for this wait operation.
-my_page.my_element.wait_visible(timeout=3)
-my_page.save_screenshot()
-```
-
-### 4. Timeout Value Priority
-1. **P1**: Method-Level (`page.element.wait_method(timeout=20)`)
-2. **P2**: Element-Level (`Element(..., timeout=10, ...)`)
-3. **P3**: Page-Level (`Page(..., timeout=30, ...)`)
 
 ---
 

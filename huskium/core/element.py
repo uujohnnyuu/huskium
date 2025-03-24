@@ -1627,11 +1627,7 @@ class Element:
             self.action.move_to_element(self.present)
         return self
 
-    def move_to_element_with_offset(
-        self,
-        xoffset: int,
-        yoffset: int,
-    ) -> Self:
+    def move_to_element_with_offset(self, xoffset: int, yoffset: int) -> Self:
         """
         ActionChains API.
         Move the mouse by an offset of the specified element.
@@ -1700,7 +1696,7 @@ class Element:
         Examples:
             ::
 
-                page.element.send_keys_to_element('some text', Keys.ENTER)
+                page.element.sends_keys_to_element('some text', Keys.ENTER)
 
         """
         try:
