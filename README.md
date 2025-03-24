@@ -141,7 +141,7 @@ class MyPage(Page):
         return self.static_search_result.dynamic(By.XPATH, f'(//h3)[{order}]', remark=f'NO.{order}')
 ```
 
-After the first dynamic call, you can reuse the static element:
+Once set, you can reuse the static element:
 ```python
 # test_my_page.py
 my_page.dynamic_search_result(3).wait_present()
@@ -278,7 +278,7 @@ By default, the `Element` class uses the caching mechanism.
 However, if your testing environment is highly unstable,  
 you can simply disable this cache setting to ensure stability by re-locating the element each time.
 
-`Elements` does not support this setting because the state of multiple elements tends to be more volatile.  
+Notice that `Elements` does not support this setting because the state of multiple elements tends to be more volatile.  
 Even if caching were enabled, it would not guarantee the cached elements are the same as the previous ones.  
 Thus, it follows the official explicit wait strategy by re-locating the elements each time.
 
@@ -310,6 +310,17 @@ Sets whether `Element` globally caches by default.
 Element.enable_default_cache()  # Enable global default cache
 Element.disable_default_cache()  # Disable global default cache
 Element.default_cache()  # Current global default cache setting
+```
+
+### The Script Example
+This example demonstrates a common scenario where we validate the element’s text before clicking:
+- If the assertion passes, the WebElement object for `my_element` will already be available.
+- When calling `click()`, the cached WebElement will be used directly.
+- There's no need to refetch the element or store it in a separate variable.
+- Even if the WebElement reference becomes stale in between, it will automatically recover and refetch as needed.
+```python
+assert my_page.my_element.text == 'some text'
+my_page.my_element.click()
 ```
 
 ---
