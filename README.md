@@ -88,7 +88,7 @@ my_page.close()
 
 ---
 
-## Advanced Dynamic Element
+## Dynamic Element
 
 Most page objects, as described in the previous section, are called **static element**.  
 In contrast, **dynamic element** are defined at runtime within the test script.
@@ -115,7 +115,7 @@ class MyPage(Page):
         return Element(By.XPATH, f'(//h3)[{order}]', remark=f'Search result no.{order}')
 ```
 
-Test script still uses `page.element.method()`, but the element is now a function.
+Test script still uses `page.element.method()` pattern.
 ```python
 # test_my_page.py
 my_page.search_result(3).click()
@@ -182,15 +182,15 @@ The timeout value defines the maximum time in seconds allowed to
 successfully complete a WebDriver or WebElement operation.
 
 There are three types of timeout value settings, with the following priority:
-- **P1**: Method Level
-- **P2**: Element Level
-- **P3**: Page Level
+- **P1**: Method Level. Defaults to `None`, falls back to the element timeout.
+- **P2**: Element Level. Defaults to `None`, falls back to the page timeout.
+- **P3**: Page Level. Defaults to 10 seconds.
 
 ### P1. Method Level of Timeout Value 
 Defines the timeout for a specific method call.  
-This **temporarily** overrides both the `Page` and `Element(s)` timeout settings.
+Defaults to `None`, if set, it **temporarily** overrides all timeout settings.
 ```python
-my_page = MyPage(driver, timeout=10)
+my_page = MyPage(driver, timeout=10)  # 10 seconds for all operations.
 my_page.url_is('https://...', timeout=30)  # 30 seconds for this call only.
 my_page.my_element.wait_visible(timeout=5)  # 5 seconds for this call only.
 
@@ -198,42 +198,43 @@ my_page.my_element.wait_visible(timeout=5)  # 5 seconds for this call only.
 
 ### P2. Element Level of Timeout Value 
 Sets a specific default timeout for an `Element`.  
-This **permanently** overrides the `Page` timeout settings. 
+Defaults to `None`, if set, it **permanently** overrides the `Page` timeout settings. 
 ```python
-my_element = Element(..., timeout=20, ...)
+my_element = Element(..., timeout=20, ...)  # 20 seconds for this element.
 ```
 Or reset element timeout during test execution.
 ```python
-my_page.my_element.reset_timeout(7)
+my_page.my_element.reset_timeout(7)  # reset to 7 seconds for this element.
 ```
 
 ### P3. Page Level of Timeout Value 
-Sets the default timeout for the `Page` and all `Element` objects within it.
+Sets the default timeout for the `Page` and all `Element` objects within it.  
+Applies when neither the Method Level nor the Element Level timeout is set.
 ```python
-my_page = MyPage(driver, timeout=10)
+my_page = MyPage(driver, timeout=10)  # 10 seconds for all operations.
 ```
 
 ---
 
 ## Timeout Reraise Settings
 
-The reraise parameter controls whether a TimeoutException is raised when a timeout occurs.
-- **True**: the process raises `TimeoutException` on timeout.
-- **False**: the process returns `False` on timeout.
+The `reraise` parameter controls whether to raise `TimeoutException` when a timeout occurs.
+- **True**: the process `raise TimeoutException` on timeout.
+- **False**: the process `return False` on timeout.
 
 There are two types of timeout reraise settings, with the following priority:
-- **P1**: Method Level
-- **P2**: Page Level
+- **P1**: Method Level. Defaults to `None`, falls back to the page timeout.
+- **P2**: Page Level. Defaults to `True`.
 
 ### P1. Method Level of Timeout Reraise
-Defines the default reraise behavior for Page and Element methods that accept the reraise parameter.  
-If not set, the Page’s reraise state is used.
+Defines the default reraise behavior for methods that accept the reraise parameter.  
+Defaults to `None`, if set, it **temporarily** overrides all reraise settings.
 ```python
-my_page = MyPage(driver, timeout=30, reraise=True)
+my_page = MyPage(driver, timeout=30, reraise=True)  # Page level defaults to True.
 
 # Page methods.
-my_page.url_is()  # Raises TimeoutException on timeout.
-my_page.url_is(reraise=False)  # Returns False on timeout.
+my_page.url_is('https://...')  # Raises TimeoutException on timeout.
+my_page.url_is('https://...', reraise=False)  # Returns False on timeout.
 
 # Element methods.
 my_page.my_element.wait_present()  # Raises TimeoutException on timeout.
@@ -242,6 +243,7 @@ my_page.my_element.wait_present(reraise=False)  # Returns False on timeout.
 
 ### P2. Page Level of Timeout Reraise
 
+Defaults to `True`.  
 If a timeout-related method does not explicitly set the reraise behavior, 
 the page-level reraise setting will be used.
 
@@ -252,7 +254,7 @@ because returning `False` would result in meaningless `AttributeError`.
 my_page = MyPage(driver, timeout=30, reraise=False)
 
 # Both returns False on timeout.
-my_page.url_is()
+my_page.url_is('https://...')
 my_page.my_element.wait_present()
 
 # WebElement methods always raise a TimeoutException on timeout.
@@ -264,30 +266,25 @@ my_page.my_element.click()
 
 ## Element Cache Settings
 
-This method **only applies to** `Element`, **not** `Elements`!
+This setting applies **only to** `Element`, **not** `Elements`!
 
-It controls whether to cache the found WebElement object for reuse.  
-The benefit is that if the same element is accessed multiple times,  
-the already located WebElement will be reused to save the time of re-locating, speeding up the process.
+It controls whether to cache the WebElement for reuse.  
+Caching improves performance by avoiding repeated lookups and auto-recovers  
+from common exceptions like `StaleElementReferenceException`.
 
-Additionally, it will automatically handle recovery when `InvalidSessionIdException` or `StaleElementReferenceException` occurs,  
-so you don't have to worry about element reference issues.
+By default, `Element` uses caching.  
+If your test environment is unstable, disable caching to re-locate elements each time for better stability.
 
-By default, the `Element` class uses the caching mechanism.  
-However, if your testing environment is highly unstable,  
-you can simply disable this cache setting to ensure stability by re-locating the element each time.
+To reiterate, `Elements` does **not** support this setting.  
+It always re-fetches due to the unstable nature of multiple elements.
 
-Notice that `Elements` does not support this setting because the state of multiple elements tends to be more volatile.  
-Even if caching were enabled, it would not guarantee the cached elements are the same as the previous ones.  
-Thus, it follows the official explicit wait strategy by re-locating the elements each time.
+Cache options:
+- **True**: Cache the WebElement for reuse.
+- **False**: Always refetch the element.
 
-Again, this method **only applies to** `Element`, **not** `Elements`!
-- **True**: Cache the found WebElement object to reuse.
-- **False**: Refind element for each process.
-
-There are two types of element cache settings
-- **P1**: Element Object Level
-- **P2**: Element Global Level
+There are two types of element cache settings:
+- **P1**: Element Object Level. Defaults to `None`, falls back to the global setting.
+- **P2**: Element Global Level. Defaults to `True`.
 
 ### P1. Element Object Level of Cache
 Sets whether the `Element` object caches, overriding the global setting.
