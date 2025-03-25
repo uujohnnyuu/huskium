@@ -380,7 +380,7 @@ class Element:
                 try:
                     self.select_caching.options
                 except ELEMENT_REFERENCE_EXCEPTIONS:
-                    self.select_element.options
+                    self.select.options
 
         """
         return self._caching(_Name._select_cache)
@@ -406,7 +406,7 @@ class Element:
         if self.cache and isinstance(element, WebElement) and extra:
             self._clickable_cache = self._visible_cache = self._present_cache = element
 
-    def _cache_select_object(self, select: Select):
+    def _cache_select(self, select: Select):
         """Cache the Select instance if caching is enabled."""
         if self.cache and isinstance(select, Select):
             self._select_cache = select
@@ -780,7 +780,7 @@ class Element:
             select = Select(self.present_caching)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             select = Select(self.present_element)
-        self._cache_select_object(select)
+        self._cache_select(select)
         return select
 
     @property
