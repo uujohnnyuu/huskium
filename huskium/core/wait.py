@@ -3,6 +3,7 @@
 # PyPI: https://pypi.org/project/huskium/
 # GitHub: https://github.com/uujohnnyuu/huskium
 
+
 from typing import Iterable, Type
 
 from selenium.webdriver.support.wait import IGNORED_EXCEPTIONS, WebDriverWait
