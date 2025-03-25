@@ -409,17 +409,17 @@ class Elements:
             return self._timeout_process('any visible', exc, reraise)
 
     @property
-    def all_present(self) -> list[WebElement]:
+    def all_present_elements(self) -> list[WebElement]:
         """The same as `elements.wait_all_present(reraise=True)`."""
         return cast(list[WebElement], self.wait_all_present(reraise=True))
 
     @property
-    def all_visible(self) -> list[WebElement]:
+    def all_visible_elements(self) -> list[WebElement]:
         """The same as `elements.wait_all_visible(reraise=True)`."""
         return cast(list[WebElement], self.wait_all_visible(reraise=True))
 
     @property
-    def any_visible(self) -> list[WebElement]:
+    def any_visible_elements(self) -> list[WebElement]:
         """The same as elements.wait_any_visible(reraise=True)."""
         return cast(list[WebElement], self.wait_any_visible(reraise=True))
 
@@ -448,7 +448,7 @@ class Elements:
             bool:
                 `True` if all are visible within the timeout, `False` otherwise.
         """
-        return all(element.is_displayed() for element in self.all_present)
+        return all(element.is_displayed() for element in self.all_present_elements)
 
     def are_any_visible(self) -> bool:
         """
@@ -459,7 +459,7 @@ class Elements:
                 `True` if at least one is visible within the timeout,
                 `False` otherwise.
         """
-        return any(element.is_displayed() for element in self.all_present)
+        return any(element.is_displayed() for element in self.all_present_elements)
 
     @property
     def quantity(self) -> int:
@@ -470,17 +470,17 @@ class Elements:
     @property
     def texts(self) -> list[str]:
         """The texts of all present elements."""
-        return [element.text for element in self.all_present]
+        return [element.text for element in self.all_present_elements]
 
     @property
     def all_visible_texts(self) -> list[str]:
         """The texts of all elements until they are visible."""
-        return [element.text for element in self.all_visible]
+        return [element.text for element in self.all_visible_elements]
 
     @property
     def any_visible_texts(self) -> list[str]:
         """The texts of the elements if at least one is visible."""
-        return [element.text for element in self.any_visible]
+        return [element.text for element in self.any_visible_elements]
 
     @property
     def rects(self) -> list[dict[str, int]]:
@@ -492,14 +492,14 @@ class Elements:
                 'width': rect['width'],
                 'height': rect['height']
             }
-            for element in self.all_present
+            for element in self.all_present_elements
             for rect in [element.rect]
         ]
 
     @property
     def locations(self) -> list[dict[str, int]]:
         """The locations of all present elements."""
-        return [element.location for element in self.all_present]
+        return [element.location for element in self.all_present_elements]
 
     @property
     def locations_in_view(self) -> list[dict[str, int]]:
@@ -507,7 +507,7 @@ class Elements:
         Appium API.
         The locations relative to the view of all present elements.
         """
-        return [element.location_in_view for element in self.all_present]  # type: ignore[union-attr]
+        return [element.location_in_view for element in self.all_present_elements]  # type: ignore[union-attr]
 
     @property
     def sizes(self) -> list[dict]:
@@ -517,7 +517,7 @@ class Elements:
                 'width': size['width'],
                 'height': size['height']
             }
-            for element in self.all_present
+            for element in self.all_present_elements
             for size in [element.size]
         ]
 
@@ -529,7 +529,7 @@ class Elements:
                 'x': int(rect['x'] + rect['width'] / 2),
                 'y': int(rect['y'] + rect['height'] / 2)
             }
-            for element in self.all_present
+            for element in self.all_present_elements
             for rect in [element.rect]
         ]
 
@@ -540,17 +540,17 @@ class Elements:
         Only works from Chromium 96, Firefox 96, and Safari 16.4 onwards.
         If no shadow root was attached, raises `NoSuchShadowRoot`.
         """
-        return [element.shadow_root for element in self.all_present]
+        return [element.shadow_root for element in self.all_present_elements]
 
     @property
     def aria_roles(self) -> list[str]:
         """The ARIA roles of the current web elements."""
-        return [element.aria_role for element in self.all_present]
+        return [element.aria_role for element in self.all_present_elements]
 
     @property
     def accessible_names(self) -> list[str]:
         """The ARIA Levels of the current webelement."""
-        return [element.accessible_name for element in self.all_present]
+        return [element.accessible_name for element in self.all_present_elements]
 
     def get_dom_attributes(self, name: str) -> list[str]:
         """
@@ -567,12 +567,12 @@ class Elements:
                 text_length = page.element.get_dom_attributes("class")
 
         """
-        return [element.get_dom_attribute(name) for element in self.all_present]
+        return [element.get_dom_attribute(name) for element in self.all_present_elements]
 
     def get_attributes(self, name: str) -> list[str | dict | None]:
         """The specific attributes or properties of all present elements."""
-        return [element.get_attribute(name) for element in self.all_present]
+        return [element.get_attribute(name) for element in self.all_present_elements]
 
     def get_properties(self, name: str) -> list[WebElement | bool | dict | str]:
         """The specific properties of all present elements."""
-        return [element.get_property(name) for element in self.all_present]
+        return [element.get_property(name) for element in self.all_present_elements]

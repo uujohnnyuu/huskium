@@ -312,7 +312,7 @@ class Element:
             return self.driver.find_elements(*self.locator)[self.index]
         return self.driver.find_element(*self.locator)
 
-    def _cache_try(self, name: str) -> Any:
+    def _caching(self, name: str) -> Any:
         """
         Return `getattr(self, name)`,
         or raise `NoSuchCacheException` if no cache is available.
@@ -322,7 +322,7 @@ class Element:
         raise NoSuchCacheException(f'No cache for "{name}", please relocate the element in except.')
 
     @property
-    def present_try(self) -> WebElement:
+    def present_caching(self) -> WebElement:
         """
         This attribute must be used with `try-except`.
 
@@ -330,15 +330,15 @@ class Element:
             ::
 
                 try:
-                    self.present_try.text
+                    self.present_caching.text
                 except ELEMENT_REFERENCE_EXCEPTIONS:
-                    self.present.text
+                    self.present_element.text
 
         """
-        return self._cache_try(_Name._present_cache)
+        return self._caching(_Name._present_cache)
 
     @property
-    def visible_try(self) -> WebElement:
+    def visible_caching(self) -> WebElement:
         """
         This attribute must be used with `try-except`.
 
@@ -346,15 +346,15 @@ class Element:
             ::
 
                 try:
-                    self.visible_try.text
+                    self.visible_caching.text
                 except ELEMENT_REFERENCE_EXCEPTIONS:
-                    self.visible.text
+                    self.visible_element.text
 
         """
-        return self._cache_try(_Name._visible_cache)
+        return self._caching(_Name._visible_cache)
 
     @property
-    def clickable_try(self) -> WebElement:
+    def clickable_caching(self) -> WebElement:
         """
         This attribute must be used with `try-except`.
 
@@ -362,15 +362,15 @@ class Element:
             ::
 
                 try:
-                    self.clickable_try.click()
+                    self.clickable_caching.click()
                 except ELEMENT_REFERENCE_EXCEPTIONS:
-                    self.clickable.click()
+                    self.clickable_element.click()
 
         """
-        return self._cache_try(_Name._clickable_cache)
+        return self._caching(_Name._clickable_cache)
 
     @property
-    def select_try(self) -> Select:
+    def select_caching(self) -> Select:
         """
         This attribute must be used with `try-except`.
 
@@ -378,12 +378,12 @@ class Element:
             ::
 
                 try:
-                    self.select_try.options
+                    self.select_caching.options
                 except ELEMENT_REFERENCE_EXCEPTIONS:
-                    self.select.options
+                    self.select_element.options
 
         """
-        return self._cache_try(_Name._select_cache)
+        return self._caching(_Name._select_cache)
 
     def _cache_present_element(self, element: WebElement | Any):
         """Cache the present element if caching is enabled."""
@@ -526,7 +526,7 @@ class Element:
         try:
             try:
                 self._visible_cache = self.waiting(timeout).until(
-                    ecex.visibility_of_element(self.present_try)
+                    ecex.visibility_of_element(self.present_caching)
                 )
                 return self._visible_cache
             except ELEMENT_REFERENCE_EXCEPTIONS:
@@ -574,7 +574,7 @@ class Element:
                 return cast(
                     WebElement | Literal[True],
                     self.waiting(timeout).until(
-                        ecex.invisibility_of_element(self.present_try, present)
+                        ecex.invisibility_of_element(self.present_caching, present)
                     )
                 )
             except ELEMENT_REFERENCE_EXCEPTIONS:
@@ -616,7 +616,7 @@ class Element:
         try:
             try:
                 self._clickable_cache = self._visible_cache = self.waiting(timeout).until(
-                    ecex.element_to_be_clickable(self.present_try)
+                    ecex.element_to_be_clickable(self.present_caching)
                 )
                 return self._clickable_cache
             except ELEMENT_REFERENCE_EXCEPTIONS:
@@ -664,7 +664,7 @@ class Element:
                 return cast(
                     WebElement | Literal[True],
                     self.waiting(timeout).until(
-                        ecex.element_to_be_unclickable(self.present_try, present)
+                        ecex.element_to_be_unclickable(self.present_caching, present)
                     )
                 )
             except ELEMENT_REFERENCE_EXCEPTIONS:
@@ -706,7 +706,7 @@ class Element:
         try:
             try:
                 return self.waiting(timeout).until(
-                    ecex.element_to_be_selected(self.present_try)
+                    ecex.element_to_be_selected(self.present_caching)
                 )
             except ELEMENT_REFERENCE_EXCEPTIONS:
                 element = self.waiting(timeout, StaleElementReferenceException).until(
@@ -747,7 +747,7 @@ class Element:
         try:
             try:
                 return self.waiting(timeout).until(
-                    ecex.element_to_be_unselected(self.present_try)
+                    ecex.element_to_be_unselected(self.present_caching)
                 )
             except ELEMENT_REFERENCE_EXCEPTIONS:
                 element = self.waiting(timeout, StaleElementReferenceException).until(
@@ -759,17 +759,17 @@ class Element:
             return self._timeout_process('unselected', exc, reraise)
 
     @property
-    def present(self) -> WebElement:
+    def present_element(self) -> WebElement:
         """ The same as `element.wait_present(reraise=True)`."""
         return cast(WebElement, self.wait_present(reraise=True))
 
     @property
-    def visible(self) -> WebElement:
+    def visible_element(self) -> WebElement:
         """The same as element.wait_visible(reraise=True)."""
         return cast(WebElement, self.wait_visible(reraise=True))
 
     @property
-    def clickable(self) -> WebElement:
+    def clickable_element(self) -> WebElement:
         """The same as element.wait_clickable(reraise=True)."""
         return cast(WebElement, self.wait_clickable(reraise=True))
 
@@ -777,9 +777,9 @@ class Element:
     def select(self) -> Select:
         """The Select instance used by the present element."""
         try:
-            select = Select(self.present_try)
+            select = Select(self.present_caching)
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            select = Select(self.present)
+            select = Select(self.present_element)
         self._cache_select_object(select)
         return select
 
@@ -814,10 +814,10 @@ class Element:
     def is_visible(self) -> bool:
         """Whether the element is visible (displayed)."""
         try:
-            element = self.present_try
+            element = self.present_caching
             result = element.is_displayed()
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            element = self.present
+            element = self.present_element
             result = element.is_displayed()
         self._cache_visible_element(element, result)
         return result
@@ -825,17 +825,17 @@ class Element:
     def is_enabled(self) -> bool:
         """Whether the element is enabled."""
         try:
-            return self.present_try.is_enabled()
+            return self.present_caching.is_enabled()
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            return self.present.is_enabled()
+            return self.present_element.is_enabled()
 
     def is_clickable(self) -> bool:
         """Whether the element is clickable (displayed and enabled)."""
         try:
-            element = self.present_try
+            element = self.present_caching
             result = element.is_displayed() and element.is_enabled()
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            element = self.present
+            element = self.present_element
             result = element.is_displayed() and element.is_enabled()
         self._cache_clickable_element(element, result)
         return result
@@ -843,9 +843,9 @@ class Element:
     def is_selected(self) -> bool:
         """Whether the element is selected."""
         try:
-            return self.present_try.is_selected()
+            return self.present_caching.is_selected()
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            return self.present.is_selected()
+            return self.present_element.is_selected()
 
     def is_viewable(self, timeout: int | float | None = None) -> bool:
         """
@@ -862,25 +862,25 @@ class Element:
     def text(self) -> str:
         """The text of the element when it is present."""
         try:
-            return self.present_try.text
+            return self.present_caching.text
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            return self.present.text
+            return self.present_element.text
 
     @property
     def visible_text(self) -> str:
         """The text of the element when it is visible."""
         try:
-            return self.visible_try.text
+            return self.visible_caching.text
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            return self.visible.text
+            return self.visible_element.text
 
     @property
     def tag_name(self) -> str:
         """The tagName property."""
         try:
-            return self.present_try.tag_name
+            return self.present_caching.tag_name
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            return self.present.tag_name
+            return self.present_element.tag_name
 
     @property
     def rect(self) -> dict:
@@ -889,9 +889,9 @@ class Element:
         For example: `{'x': 10, 'y': 15, 'width': 100, 'height': 200}`.
         """
         try:
-            rect = self.present_try.rect
+            rect = self.present_caching.rect
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            rect = self.present.rect
+            rect = self.present_element.rect
         # rearranged
         return {
             'x': rect['x'],
@@ -907,9 +907,9 @@ class Element:
         For example: `{'x': 200, 'y': 300}`.
         """
         try:
-            return self.present_try.location
+            return self.present_caching.location
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            return self.present.location
+            return self.present_element.location
 
     @property
     def location_once_scrolled_into_view(self) -> dict:
@@ -923,9 +923,9 @@ class Element:
         or `(0, 0)` if the element is not visible.
         """
         try:
-            return self.present_try.location_once_scrolled_into_view
+            return self.present_caching.location_once_scrolled_into_view
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            return self.present.location_once_scrolled_into_view
+            return self.present_element.location_once_scrolled_into_view
 
     @property
     def location_in_view(self) -> dict[str, int]:
@@ -936,9 +936,9 @@ class Element:
         For example: `{'x': 100, 'y': 250}`.
         """
         try:
-            return self.present_try.location_in_view  # type: ignore[attr-defined]
+            return self.present_caching.location_in_view  # type: ignore[attr-defined]
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            return self.present.location_in_view  # type: ignore[attr-defined]
+            return self.present_element.location_in_view  # type: ignore[attr-defined]
 
     @property
     def size(self) -> dict:
@@ -947,9 +947,9 @@ class Element:
         For example: `{'width': 200, 'height': 100}`.
         """
         try:
-            size = self.present_try.size
+            size = self.present_caching.size
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            size = self.present.size
+            size = self.present_element.size
         # rearranged
         return {
             'width': size['width'],
@@ -963,9 +963,9 @@ class Element:
         For example: `{'left': 150, 'right': 250, 'top': 200, 'bottom': 400}`.
         """
         try:
-            rect = self.present_try.rect
+            rect = self.present_caching.rect
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            rect = self.present.rect
+            rect = self.present_element.rect
         return {
             'left': int(rect['x']),
             'right': int(rect['x'] + rect['width']),
@@ -980,9 +980,9 @@ class Element:
         For example: `{'x': 80, 'y': 190}`.
         """
         try:
-            rect = self.present_try.rect
+            rect = self.present_caching.rect
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            rect = self.present.rect
+            rect = self.present_element.rect
         return {
             'x': int(rect['x'] + rect['width'] / 2),
             'y': int(rect['y'] + rect['height'] / 2)
@@ -996,25 +996,25 @@ class Element:
         If no shadow root was attached, raises `NoSuchShadowRoot`.
         """
         try:
-            return self.present_try.shadow_root
+            return self.present_caching.shadow_root
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            return self.present.shadow_root
+            return self.present_element.shadow_root
 
     @property
     def aria_role(self) -> str:
         """The ARIA role of the current web element."""
         try:
-            return self.present_try.aria_role
+            return self.present_caching.aria_role
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            return self.present.aria_role
+            return self.present_element.aria_role
 
     @property
     def accessible_name(self) -> str:
         """The ARIA Level of the current web element."""
         try:
-            return self.present_try.accessible_name
+            return self.present_caching.accessible_name
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            return self.present.accessible_name
+            return self.present_element.accessible_name
 
     def get_dom_attribute(self, name: str) -> str:
         """
@@ -1032,9 +1032,9 @@ class Element:
 
         """
         try:
-            return self.present_try.get_dom_attribute(name)
+            return self.present_caching.get_dom_attribute(name)
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            return self.present.get_dom_attribute(name)
+            return self.present_element.get_dom_attribute(name)
 
     def get_attribute(self, name: str) -> str | dict | None:
         """
@@ -1063,9 +1063,9 @@ class Element:
 
         """
         try:
-            return self.present_try.get_attribute(name)
+            return self.present_caching.get_attribute(name)
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            return self.present.get_attribute(name)
+            return self.present_element.get_attribute(name)
 
     def get_property(self, name: Any) -> str | bool | WebElement | dict:
         """
@@ -1081,9 +1081,9 @@ class Element:
 
         """
         try:
-            return self.present_try.get_property(name)
+            return self.present_caching.get_property(name)
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            return self.present.get_property(name)
+            return self.present_element.get_property(name)
 
     def value_of_css_property(self, property_name: Any) -> str:
         """
@@ -1096,9 +1096,9 @@ class Element:
 
         """
         try:
-            return self.present_try.value_of_css_property(property_name)
+            return self.present_caching.value_of_css_property(property_name)
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            return self.present.value_of_css_property(property_name)
+            return self.present_element.value_of_css_property(property_name)
 
     def visible_value_of_css_property(self, property_name: Any) -> str:
         """
@@ -1111,16 +1111,16 @@ class Element:
 
         """
         try:
-            return self.visible_try.value_of_css_property(property_name)
+            return self.visible_caching.value_of_css_property(property_name)
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            return self.visible.value_of_css_property(property_name)
+            return self.visible_element.value_of_css_property(property_name)
 
     def click(self) -> None:
         """Click the element when it is clickable."""
         try:
-            self.clickable_try.click()
+            self.clickable_caching.click()
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            self.clickable.click()
+            self.clickable_element.click()
 
     def delayed_click(self, sleep: int | float = 0.5) -> None:
         """
@@ -1128,11 +1128,11 @@ class Element:
         with a specified delay (sleep) in seconds.
         """
         try:
-            cache = self.clickable_try
+            cache = self.clickable_caching
             time.sleep(sleep)
             cache.click()
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            element = self.clickable
+            element = self.clickable_element
             time.sleep(sleep)
             element.click()
 
@@ -1149,9 +1149,9 @@ class Element:
 
         """
         try:
-            self.clickable_try.clear()
+            self.clickable_caching.clear()
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            self.clickable.clear()
+            self.clickable_element.clear()
         return self
 
     def send_keys(self, *value) -> Self:
@@ -1170,17 +1170,17 @@ class Element:
 
         """
         try:
-            self.clickable_try.send_keys(*value)
+            self.clickable_caching.send_keys(*value)
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            self.clickable.send_keys(*value)
+            self.clickable_element.send_keys(*value)
         return self
 
     def submit(self) -> None:
         """Submits a form."""
         try:
-            self.present_try.submit()
+            self.present_caching.submit()
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            self.present.submit()
+            self.present_element.submit()
 
     def switch_to_frame(
         self,
@@ -1205,9 +1205,9 @@ class Element:
                 This should end with a `.png` extension.
         """
         try:
-            return self.present_try.screenshot(filename)
+            return self.present_caching.screenshot(filename)
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            return self.present.screenshot(filename)
+            return self.present_element.screenshot(filename)
 
     # ==================================================================================================================
     # ActionChains Process
@@ -1273,9 +1273,9 @@ class Element:
 
         """
         try:
-            self.action.click(self.present_try)
+            self.action.click(self.present_caching)
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            self.action.click(self.present)
+            self.action.click(self.present_element)
         return self
 
     def clicks(self) -> Self:
@@ -1311,9 +1311,9 @@ class Element:
 
         """
         try:
-            self.action.click_and_hold(self.present_try)
+            self.action.click_and_hold(self.present_caching)
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            self.action.click_and_hold(self.present)
+            self.action.click_and_hold(self.present_element)
         return self
 
     def click_and_hold(self) -> Self:
@@ -1349,9 +1349,9 @@ class Element:
 
         """
         try:
-            self.action.context_click(self.present_try)
+            self.action.context_click(self.present_caching)
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            self.action.context_click(self.present)
+            self.action.context_click(self.present_element)
         return self
 
     def context_click(self) -> Self:
@@ -1386,9 +1386,9 @@ class Element:
 
         """
         try:
-            self.action.double_click(self.present_try)
+            self.action.double_click(self.present_caching)
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            self.action.double_click(self.present)
+            self.action.double_click(self.present_element)
         return self
 
     def double_click(self) -> Self:
@@ -1421,9 +1421,9 @@ class Element:
 
         """
         try:
-            self.action.drag_and_drop(self.present_try, target.present_try)
+            self.action.drag_and_drop(self.present_caching, target.present_caching)
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            self.action.drag_and_drop(self.present, target.present)
+            self.action.drag_and_drop(self.present_element, target.present_element)
         return self
 
     def drag_and_drop_by_offset(self, xoffset: int, yoffset: int) -> Self:
@@ -1443,9 +1443,9 @@ class Element:
 
         """
         try:
-            self.action.drag_and_drop_by_offset(self.present_try, xoffset, yoffset)
+            self.action.drag_and_drop_by_offset(self.present_caching, xoffset, yoffset)
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            self.action.drag_and_drop_by_offset(self.present, xoffset, yoffset)
+            self.action.drag_and_drop_by_offset(self.present_element, xoffset, yoffset)
         return self
 
     def send_hotkey_to_element(self, *keys: str) -> Self:
@@ -1462,9 +1462,9 @@ class Element:
         """
         # key_down: The first key.
         try:
-            self.action.key_down(keys[0], self.present_try)
+            self.action.key_down(keys[0], self.present_caching)
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            self.action.key_down(keys[0], self.present)
+            self.action.key_down(keys[0], self.present_element)
         # key_down: Intermediate keys (excluding first and last).
         for key in keys[1:-1]:  # ignored if only 2 keys
             self.action.key_down(key)
@@ -1518,9 +1518,9 @@ class Element:
 
         """
         try:
-            self.action.key_down(key, self.present_try)
+            self.action.key_down(key, self.present_caching)
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            self.action.key_down(key, self.present)
+            self.action.key_down(key, self.present_element)
         return self
 
     def key_down(self, key: str) -> Self:
@@ -1565,9 +1565,9 @@ class Element:
 
         """
         try:
-            self.action.key_up(key, self.present_try)
+            self.action.key_up(key, self.present_caching)
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            self.action.key_up(key, self.present)
+            self.action.key_up(key, self.present_element)
         return self
 
     def key_up(self, key: str) -> Self:
@@ -1622,9 +1622,9 @@ class Element:
 
         """
         try:
-            self.action.move_to_element(self.present_try)
+            self.action.move_to_element(self.present_caching)
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            self.action.move_to_element(self.present)
+            self.action.move_to_element(self.present_element)
         return self
 
     def move_to_element_with_offset(self, xoffset: int, yoffset: int) -> Self:
@@ -1644,9 +1644,9 @@ class Element:
 
         """
         try:
-            self.action.move_to_element_with_offset(self.present_try, xoffset, yoffset)
+            self.action.move_to_element_with_offset(self.present_caching, xoffset, yoffset)
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            self.action.move_to_element_with_offset(self.present, xoffset, yoffset)
+            self.action.move_to_element_with_offset(self.present_element, xoffset, yoffset)
         return self
 
     def pause(self, seconds: int | float) -> Self:
@@ -1669,9 +1669,9 @@ class Element:
 
         """
         try:
-            self.action.release(self.present_try)
+            self.action.release(self.present_caching)
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            self.action.release(self.present)
+            self.action.release(self.present_element)
         return self
 
     def release(self) -> Self:
@@ -1700,9 +1700,9 @@ class Element:
 
         """
         try:
-            self.action.send_keys_to_element(self.present_try, *keys)
+            self.action.send_keys_to_element(self.present_caching, *keys)
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            self.action.send_keys_to_element(self.present, *keys)
+            self.action.send_keys_to_element(self.present_element, *keys)
         return self
 
     def sends_keys(self, *keys: str) -> Self:
@@ -1733,9 +1733,9 @@ class Element:
 
         """
         try:
-            self.action.scroll_to_element(self.present_try)
+            self.action.scroll_to_element(self.present_caching)
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            self.action.scroll_to_element(self.present)
+            self.action.scroll_to_element(self.present_element)
         return self
 
     def scroll_by_amount(self, delta_x: int, delta_y: int) -> Self:
@@ -1790,10 +1790,10 @@ class Element:
 
         """
         try:
-            scroll_origin = ScrollOrigin.from_element(self.present_try, x_offset, y_offset)
+            scroll_origin = ScrollOrigin.from_element(self.present_caching, x_offset, y_offset)
             self.action.scroll_from_origin(scroll_origin, delta_x, delta_y)
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            scroll_origin = ScrollOrigin.from_element(self.present, x_offset, y_offset)
+            scroll_origin = ScrollOrigin.from_element(self.present_element, x_offset, y_offset)
             self.action.scroll_from_origin(scroll_origin, delta_x, delta_y)
         return self
 
@@ -1853,9 +1853,9 @@ class Element:
                 Default is 600 ms for W3C spec.
         """
         try:
-            self.driver.scroll(self.present_try, target.present_try, duration)  # type: ignore[attr-defined]
+            self.driver.scroll(self.present_caching, target.present_caching, duration)  # type: ignore[attr-defined]
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            self.driver.scroll(self.present, target.present, duration)  # type: ignore[attr-defined]
+            self.driver.scroll(self.present_element, target.present_element, duration)  # type: ignore[attr-defined]
         return self
 
     def app_drag_and_drop(self, target: Element, pause: float | None = None) -> Self:
@@ -1868,9 +1868,9 @@ class Element:
                 the tap and hold in seconds.
         """
         try:
-            self.driver.drag_and_drop(self.present_try, target.present_try, pause)  # type: ignore[attr-defined]
+            self.driver.drag_and_drop(self.present_caching, target.present_caching, pause)  # type: ignore[attr-defined]
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            self.driver.drag_and_drop(self.present, target.present, pause)  # type: ignore[attr-defined]
+            self.driver.drag_and_drop(self.present_element, target.present_element, pause)  # type: ignore[attr-defined]
         return self
 
     def swipe_by(
@@ -2176,7 +2176,7 @@ class Element:
         Returns a list of all options belonging to this select tag.
         """
         try:
-            return self.select_try.options
+            return self.select_caching.options
         except ELEMENT_REFERENCE_EXCEPTIONS:
             return self.select.options
 
@@ -2187,7 +2187,7 @@ class Element:
         Returns a list of all selected options belonging to this select tag.
         """
         try:
-            return self.select_try.all_selected_options
+            return self.select_caching.all_selected_options
         except ELEMENT_REFERENCE_EXCEPTIONS:
             return self.select.all_selected_options
 
@@ -2199,7 +2199,7 @@ class Element:
         or the currently selected option in a normal select.
         """
         try:
-            return self.select_try.first_selected_option
+            return self.select_caching.first_selected_option
         except ELEMENT_REFERENCE_EXCEPTIONS:
             return self.select.first_selected_option
 
@@ -2215,7 +2215,7 @@ class Element:
             value: The value to match against.
         """
         try:
-            self.select_try.select_by_value(value)
+            self.select_caching.select_by_value(value)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.select.select_by_value(value)
 
@@ -2233,7 +2233,7 @@ class Element:
                 with specified index in SELECT.
         """
         try:
-            self.select_try.select_by_index(index)
+            self.select_caching.select_by_index(index)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.select.select_by_index(index)
 
@@ -2251,7 +2251,7 @@ class Element:
                 with specified text in SELECT.
         """
         try:
-            self.select_try.select_by_visible_text(text)
+            self.select_caching.select_by_visible_text(text)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.select.select_by_visible_text(text)
 
@@ -2261,7 +2261,7 @@ class Element:
         This is only valid when the SELECT supports multiple selections.
         """
         try:
-            self.select_try.deselect_all()
+            self.select_caching.deselect_all()
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.select.deselect_all()
 
@@ -2276,7 +2276,7 @@ class Element:
             value: The value to match against.
         """
         try:
-            self.select_try.deselect_by_value(value)
+            self.select_caching.deselect_by_value(value)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.select.deselect_by_value(value)
 
@@ -2291,7 +2291,7 @@ class Element:
             index: The option at this index will be deselected.
         """
         try:
-            self.select_try.deselect_by_index(index)
+            self.select_caching.deselect_by_index(index)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.select.deselect_by_index(index)
 
@@ -2306,6 +2306,6 @@ class Element:
             text: The visible text to match against.
         """
         try:
-            self.select_try.deselect_by_visible_text(text)
+            self.select_caching.deselect_by_visible_text(text)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.select.deselect_by_visible_text(text)
