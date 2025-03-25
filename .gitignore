@@ -6,3 +6,5 @@ huskytc/
 verify_commit
 try*.py
 huskium/
+docs/build/
+docs/source/
