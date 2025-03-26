@@ -578,7 +578,9 @@ class Element:
                     )
                 )
             except ELEMENT_REFERENCE_EXCEPTIONS:
-                element_or_true: WebElement | Literal[True] = self.waiting(timeout, StaleElementReferenceException).until(
+                element_or_true: WebElement | Literal[True] = self.waiting(
+                    timeout, StaleElementReferenceException
+                ).until(
                     ecex.invisibility_of_element_located(self.locator, self.index, present)
                 )
                 self._cache_present_element(element_or_true)
@@ -668,7 +670,9 @@ class Element:
                     )
                 )
             except ELEMENT_REFERENCE_EXCEPTIONS:
-                element_or_true: WebElement | Literal[True] = self.waiting(timeout, StaleElementReferenceException).until(
+                element_or_true: WebElement | Literal[True] = self.waiting(
+                    timeout, StaleElementReferenceException
+                ).until(
                     ecex.element_located_to_be_unclickable(self.locator, self.index, present)
                 )
                 self._cache_present_element(element_or_true)

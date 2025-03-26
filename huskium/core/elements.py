@@ -464,8 +464,7 @@ class Elements:
     @property
     def quantity(self) -> int:
         """The quantity of all present elements."""
-        elements = self.wait_all_present(reraise=False)
-        return len(elements) if isinstance(elements, list) else 0
+        return len(self.wait_all_present(reraise=False) or [])
 
     @property
     def texts(self) -> list[str]:
