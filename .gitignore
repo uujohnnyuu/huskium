@@ -6,5 +6,9 @@ huskytc/
 verify_commit
 try*.py
 huskium/
+dist/
+*.egg-info/
 docs/build/
 docs/source/
+docs/make.bat
+docs/Makefile
