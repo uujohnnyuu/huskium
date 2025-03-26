@@ -1,3 +1,18 @@
+# huskium v1.1.2
+
+## **Stable Release**
+[sphinx] https://uujohnnyuu.github.io/huskium/
+This version has the same functionality as v1.1.1, 
+with only refinements in wording, and serves as preparation for v1.2.0.
+
+## Installation
+To install or upgrade to this version, run:
+```sh
+pip install huskium==1.1.2
+```
+
+---
+
 # huskium v1.1.1
 
 ## **Stable Release**
