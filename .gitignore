@@ -1,10 +1,10 @@
 *DS_Store*
 *vscode*
-*__pycache__*
+__pycache__/
 
 # verify
-.mypy_cache
-verify_commit
+.mypy_cache/
+verify_commit/
 
 # Testcase
 huskytc/
@@ -12,10 +12,10 @@ log*.log
 
 # PyPI
 dist/
-huskium.egg-info/
+*.egg-info/
 
 # sphinx
-docs
+docs/
 
 # try
 try*.py
