@@ -1,7 +1,7 @@
 # huskium v1.1.2
 
 ## **Stable Release**
-[sphinx] https://uujohnnyuu.github.io/huskium/
+[sphinx] https://uujohnnyuu.github.io/huskium/  
 This version has the same functionality as v1.1.1, 
 with only refinements in wording, and serves as preparation for v1.2.0.
 
