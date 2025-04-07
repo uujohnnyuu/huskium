@@ -38,7 +38,7 @@ P = TypeVar('P', bound=Page)
 class Element(Generic[P, WD, WE]):
 
     if TYPE_CHECKING:
-        _page: Page
+        _page: P
         _wait: Wait
         _synced_cache: bool
         _present_cache: WE
