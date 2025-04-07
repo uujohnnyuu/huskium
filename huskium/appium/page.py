@@ -55,7 +55,7 @@ class Page(BasePage[WebDriver, WebElement]):
         Args:
             duration: length of time to tap, in ms. Default value is 100 ms.
         """
-        center: list[tuple[int, int]] = [tuple(self.get_window_center().values())]
+        center = cast(list[tuple[int, int]], [tuple(self.get_window_center().values())])
         self.driver.tap(center, duration)
         return self
 

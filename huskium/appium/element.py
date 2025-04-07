@@ -6,7 +6,7 @@
 
 from __future__ import annotations
 
-from typing import Self
+from typing import cast, Self
 
 from appium.webdriver.webdriver import WebDriver
 from appium.webdriver.webelement import WebElement
@@ -57,7 +57,7 @@ class Element(BaseElement[Page, WebDriver, WebElement]):
         Args:
             duration: Length of time to tap, in ms.
         """
-        center: list[tuple[int, int]] = [tuple(self.center.values())]
+        center = cast(list[tuple[int, int]], [tuple(self.center.values())])
         self.driver.tap(center, duration)
         return self
 
