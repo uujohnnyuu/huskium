@@ -8,22 +8,24 @@ from __future__ import annotations
 
 import logging
 import time
-from typing import TYPE_CHECKING, Any, cast, Iterable, Literal, Self, Type
+from typing import TYPE_CHECKING, Any, cast, Generic, Iterable, Literal, Self, Type, TypeVar
 
 from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.actions.wheel_input import ScrollOrigin
 from selenium.webdriver.remote.shadowroot import ShadowRoot
+from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.select import Select
 
 from ..exception import NoSuchCacheException
 from ..logging import LogConfig, PageElementLoggerAdapter
-from ..types import WebDriver, WebElement, Coordinate
-from . import ec_extension as ecex
-from .common import _Name, _Verify, Offset, Area
-from .page import Page
+from ..types import WD, WE
 from ..wait import Wait
+from .common import _Name
+from .ecex import ECEX
+from .page import Page
+
 
 
 ELEMENT_REFERENCE_EXCEPTIONS = (NoSuchCacheException, StaleElementReferenceException)
@@ -31,25 +33,19 @@ ELEMENT_REFERENCE_EXCEPTIONS = (NoSuchCacheException, StaleElementReferenceExcep
 LOGGER = logging.getLogger(__name__)
 LOGGER.addFilter(LogConfig.PREFIX_FILTER)
 
+P = TypeVar('P', bound=Page)
 
-class Element:
 
-    # ==================================================================================================================
-    # Dynamic Attributes Type Checking
-    # ==================================================================================================================
+class Element(Generic[P, WD, WE]):
 
     if TYPE_CHECKING:
         _page: Page
         _wait: Wait
         _synced_cache: bool
-        _present_cache: WebElement
-        _visible_cache: WebElement
-        _clickable_cache: WebElement
+        _present_cache: WE
+        _visible_cache: WE
+        _clickable_cache: WE
         _select_cache: Select
-
-    # ==================================================================================================================
-    # Core Process
-    # ==================================================================================================================
 
     _CACHE: bool = True
 
@@ -93,12 +89,13 @@ class Element:
             remark: Custom remark for identification or logging. If `None`,
                 record as ``{"by": by, "value": value, "index": index}``.
         """
-        _Verify.element(by, value, index, timeout, cache, remark)
+        self._verify_data(by, value, index, timeout, cache, remark)
         self._set_data(by, value, index, timeout, cache, remark)
 
     def __get__(self, instance: Page, owner: Type[Page]) -> Self:
         """Make "Element" a descriptor of "Page"."""
-        _Verify.descriptor_get(instance, owner, Page)
+        if not (isinstance(instance, Page) and issubclass(owner, Page)):
+            raise TypeError(f'Element must be used within Page, got {type(instance).__name__}.')
         if getattr(self, _Name._page, None) is not instance:
             self._page = instance
             self._wait = Wait(instance._driver, 1)
@@ -108,7 +105,10 @@ class Element:
 
     def __set__(self, instance: Page, value: Element) -> None:
         """Set dynamic element by `page.element = Element(...)` pattern."""
-        _Verify.descriptor_set(instance, Page, value, Element)
+        if not isinstance(instance, Page):
+            raise TypeError(f'Element must be used within Page, got {type(instance).__name__}.')
+        if not isinstance(value, Element):
+            raise TypeError(f'Assigned value must be an Element, got {type(value).__name__}.')
         self._set_data(value._by, value._value, value._index, value._timeout, value._cache, value._remark)
         self._clear_caches()
 
@@ -155,11 +155,28 @@ class Element:
 
         """
         # Avoid using __init__() here, as it will reset the descriptor.
-        _Verify.element(by, value, index, timeout, cache, remark)
+        self._verify_data(by, value, index, timeout, cache, remark)
         self._set_data(by, value, index, timeout, cache, remark)
         self._sync_data()
         self._clear_caches()
         return self
+    
+    def _verify_data(
+        self,
+        by: str | None,
+        value: str | None,
+        index: int | None,
+        timeout: int | float | None,
+        cache: bool | None,
+        remark: str | dict | None
+    ) -> None:
+        """Verify basic attributes."""
+        self._verify_by(by)
+        self._verify_value(value)
+        self._verify_index(index)
+        self._verify_timeout(timeout)
+        self._verify_cache(cache)
+        self._verify_remark(remark)
 
     def _set_data(
         self,
@@ -188,6 +205,29 @@ class Element:
         """Clear all caches to prevent wrong element reference issues."""
         for cache_name in _Name._caches:
             vars(self).pop(cache_name, None)
+
+    def _verify_by(self, by: str | None) -> None:
+        raise NotImplementedError('"_verify_by" must be implemented in selenium or appium module.')
+    
+    def _verify_value(self, value: str | None) -> None:
+        if not isinstance(value, str | None):
+            raise TypeError(f'The set "value" must be str, got {type(value).__name__}.')
+        
+    def _verify_index(self, index: int | None) -> None:
+        if not isinstance(index, int | None):
+            raise TypeError(f'The set "index" must be int, got {type(index).__name__}.')
+        
+    def _verify_timeout(self, timeout: int | float | None) -> None:
+        if not isinstance(timeout, int | float | None):
+            raise TypeError(f'The set "timeout" must be int or float, got {type(timeout).__name__}.')
+        
+    def _verify_cache(self, cache: bool | None) -> None:
+        if not isinstance(cache, bool | None):
+            raise TypeError(f'The set "cache" must be bool, got {type(cache).__name__}.')
+        
+    def _verify_remark(self, remark: str | None) -> None:
+        if not isinstance(remark, str | None):
+            raise TypeError(f'The set "remark" must be str, got {type(remark).__name__}.')
 
     @property
     def by(self) -> str | None:
@@ -218,7 +258,7 @@ class Element:
 
     def reset_timeout(self, value: int | float | None = None) -> None:
         """Reset the element timeout in seconds."""
-        _Verify.timeout(value)
+        self._verify_timeout(value)
         self._timeout = value
 
     @property
@@ -259,7 +299,7 @@ class Element:
         Reset the element remark. If value is None,
         defaults to ``{"by": by, "value": value, "index": index}``.
         """
-        _Verify.remark(value)
+        self._verify_remark(value)
         self._remark = value or self.default_remark
 
     @property
@@ -273,7 +313,7 @@ class Element:
         return self._page
 
     @property
-    def driver(self) -> WebDriver:
+    def driver(self) -> WD:
         """The WebDriver instance used by the page."""
         return self._page._driver
 
@@ -301,7 +341,7 @@ class Element:
     # Find Element
     # ==================================================================================================================
 
-    def find_element(self) -> WebElement:
+    def find_element(self) -> WE:
         """
         Using the traditional `find_element()` or `find_elements()[index]`
         to locate element.
@@ -322,7 +362,7 @@ class Element:
         raise NoSuchCacheException(f'No cache for "{name}", please relocate the element in except.')
 
     @property
-    def present_caching(self) -> WebElement:
+    def present_caching(self) -> WE:
         """
         This attribute must be used with `try-except`.
 
@@ -338,7 +378,7 @@ class Element:
         return self._caching(_Name._present_cache)
 
     @property
-    def visible_caching(self) -> WebElement:
+    def visible_caching(self) -> WE:
         """
         This attribute must be used with `try-except`.
 
@@ -354,7 +394,7 @@ class Element:
         return self._caching(_Name._visible_cache)
 
     @property
-    def clickable_caching(self) -> WebElement:
+    def clickable_caching(self) -> WE:
         """
         This attribute must be used with `try-except`.
 
@@ -385,12 +425,12 @@ class Element:
         """
         return self._caching(_Name._select_cache)
 
-    def _cache_present_element(self, element: WebElement | Any):
+    def _cache_present_element(self, element: WE | Any):
         """Cache the present element if caching is enabled."""
         if self.cache and isinstance(element, WebElement):
             self._present_cache = element
 
-    def _cache_visible_element(self, element: WebElement | Any, extra: bool = True):
+    def _cache_visible_element(self, element: WE | Any, extra: bool = True):
         """
         Cache the element as present and visible
         if caching is enabled and extra conditions are met.
@@ -398,7 +438,7 @@ class Element:
         if self.cache and isinstance(element, WebElement) and extra:
             self._visible_cache = self._present_cache = element
 
-    def _cache_clickable_element(self, element: WebElement | Any, extra: bool = True):
+    def _cache_clickable_element(self, element: WE | Any, extra: bool = True):
         """
         Cache the element as present, visible, and clickable
         if caching is enabled and extra conditions are met.
@@ -432,7 +472,7 @@ class Element:
         self,
         timeout: int | float | None = None,
         reraise: bool | None = None
-    ) -> WebElement | Literal[False]:
+    ) -> WE | Literal[False]:
         """
         Waits for the element to become present.
 
@@ -456,7 +496,7 @@ class Element:
         """
         try:
             element = self.waiting(timeout).until(
-                ecex.presence_of_element_located(self.locator, self.index)
+                ECEX.presence_of_element_located(self.locator, self.index)
             )
             self._cache_present_element(element)
             return element
@@ -491,7 +531,7 @@ class Element:
         """
         try:
             return self.waiting(timeout).until(
-                ecex.absence_of_element_located(self.locator, self.index)
+                ECEX.absence_of_element_located(self.locator, self.index)
             )
         except TimeoutException as exc:
             return self._timeout_process('absent', exc, reraise)
@@ -500,7 +540,7 @@ class Element:
         self,
         timeout: int | float | None = None,
         reraise: bool | None = None
-    ) -> WebElement | Literal[False]:
+    ) -> WE | Literal[False]:
         """
         Waits for the element to become visible.
 
@@ -526,12 +566,12 @@ class Element:
         try:
             try:
                 self._visible_cache = self.waiting(timeout).until(
-                    ecex.visibility_of_element(self.present_caching)
+                    ECEX.visibility_of_element(self.present_caching)
                 )
                 return self._visible_cache
             except ELEMENT_REFERENCE_EXCEPTIONS:
                 element = self.waiting(timeout, StaleElementReferenceException).until(
-                    ecex.visibility_of_element_located(self.locator, self.index)
+                    ECEX.visibility_of_element_located(self.locator, self.index)
                 )
                 self._cache_visible_element(element)
                 return element
@@ -543,7 +583,7 @@ class Element:
         timeout: int | float | None = None,
         present: bool = True,
         reraise: bool | None = None
-    ) -> WebElement | bool:
+    ) -> WE | bool:
         """
         Waits for the element to become invisible (or absent).
 
@@ -574,14 +614,14 @@ class Element:
                 return cast(
                     WebElement | Literal[True],
                     self.waiting(timeout).until(
-                        ecex.invisibility_of_element(self.present_caching, present)
+                        ECEX.invisibility_of_element(self.present_caching, present)
                     )
                 )
             except ELEMENT_REFERENCE_EXCEPTIONS:
                 element_or_true: WebElement | Literal[True] = self.waiting(
                     timeout, StaleElementReferenceException
                 ).until(
-                    ecex.invisibility_of_element_located(self.locator, self.index, present)
+                    ECEX.invisibility_of_element_located(self.locator, self.index, present)
                 )
                 self._cache_present_element(element_or_true)
                 return element_or_true
@@ -592,7 +632,7 @@ class Element:
         self,
         timeout: int | float | None = None,
         reraise: bool | None = None
-    ) -> WebElement | Literal[False]:
+    ) -> WE | Literal[False]:
         """
         Waits for the element to become clickable.
 
@@ -618,12 +658,12 @@ class Element:
         try:
             try:
                 self._clickable_cache = self._visible_cache = self.waiting(timeout).until(
-                    ecex.element_to_be_clickable(self.present_caching)
+                    ECEX.element_to_be_clickable(self.present_caching)
                 )
                 return self._clickable_cache
             except ELEMENT_REFERENCE_EXCEPTIONS:
                 element = self.waiting(timeout, StaleElementReferenceException).until(
-                    ecex.element_located_to_be_clickable(self.locator, self.index)
+                    ECEX.element_located_to_be_clickable(self.locator, self.index)
                 )
                 self._cache_clickable_element(element)
                 return element
@@ -635,7 +675,7 @@ class Element:
         timeout: int | float | None = None,
         present: bool = True,
         reraise: bool | None = None
-    ) -> WebElement | bool:
+    ) -> WE | bool:
         """
         Waits for the element to become unclickable (or absent).
 
@@ -666,14 +706,14 @@ class Element:
                 return cast(
                     WebElement | Literal[True],
                     self.waiting(timeout).until(
-                        ecex.element_to_be_unclickable(self.present_caching, present)
+                        ECEX.element_to_be_unclickable(self.present_caching, present)
                     )
                 )
             except ELEMENT_REFERENCE_EXCEPTIONS:
                 element_or_true: WebElement | Literal[True] = self.waiting(
                     timeout, StaleElementReferenceException
                 ).until(
-                    ecex.element_located_to_be_unclickable(self.locator, self.index, present)
+                    ECEX.element_located_to_be_unclickable(self.locator, self.index, present)
                 )
                 self._cache_present_element(element_or_true)
                 return element_or_true
@@ -684,7 +724,7 @@ class Element:
         self,
         timeout: int | float | None = None,
         reraise: bool | None = None
-    ) -> WebElement | Literal[False]:
+    ) -> WE | Literal[False]:
         """
         Waits for the element to become selected.
 
@@ -710,11 +750,11 @@ class Element:
         try:
             try:
                 return self.waiting(timeout).until(
-                    ecex.element_to_be_selected(self.present_caching)
+                    ECEX.element_to_be_selected(self.present_caching)
                 )
             except ELEMENT_REFERENCE_EXCEPTIONS:
                 element = self.waiting(timeout, StaleElementReferenceException).until(
-                    ecex.element_located_to_be_selected(self.locator, self.index)
+                    ECEX.element_located_to_be_selected(self.locator, self.index)
                 )
                 self._cache_present_element(element)
                 return element
@@ -725,7 +765,7 @@ class Element:
         self,
         timeout: int | float | None = None,
         reraise: bool | None = None
-    ) -> WebElement | Literal[False]:
+    ) -> WE | Literal[False]:
         """
         Waits for the element to become unselected.
 
@@ -751,11 +791,11 @@ class Element:
         try:
             try:
                 return self.waiting(timeout).until(
-                    ecex.element_to_be_unselected(self.present_caching)
+                    ECEX.element_to_be_unselected(self.present_caching)
                 )
             except ELEMENT_REFERENCE_EXCEPTIONS:
                 element = self.waiting(timeout, StaleElementReferenceException).until(
-                    ecex.element_located_to_be_unselected(self.locator, self.index)
+                    ECEX.element_located_to_be_unselected(self.locator, self.index)
                 )
                 self._cache_present_element(element)
                 return element
@@ -763,17 +803,17 @@ class Element:
             return self._timeout_process('unselected', exc, reraise)
 
     @property
-    def present_element(self) -> WebElement:
+    def present_element(self) -> WE:
         """ The same as `element.wait_present(reraise=True)`."""
         return cast(WebElement, self.wait_present(reraise=True))
 
     @property
-    def visible_element(self) -> WebElement:
+    def visible_element(self) -> WE:
         """The same as element.wait_visible(reraise=True)."""
         return cast(WebElement, self.wait_visible(reraise=True))
 
     @property
-    def clickable_element(self) -> WebElement:
+    def clickable_element(self) -> WE:
         """The same as element.wait_clickable(reraise=True)."""
         return cast(WebElement, self.wait_clickable(reraise=True))
 
@@ -788,17 +828,17 @@ class Element:
         return select
 
     @property
-    def present_cache(self) -> WebElement | None:
+    def present_cache(self) -> WE | None:
         """The present element cache, `None` otherwise."""
         return getattr(self, _Name._present_cache, None)
 
     @property
-    def visible_cache(self) -> WebElement | None:
+    def visible_cache(self) -> WE | None:
         """The visible element cache, `None` otherwise."""
         return getattr(self, _Name._visible_cache, None)
 
     @property
-    def clickable_cache(self) -> WebElement | None:
+    def clickable_cache(self) -> WE | None:
         """The clickable element cache, `None` otherwise."""
         return getattr(self, _Name._clickable_cache, None)
 
@@ -930,19 +970,6 @@ class Element:
             return self.present_caching.location_once_scrolled_into_view
         except ELEMENT_REFERENCE_EXCEPTIONS:
             return self.present_element.location_once_scrolled_into_view
-
-    @property
-    def location_in_view(self) -> dict[str, int]:
-        """
-        Appium API.
-        Retrieve the location (coordination) of the element
-        relative to the view when it is present.
-        For example: `{'x': 100, 'y': 250}`.
-        """
-        try:
-            return self.present_caching.location_in_view  # type: ignore[attr-defined]
-        except ELEMENT_REFERENCE_EXCEPTIONS:
-            return self.present_element.location_in_view  # type: ignore[attr-defined]
 
     @property
     def size(self) -> dict:
@@ -1835,340 +1862,6 @@ class Element:
         self.action.scroll_from_origin(scroll_origin, delta_x, delta_y)
         return self
 
-    def tap(self, duration: int | None = None) -> Self:
-        """
-        Appium API.
-        Tap the center location of the element when it is present.
-        This method can be used when `click()` fails.
-
-        Args:
-            duration: Length of time to tap, in ms.
-        """
-        self.driver.tap([tuple(self.center.values())], duration)  # type: ignore[attr-defined]
-        return self
-
-    def app_scroll(self, target: Element, duration: int | None = None) -> Self:
-        """
-        Appium API. Scrolls from one element to another.
-
-        Args:
-            target: The element to scroll to (center of element).
-            duration: Defines speed of scroll action when moving to target.
-                Default is 600 ms for W3C spec.
-        """
-        try:
-            self.driver.scroll(self.present_caching, target.present_caching, duration)  # type: ignore[attr-defined]
-        except ELEMENT_REFERENCE_EXCEPTIONS:
-            self.driver.scroll(self.present_element, target.present_element, duration)  # type: ignore[attr-defined]
-        return self
-
-    def app_drag_and_drop(self, target: Element, pause: float | None = None) -> Self:
-        """
-        Appium API. Drag the origin element to the destination element.
-
-        Args:
-            target: The element to drag to.
-            pause: How long the action pauses before moving after
-                the tap and hold in seconds.
-        """
-        try:
-            self.driver.drag_and_drop(self.present_caching, target.present_caching, pause)  # type: ignore[attr-defined]
-        except ELEMENT_REFERENCE_EXCEPTIONS:
-            self.driver.drag_and_drop(self.present_element, target.present_element, pause)  # type: ignore[attr-defined]
-        return self
-
-    def swipe_by(
-        self,
-        offset: Coordinate = Offset.UP,
-        area: Coordinate = Area.FULL,
-        timeout: int | float = 3,
-        max_round: int = 10,
-        max_align: int = 2,
-        min_xycmp: int = 100,
-        duration: int = 1000
-    ) -> Self:
-        """
-        Appium API.
-        For native iOS and Android apps, it swipes the screen until
-        the element becomes visible within the specified area.
-
-        Args:
-            offset: `(start_x, start_y, end_x, end_y)` or `(sx, sy, ex, ey)`.
-            area: `(x, y, width, height)` or `(x, y, w, h)`.
-            timeout: Maximum wait time in seconds.
-            max_round: Maximum number of swipe attempts.
-            max_align: Maximum attempts to align all borders of the element
-                within the area (view) border.
-            min_xycmp: Minimum x and y components to avoid being mistaken
-                as a click **during alignment**.
-                Should be considered along with `duration`.
-            duration: Swipe and alignment duration in milliseconds.
-                If too short, it may be mistaken as a click.
-                Should be considered along with `offset` and `min_xycmp`.
-
-        Examples:
-            ::
-
-                from huskium import Offset, Area
-
-                # Swipe by default.
-                # Offset.UP (sx, sy, ex, ey) = (0.5, 0.75, 0.5, 0.25)
-                # Area.FULL (x, y, w, h) = (0.0, 0.0, 1.0, 1.0)
-                # offset x: Fixed 0.5 of current window width.
-                # offset y: From 0.75 to 0.25 of current window height.
-                my_page.target_element.swipe_by()
-
-                # Swipe to the direction using Offset.
-                my_page.target_element.swipe_by(Offset.DOWN)
-                my_page.target_element.swipe_by(Offset.UPPER_LEFT)
-
-                # Swipe with customize relative offset.
-                my_page.target_element.swipe_by((0.3, 0.85, 0.5, 0.35))
-
-                # Swipe within a swipeable range.
-                # Get the absolute area rect using the scrollable element.
-                area = my_page.scrollable_element.rect
-                my_page.target_element.swipe_by((0.3, 0.85, 0.5, 0.35), area)
-
-                # Swipe with customize absolute offset.
-                my_page.target_element.swipe_by((250, 300, 400, 700))
-
-                # Swipe with customize relative offset of customize relative area.
-                # The area is relative to current window rect, for example:
-                # current window rect = (10, 20, 500, 1000)
-                # area = (0.1, 0.2, 0.6, 0.7)
-                # area_x = 10 + 500 x 0.1 = 60
-                # area_y = 20 + 1000 x 0.2 = 220
-                # area_width = 500 x 0.6 = 300
-                # area_height = 1000 x 0.7 = 700
-                my_page.target_element.swipe_by(
-                    (0.3, 0.85, 0.5, 0.35), (0.1, 0.2, 0.6, 0.7)
-                )
-
-                # Swipe with customize relative offset of customize absolute area.
-                my_page.target_element.swipe_by(
-                    (0.3, 0.85, 0.5, 0.35), (100, 150, 300, 700)
-                )
-
-        """
-        area = self.page._get_area(area)
-        offset = self.page._get_offset(offset, area)
-        self._swipe_by(offset, timeout, max_round, duration)
-        self._align_by(area, max_align, min_xycmp, duration)
-        return self
-
-    def flick_by(
-        self,
-        offset: Coordinate = Offset.UP,
-        area: Coordinate = Area.FULL,
-        timeout: int | float = 3,
-        max_round: int = 10,
-        max_align: int = 2,
-        min_xycmp: int = 100,
-        duration: int = 1000
-    ) -> Self:
-        """
-        Appium API.
-        For native iOS and Android apps, it flicks the screen until
-        the element becomes visible within the specified area.
-
-        Args:
-            offset: `(start_x, start_y, end_x, end_y)` or `(sx, sy, ex, ey)`.
-            area: `(x, y, width, height)` or `(x, y, w, h)`.
-            timeout: Maximum wait time in seconds.
-            max_round: Maximum number of flick attempts.
-            max_align: Maximum attempts to align all borders of the element
-                within the area (view) border.
-            min_xycmp: Minimum x and y components to avoid being mistaken
-                as a click **during alignment**.
-                Should be considered along with `duration`.
-            duration: **Alignment** (not flick) duration in milliseconds.
-                If too short, it may be mistaken as a click.
-                Should be considered along with `min_xycmp`.
-
-        Examples:
-            ::
-
-                from huskium import Offset, Area
-
-                # Filck by default.
-                # Offset.UP (sx, sy, ex, ey) = (0.5, 0.75, 0.5, 0.25)
-                # Area.FULL (x, y, w, h) = (0.0, 0.0, 1.0, 1.0)
-                # offset x: Fixed 0.5 of current window width.
-                # offset y: From 0.75 to 0.25 of current window height.
-                my_page.target_element.filck_by()
-
-                # Filck to the direction using Offset.
-                my_page.target_element.filck_by(Offset.DOWN)
-                my_page.target_element.filck_by(Offset.UPPER_LEFT)
-
-                # Filck with customize relative offset.
-                my_page.target_element.filck_by((0.3, 0.85, 0.5, 0.35))
-
-                # Filck within a filckable range.
-                # Get the absolute area rect using the scrollable element.
-                area = my_page.scrollable_element.rect
-                my_page.target_element.filck_by((0.3, 0.85, 0.5, 0.35), area)
-
-                # Filck with customize absolute offset.
-                my_page.target_element.filck_by((250, 300, 400, 700))
-
-                # Filck with customize relative offset of customize relative area.
-                # The area is relative to current window rect, for example:
-                # current window rect = (10, 20, 500, 1000)
-                # area = (0.1, 0.2, 0.6, 0.7)
-                # area_x = 10 + 500 x 0.1 = 60
-                # area_y = 20 + 1000 x 0.2 = 220
-                # area_width = 500 x 0.6 = 300
-                # area_height = 1000 x 0.7 = 700
-                my_page.target_element.filck_by(
-                    (0.3, 0.85, 0.5, 0.35), (0.1, 0.2, 0.6, 0.7)
-                )
-
-                # Filck with customize relative offset of customize absolute area.
-                my_page.target_element.filck_by(
-                    (0.3, 0.85, 0.5, 0.35), (100, 150, 300, 700)
-                )
-
-        """
-        area = self.page._get_area(area)
-        offset = self.page._get_offset(offset, area)
-        self._flick_by(offset, timeout, max_round)
-        self._align_by(area, max_align, min_xycmp, duration)
-        return self
-
-    def _swipe_by(
-        self,
-        offset: tuple[int, int, int, int],
-        timeout: int | float,
-        max_round: int,
-        duration: int
-    ) -> int | None:
-        if not max_round:
-            self.logger.warning(f'For max_round is {max_round}, no swiping performed.')
-            return None
-        self.logger.debug('Start swiping.')
-        round = 0
-        while not self.is_viewable(timeout):
-            if round == max_round:
-                self.logger.warning(f'Stop swiping. Element remains not viewable after max {max_round} rounds.\n')
-                return round
-            self.driver.swipe(*offset, duration)  # type: ignore[attr-defined]
-            round += 1
-            self.logger.debug(f'Swiping round {round} done.\n')
-        self.logger.debug(f'Stop swiping. Element is viewable after {round} rounds.\n')
-        return round
-
-    def _flick_by(
-        self,
-        offset: tuple[int, int, int, int],
-        timeout: int | float,
-        max_round: int
-    ) -> int | None:
-        if not max_round:
-            self.logger.warning(f'For max_round is {max_round}, no flicking performed.')
-            return None
-        self.logger.debug('Start flicking.')
-        round = 0
-        while not self.is_viewable(timeout):
-            if round == max_round:
-                self.logger.warning(
-                    f'Stop flicking. Element remains not viewable after max {max_round} rounds.\n')
-                return round
-            self.driver.flick(*offset)  # type: ignore[attr-defined]
-            round += 1
-            self.logger.debug(f'Flicking round {round} done.\n')
-        self.logger.debug(f'Stop flicking. Element is viewable after {round} rounds.\n')
-        return round
-
-    def _align_by(
-        self,
-        area: tuple[int, int, int, int],
-        max_align: int,
-        min_xycmp: int,
-        duration: int
-    ) -> int | None:
-
-        if not max_align:
-            self.logger.debug(f'For max_align is {max_align}, no alignment performed.')
-            return None
-
-        self.logger.debug('Start aligning.')
-
-        # Area critical points
-        al, at, aw, ah = area  # rect
-        ar, ab = (al + aw), (at + ah)  # right, bottom
-        ahw, ahh = int(aw / 2), int(ah / 2)  # half_width, half_height
-        acx, acy = (al + ahw), (at + ahh)  # center_x, center_y
-        area_border = (al, ar, at, ab)
-        self.logger.debug(f'AREA(l, r, t, b) = {area_border}')
-        area_halfwh = (ahw, ahh)
-        self.logger.debug(f'AREA(hw, hh) = {area_halfwh}')
-        area_center = (acx, acy)
-        self.logger.debug(f'AREA(cx, cy) = {area_center}')
-
-        round = 0
-        while (aligned_offset := self._get_aligned_offset(area_border, area_halfwh, area_center, min_xycmp)):
-            if round == max_align:
-                self.logger.debug(f'Stop aligning after max {max_align} rounds.\n')
-                return round
-            self.driver.swipe(*aligned_offset, duration)  # type: ignore[attr-defined]
-            round += 1
-            self.logger.debug(f'Aligning round {round} done.\n')
-        self.logger.debug(f'Stop aligning after {round} round.\n')
-        return round
-
-    def _get_aligned_offset(
-        self,
-        area_border: tuple[int, int, int, int],
-        area_halfwh: tuple[int, int],
-        area_center: tuple[int, int],
-        min_xycmp: int,
-    ) -> tuple[int, int, int, int] | None:
-
-        # area critical points
-        al, ar, at, ab = area_border
-        max_xcmp, max_ycmp = area_halfwh
-        oex, oey = acx, acy = area_center
-
-        # element border
-        element_border = el, er, et, eb = tuple(self.border.values())
-        self.logger.debug(f'ELEMENT(l, r, t, b) = {(element_border)}')
-
-        # delta = (area - element)
-        delta_border = dl, dr, dt, db = (al - el), (ar - er), (at - et), (ab - eb)
-        self.logger.debug(f'DELTA(l, r, t, b) = {delta_border}')
-
-        # align action = (l>0, r<0, t>0, b<0)
-        align = align_dl, align_dr, align_dt, align_db = (dl > 0), (dr < 0), (dt > 0), (db < 0)
-        self.logger.debug(f'ALIGN(l>0, r<0, t>0, b<0) = {align}')
-
-        # update delta with min_distance
-        if align_dl:
-            dl = max(min(dl, max_xcmp), min_xycmp)  # max_xcmp >= dl >= min_xycmp > 0
-            oex = acx + dl
-            self.logger.debug(f'O(ex) = A(cx) + D{[min_xycmp, max_xcmp]}(l) = {acx} + {dl} = {oex}')
-        if align_dr:
-            dr = min(max(dr, -max_xcmp), -min_xycmp)  # 0 > -min_xycmp >= dr >= -max_xcmp
-            oex = acx + dr
-            self.logger.debug(f'O(ex) = A(cx) + D{[-min_xycmp, -max_xcmp]}(r) = {acx} + {dr} = {oex}')
-        if align_dt:
-            dt = max(min(dt, max_ycmp), min_xycmp)  # max_ycmp >= dt >= min_xycmp > 0
-            oey = acy + dt
-            self.logger.debug(f'O(ey) = A(cy) + D{[min_xycmp, max_ycmp]}(t) = {acy} + {dt} = {oey}')
-        if align_db:
-            db = min(max(db, -max_ycmp), -min_xycmp)  # 0 > -min_xycmp >= db >= -max_ycmp
-            oey = acy + db
-            self.logger.debug(f'O(ey) = A(cy) + D{[-min_xycmp, -max_ycmp]}(b) = {acy} + {db} = {oey}')
-
-        # check if adjustment is needed
-        if (oex, oey) == area_center:
-            self.logger.debug('All the element border is in Area, no alignment required.')
-            return None
-        offset = (acx, acy, oex, oey)
-        self.logger.debug(f'OFFSET(sx, sy, ex, ey) = {offset}')
-        return offset
-
     # ==================================================================================================================
     # Select Process
     # ==================================================================================================================
@@ -2196,7 +1889,7 @@ class Element:
             return self.select.all_selected_options
 
     @property
-    def first_selected_option(self) -> WebElement:
+    def first_selected_option(self) -> WE:
         """
         Select API.
         The first selected option in this select tag,

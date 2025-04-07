@@ -6,16 +6,14 @@
 
 from __future__ import annotations
 
-from typing import TypeAlias
+from typing import TypeAlias, TypeVar
 
-from selenium.webdriver.remote.webdriver import WebDriver as SeleniumWebDriver
-from selenium.webdriver.remote.webelement import WebElement as SeleniumWebElement
-from appium.webdriver.webdriver import WebDriver as AppiumWebDriver
-from appium.webdriver.webelement import WebElement as AppiumWebElement
+from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.remote.webelement import WebElement
 
 
-WebDriver: TypeAlias = SeleniumWebDriver | AppiumWebDriver
-WebElement: TypeAlias = SeleniumWebElement | AppiumWebElement
+WD = TypeVar('WD', bound=WebDriver)
+WE = TypeVar('WE', bound=WebElement)
 
 TupleCoordinate: TypeAlias = tuple[int, int, int, int] | tuple[float, float, float, float]
 Coordinate: TypeAlias = TupleCoordinate | dict[str, int] | dict[str, float]

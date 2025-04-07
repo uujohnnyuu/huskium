@@ -13,28 +13,27 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, cast, Iterable, Literal, Self, Type
+from typing import TYPE_CHECKING, cast, Generic, Iterable, Literal, Self, Type, TypeVar
 
 from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 from selenium.webdriver.remote.shadowroot import ShadowRoot
+from selenium.webdriver.remote.webelement import WebElement
 
 from ..logging import LogConfig, PageElementLoggerAdapter
-from ..types import WebDriver, WebElement
-from . import ec_extension as ecex
-from .common import _Name, _Verify
-from .page import Page
+from ..types import WD, WE
 from ..wait import Wait
+from .common import _Name
+from .ecex import ECEX
+from .page import Page
 
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.addFilter(LogConfig.PREFIX_FILTER)
 
+P = TypeVar('P', bound=Page)
 
-class Elements:
 
-    # ==================================================================================================================
-    # Dynamic Attributes Type Checking
-    # ==================================================================================================================
+class Elements(Generic[P, WD, WE]):
 
     if TYPE_CHECKING:
         _page: Page
@@ -59,12 +58,13 @@ class Elements:
             remark: Custom remark for identification or logging. If `None`,
                 record as ``{"by": by, "value": value}``.
         """
-        _Verify.elements(by, value, timeout, remark)
+        self._verify_data(by, value, timeout, remark)
         self._set_data(by, value, timeout, remark)
 
     def __get__(self, instance: Page, owner: Type[Page]) -> Self:
         """Make "Elements" a descriptor of "Page"."""
-        _Verify.descriptor_get(instance, owner, Page)
+        if not (isinstance(instance, Page) and issubclass(owner, Page)):
+            raise TypeError(f'Element must be used within Page, got {type(instance).__name__}.')
         if getattr(self, _Name._page, None) is not instance:
             self._page = instance
             self._wait = Wait(instance._driver, 1)
@@ -73,7 +73,10 @@ class Elements:
 
     def __set__(self, instance: Page, value: Elements) -> None:
         """Set dynamic element by `page.elements = Elements(...)` pattern."""
-        _Verify.descriptor_set(instance, Page, value, Elements)
+        if not isinstance(instance, Page):
+            raise TypeError(f'Element must be used within Page, got {type(instance).__name__}.')
+        if not isinstance(value, Elements):
+            raise TypeError(f'Assigned value must be an Element, got {type(value).__name__}.')
         self._set_data(value._by, value._value, value._timeout, value._remark)
 
     def dynamic(
@@ -115,10 +118,23 @@ class Elements:
 
         """
         # Avoid using __init__() here, as it will reset the descriptor.
-        _Verify.elements(by, value, timeout, remark)
+        self._verify_data(by, value, timeout, remark)
         self._set_data(by, value, timeout, remark)
         self._sync_data()
         return self
+    
+    def _verify_data(
+        self,
+        by: str | None,
+        value: str | None,
+        timeout: int | float | None,
+        remark: str | dict | None
+    ) -> None:
+        """Verify basic attributes."""
+        self._verify_by(by)
+        self._verify_value(value)
+        self._verify_timeout(timeout)
+        self._verify_remark(remark)
 
     def _set_data(
         self,
@@ -137,6 +153,21 @@ class Elements:
     def _sync_data(self) -> None:
         """Synchronize necessary attributes."""
         self._wait.timeout = self._page._timeout if self._timeout is None else self._timeout
+
+    def _verify_by(self, by: str | None) -> None:
+        raise NotImplementedError('"_verify_by" must be implemented in selenium or appium module.')
+    
+    def _verify_value(self, value: str | None) -> None:
+        if not isinstance(value, str | None):
+            raise TypeError(f'The set "value" must be str, got {type(value).__name__}.')
+        
+    def _verify_timeout(self, timeout: int | float | None) -> None:
+        if not isinstance(timeout, int | float | None):
+            raise TypeError(f'The set "timeout" must be int or float, got {type(timeout).__name__}.')
+        
+    def _verify_remark(self, remark: str | None) -> None:
+        if not isinstance(remark, str | None):
+            raise TypeError(f'The set "remark" must be str, got {type(remark).__name__}.')
 
     @property
     def by(self) -> str | None:
@@ -162,7 +193,7 @@ class Elements:
 
     def reset_timeout(self, value: int | float | None = None) -> None:
         """Reset the elements timeout in seconds."""
-        _Verify.timeout(value)
+        self._verify_timeout(value)
         self._timeout = value
 
     @property
@@ -183,7 +214,7 @@ class Elements:
         Reset the elements remark. If value is None,
         defaults to ``{"by": by, "value": value}``.
         """
-        _Verify.remark(value)
+        self._verify_remark(value)
         self._remark = value or self.default_remark
 
     @property
@@ -197,7 +228,7 @@ class Elements:
         return self._page
 
     @property
-    def driver(self) -> WebDriver:
+    def driver(self) -> WD:
         """The WebDriver instance used by the page."""
         return self._page._driver
 
@@ -220,7 +251,7 @@ class Elements:
     # Find Elements
     # ==================================================================================================================
 
-    def find_elements(self, index: int | None = None) -> list[WebElement] | WebElement:
+    def find_elements(self, index: int | None = None) -> list[WE] | WebElement:
         """
         Using the traditional `find_elements()` or
         `find_elements()[index]` (if there is index) to locate elements.
@@ -235,7 +266,7 @@ class Elements:
         index: int | None = None,
         timeout: int | float | None = None,
         reraise: bool | None = None
-    ) -> list[WebElement] | WebElement | Literal[False]:
+    ) -> list[WE] | WebElement | Literal[False]:
         """
         Waits for the element or elements to be present.
 
@@ -278,7 +309,7 @@ class Elements:
         self,
         timeout: int | float | None = None,
         reraise: bool | None = None
-    ) -> list[WebElement] | Literal[False]:
+    ) -> list[WE] | Literal[False]:
         """
         Waits for all elements to become present.
 
@@ -302,7 +333,7 @@ class Elements:
         """
         try:
             return self.waiting(timeout).until(
-                ecex.presence_of_all_elements_located(self.locator)
+                ECEX.presence_of_all_elements_located(self.locator)
             )
         except TimeoutException as exc:
             return self._timeout_process('all present', exc, reraise)
@@ -335,7 +366,7 @@ class Elements:
         """
         try:
             return self.waiting(timeout).until(
-                ecex.absence_of_all_elements_located(self.locator)
+                ECEX.absence_of_all_elements_located(self.locator)
             )
         except TimeoutException as exc:
             return self._timeout_process('all absent', exc, reraise)
@@ -344,7 +375,7 @@ class Elements:
         self,
         timeout: int | float | None = None,
         reraise: bool | None = None
-    ) -> list[WebElement] | Literal[False]:
+    ) -> list[WE] | Literal[False]:
         """
         Waits for all elements to become visible.
 
@@ -369,7 +400,7 @@ class Elements:
         """
         try:
             return self.waiting(timeout, StaleElementReferenceException).until(
-                ecex.visibility_of_all_elements_located(self.locator)
+                ECEX.visibility_of_all_elements_located(self.locator)
             )
         except TimeoutException as exc:
             return self._timeout_process('all visible', exc, reraise)
@@ -378,7 +409,7 @@ class Elements:
         self,
         timeout: int | float | None = None,
         reraise: bool | None = None
-    ) -> list[WebElement] | Literal[False]:
+    ) -> list[WE] | Literal[False]:
         """
         Waits for at least one element to become visible.
 
@@ -403,23 +434,23 @@ class Elements:
         """
         try:
             return self.waiting(timeout, StaleElementReferenceException).until(
-                ecex.visibility_of_any_elements_located(self.locator)
+                ECEX.visibility_of_any_elements_located(self.locator)
             )
         except TimeoutException as exc:
             return self._timeout_process('any visible', exc, reraise)
 
     @property
-    def all_present_elements(self) -> list[WebElement]:
+    def all_present_elements(self) -> list[WE]:
         """The same as `elements.wait_all_present(reraise=True)`."""
         return cast(list[WebElement], self.wait_all_present(reraise=True))
 
     @property
-    def all_visible_elements(self) -> list[WebElement]:
+    def all_visible_elements(self) -> list[WE]:
         """The same as `elements.wait_all_visible(reraise=True)`."""
         return cast(list[WebElement], self.wait_all_visible(reraise=True))
 
     @property
-    def any_visible_elements(self) -> list[WebElement]:
+    def any_visible_elements(self) -> list[WE]:
         """The same as elements.wait_any_visible(reraise=True)."""
         return cast(list[WebElement], self.wait_any_visible(reraise=True))
 
