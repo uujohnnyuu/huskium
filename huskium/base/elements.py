@@ -141,7 +141,7 @@ class Elements(Generic[P, WD, WE]):
         by: str | None,
         value: str | None,
         timeout: int | float | None,
-        remark: str | None
+        remark: str | dict | None
     ) -> None:
         """Set basic attributes."""
         self._by = by
