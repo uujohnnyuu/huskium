@@ -122,13 +122,13 @@ class Elements(Generic[P, WD, WE]):
         self._set_data(by, value, timeout, remark)
         self._sync_data()
         return self
-    
+
     def _verify_data(
         self,
         by: str | None,
         value: str | None,
         timeout: int | float | None,
-        remark: str | dict | None
+        remark: str | None
     ) -> None:
         """Verify basic attributes."""
         self._verify_by(by)
@@ -141,7 +141,7 @@ class Elements(Generic[P, WD, WE]):
         by: str | None,
         value: str | None,
         timeout: int | float | None,
-        remark: str | dict | None
+        remark: str | None
     ) -> None:
         """Set basic attributes."""
         self._by = by
@@ -156,15 +156,15 @@ class Elements(Generic[P, WD, WE]):
 
     def _verify_by(self, by: str | None) -> None:
         raise NotImplementedError('"_verify_by" must be implemented in selenium or appium module.')
-    
+
     def _verify_value(self, value: str | None) -> None:
         if not isinstance(value, str | None):
             raise TypeError(f'The set "value" must be str, got {type(value).__name__}.')
-        
+
     def _verify_timeout(self, timeout: int | float | None) -> None:
         if not isinstance(timeout, int | float | None):
             raise TypeError(f'The set "timeout" must be int or float, got {type(timeout).__name__}.')
-        
+
     def _verify_remark(self, remark: str | None) -> None:
         if not isinstance(remark, str | None):
             raise TypeError(f'The set "remark" must be str, got {type(remark).__name__}.')
@@ -251,15 +251,15 @@ class Elements(Generic[P, WD, WE]):
     # Find Elements
     # ==================================================================================================================
 
-    def find_elements(self, index: int | None = None) -> list[WE] | WebElement:
+    def find_elements(self, index: int | None = None) -> list[WE] | WE:
         """
         Using the traditional `find_elements()` or
         `find_elements()[index]` (if there is index) to locate elements.
         If there are no any element found, it will return empty list `[]`.
         """
         if isinstance(index, int):
-            return self.driver.find_elements(*self.locator)[index]
-        return self.driver.find_elements(*self.locator)
+            return cast(WE, self.driver.find_elements(*self.locator)[index])
+        return cast(list[WE], self.driver.find_elements(*self.locator))
 
     def find(
         self,
@@ -442,17 +442,17 @@ class Elements(Generic[P, WD, WE]):
     @property
     def all_present_elements(self) -> list[WE]:
         """The same as `elements.wait_all_present(reraise=True)`."""
-        return cast(list[WebElement], self.wait_all_present(reraise=True))
+        return cast(list[WE], self.wait_all_present(reraise=True))
 
     @property
     def all_visible_elements(self) -> list[WE]:
         """The same as `elements.wait_all_visible(reraise=True)`."""
-        return cast(list[WebElement], self.wait_all_visible(reraise=True))
+        return cast(list[WE], self.wait_all_visible(reraise=True))
 
     @property
     def any_visible_elements(self) -> list[WE]:
         """The same as elements.wait_any_visible(reraise=True)."""
-        return cast(list[WebElement], self.wait_any_visible(reraise=True))
+        return cast(list[WE], self.wait_any_visible(reraise=True))
 
     # ==================================================================================================================
     # Basic WebElement Process
@@ -530,14 +530,6 @@ class Elements(Generic[P, WD, WE]):
     def locations(self) -> list[dict[str, int]]:
         """The locations of all present elements."""
         return [element.location for element in self.all_present_elements]
-
-    @property
-    def locations_in_view(self) -> list[dict[str, int]]:
-        """
-        Appium API.
-        The locations relative to the view of all present elements.
-        """
-        return [element.location_in_view for element in self.all_present_elements]  # type: ignore[union-attr]
 
     @property
     def sizes(self) -> list[dict]:

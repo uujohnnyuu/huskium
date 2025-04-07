@@ -27,7 +27,6 @@ from .ecex import ECEX
 from .page import Page
 
 
-
 ELEMENT_REFERENCE_EXCEPTIONS = (NoSuchCacheException, StaleElementReferenceException)
 
 LOGGER = logging.getLogger(__name__)
@@ -160,7 +159,7 @@ class Element(Generic[P, WD, WE]):
         self._sync_data()
         self._clear_caches()
         return self
-    
+
     def _verify_data(
         self,
         by: str | None,
@@ -168,7 +167,7 @@ class Element(Generic[P, WD, WE]):
         index: int | None,
         timeout: int | float | None,
         cache: bool | None,
-        remark: str | dict | None
+        remark: str | None
     ) -> None:
         """Verify basic attributes."""
         self._verify_by(by)
@@ -185,7 +184,7 @@ class Element(Generic[P, WD, WE]):
         index: int | None,
         timeout: int | float | None,
         cache: bool | None,
-        remark: str | dict | None
+        remark: str | None
     ) -> None:
         """Set basic attributes."""
         self._by = by
@@ -208,23 +207,23 @@ class Element(Generic[P, WD, WE]):
 
     def _verify_by(self, by: str | None) -> None:
         raise NotImplementedError('"_verify_by" must be implemented in selenium or appium module.')
-    
+
     def _verify_value(self, value: str | None) -> None:
         if not isinstance(value, str | None):
             raise TypeError(f'The set "value" must be str, got {type(value).__name__}.')
-        
+
     def _verify_index(self, index: int | None) -> None:
         if not isinstance(index, int | None):
             raise TypeError(f'The set "index" must be int, got {type(index).__name__}.')
-        
+
     def _verify_timeout(self, timeout: int | float | None) -> None:
         if not isinstance(timeout, int | float | None):
             raise TypeError(f'The set "timeout" must be int or float, got {type(timeout).__name__}.')
-        
+
     def _verify_cache(self, cache: bool | None) -> None:
         if not isinstance(cache, bool | None):
             raise TypeError(f'The set "cache" must be bool, got {type(cache).__name__}.')
-        
+
     def _verify_remark(self, remark: str | None) -> None:
         if not isinstance(remark, str | None):
             raise TypeError(f'The set "remark" must be str, got {type(remark).__name__}.')
@@ -349,8 +348,8 @@ class Element(Generic[P, WD, WE]):
         such as the Android UiScrollable locator method.
         """
         if isinstance(self.index, int):
-            return self.driver.find_elements(*self.locator)[self.index]
-        return self.driver.find_element(*self.locator)
+            return cast(WE, self.driver.find_elements(*self.locator)[self.index])
+        return cast(WE, self.driver.find_element(*self.locator))
 
     def _caching(self, name: str) -> Any:
         """
@@ -428,7 +427,7 @@ class Element(Generic[P, WD, WE]):
     def _cache_present_element(self, element: WE | Any):
         """Cache the present element if caching is enabled."""
         if self.cache and isinstance(element, WebElement):
-            self._present_cache = element
+            self._present_cache = cast(WE, element)
 
     def _cache_visible_element(self, element: WE | Any, extra: bool = True):
         """
@@ -436,7 +435,7 @@ class Element(Generic[P, WD, WE]):
         if caching is enabled and extra conditions are met.
         """
         if self.cache and isinstance(element, WebElement) and extra:
-            self._visible_cache = self._present_cache = element
+            self._visible_cache = self._present_cache = cast(WE, element)
 
     def _cache_clickable_element(self, element: WE | Any, extra: bool = True):
         """
@@ -444,7 +443,7 @@ class Element(Generic[P, WD, WE]):
         if caching is enabled and extra conditions are met.
         """
         if self.cache and isinstance(element, WebElement) and extra:
-            self._clickable_cache = self._visible_cache = self._present_cache = element
+            self._clickable_cache = self._visible_cache = self._present_cache = cast(WE, element)
 
     def _cache_select(self, select: Select):
         """Cache the Select instance if caching is enabled."""
@@ -495,7 +494,7 @@ class Element(Generic[P, WD, WE]):
                 after the timeout(`reraise=True`).
         """
         try:
-            element = self.waiting(timeout).until(
+            element: WE = self.waiting(timeout).until(
                 ECEX.presence_of_element_located(self.locator, self.index)
             )
             self._cache_present_element(element)
@@ -570,7 +569,7 @@ class Element(Generic[P, WD, WE]):
                 )
                 return self._visible_cache
             except ELEMENT_REFERENCE_EXCEPTIONS:
-                element = self.waiting(timeout, StaleElementReferenceException).until(
+                element: WE = self.waiting(timeout, StaleElementReferenceException).until(
                     ECEX.visibility_of_element_located(self.locator, self.index)
                 )
                 self._cache_visible_element(element)
@@ -612,13 +611,13 @@ class Element(Generic[P, WD, WE]):
         try:
             try:
                 return cast(
-                    WebElement | Literal[True],
+                    WE | Literal[True],
                     self.waiting(timeout).until(
                         ECEX.invisibility_of_element(self.present_caching, present)
                     )
                 )
             except ELEMENT_REFERENCE_EXCEPTIONS:
-                element_or_true: WebElement | Literal[True] = self.waiting(
+                element_or_true: WE | Literal[True] = self.waiting(
                     timeout, StaleElementReferenceException
                 ).until(
                     ECEX.invisibility_of_element_located(self.locator, self.index, present)
@@ -662,7 +661,7 @@ class Element(Generic[P, WD, WE]):
                 )
                 return self._clickable_cache
             except ELEMENT_REFERENCE_EXCEPTIONS:
-                element = self.waiting(timeout, StaleElementReferenceException).until(
+                element: WE = self.waiting(timeout, StaleElementReferenceException).until(
                     ECEX.element_located_to_be_clickable(self.locator, self.index)
                 )
                 self._cache_clickable_element(element)
@@ -704,13 +703,13 @@ class Element(Generic[P, WD, WE]):
         try:
             try:
                 return cast(
-                    WebElement | Literal[True],
+                    WE | Literal[True],
                     self.waiting(timeout).until(
                         ECEX.element_to_be_unclickable(self.present_caching, present)
                     )
                 )
             except ELEMENT_REFERENCE_EXCEPTIONS:
-                element_or_true: WebElement | Literal[True] = self.waiting(
+                element_or_true: WE | Literal[True] = self.waiting(
                     timeout, StaleElementReferenceException
                 ).until(
                     ECEX.element_located_to_be_unclickable(self.locator, self.index, present)
@@ -753,7 +752,7 @@ class Element(Generic[P, WD, WE]):
                     ECEX.element_to_be_selected(self.present_caching)
                 )
             except ELEMENT_REFERENCE_EXCEPTIONS:
-                element = self.waiting(timeout, StaleElementReferenceException).until(
+                element: WE = self.waiting(timeout, StaleElementReferenceException).until(
                     ECEX.element_located_to_be_selected(self.locator, self.index)
                 )
                 self._cache_present_element(element)
@@ -794,7 +793,7 @@ class Element(Generic[P, WD, WE]):
                     ECEX.element_to_be_unselected(self.present_caching)
                 )
             except ELEMENT_REFERENCE_EXCEPTIONS:
-                element = self.waiting(timeout, StaleElementReferenceException).until(
+                element: WE = self.waiting(timeout, StaleElementReferenceException).until(
                     ECEX.element_located_to_be_unselected(self.locator, self.index)
                 )
                 self._cache_present_element(element)
@@ -805,17 +804,17 @@ class Element(Generic[P, WD, WE]):
     @property
     def present_element(self) -> WE:
         """ The same as `element.wait_present(reraise=True)`."""
-        return cast(WebElement, self.wait_present(reraise=True))
+        return cast(WE, self.wait_present(reraise=True))
 
     @property
     def visible_element(self) -> WE:
         """The same as element.wait_visible(reraise=True)."""
-        return cast(WebElement, self.wait_visible(reraise=True))
+        return cast(WE, self.wait_visible(reraise=True))
 
     @property
     def clickable_element(self) -> WE:
         """The same as element.wait_clickable(reraise=True)."""
-        return cast(WebElement, self.wait_clickable(reraise=True))
+        return cast(WE, self.wait_clickable(reraise=True))
 
     @property
     def select(self) -> Select:
@@ -1896,9 +1895,9 @@ class Element(Generic[P, WD, WE]):
         or the currently selected option in a normal select.
         """
         try:
-            return self.select_caching.first_selected_option
+            return cast(WE, self.select_caching.first_selected_option)
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            return self.select.first_selected_option
+            return cast(WE, self.select.first_selected_option)
 
     def select_by_value(self, value: str) -> None:
         """

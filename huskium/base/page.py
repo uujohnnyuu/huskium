@@ -7,7 +7,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Generic, Iterable, Literal, Self, Type
+from typing import Any, cast, Generic, Iterable, Literal, Self, Type
 
 from selenium.common.exceptions import TimeoutException
 from selenium.types import WaitExcTypes
@@ -875,7 +875,7 @@ class Page(Generic[WD, WE]):
 
     def switch_to_active_element(self) -> WE:
         """Returns the element with focus, or BODY if nothing has focus."""
-        return self.driver.switch_to.active_element
+        return cast(WE, self.driver.switch_to.active_element)
 
     def switch_to_alert(
         self,

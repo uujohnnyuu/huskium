@@ -25,7 +25,7 @@ Exception Handling:
 
 from __future__ import annotations
 
-from typing import Callable, Generic, Literal
+from typing import Callable, cast, Generic, Literal
 
 from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
 
@@ -45,9 +45,9 @@ class ECEX(Generic[WD, WE]):
         If an `IndexError` occurs, handle it as a `NoSuchElementException`.
         """
         if index is None:
-            return driver.find_element(*locator)
+            return cast(WE, driver.find_element(*locator))
         try:
-            return driver.find_elements(*locator)[index]
+            return cast(WE, driver.find_elements(*locator)[index])
         except IndexError as exc:
             raise NoSuchElementException from exc
 
@@ -63,7 +63,7 @@ class ECEX(Generic[WD, WE]):
         elements = driver.find_elements(*locator)
         if elements == []:
             raise NoSuchElementException
-        return elements
+        return cast(list[WE], elements)
 
     @staticmethod
     def presence_of_element_located(
@@ -182,7 +182,7 @@ class ECEX(Generic[WD, WE]):
         """
 
         def _predicate(driver: WD):
-            element = ECEX._find_element_by(driver, locator, index)
+            element: WE = ECEX._find_element_by(driver, locator, index)
             return element if element.is_displayed() else False
 
         return _predicate
@@ -235,11 +235,8 @@ class ECEX(Generic[WD, WE]):
         """
 
         def _predicate(driver: WD):
-            return [
-                element
-                for element in ECEX._find_elements_by(driver, locator)
-                if element.is_displayed()
-            ]
+            elements: list[WE] = ECEX._find_elements_by(driver, locator)
+            return [element for element in elements if element.is_displayed()]
 
         return _predicate
 
@@ -266,7 +263,7 @@ class ECEX(Generic[WD, WE]):
         """
 
         def _predicate(driver: WD):
-            elements = ECEX._find_elements_by(driver, locator)
+            elements: list[WE] = ECEX._find_elements_by(driver, locator)
             for element in elements:
                 if not element.is_displayed():
                     return False
@@ -307,7 +304,7 @@ class ECEX(Generic[WD, WE]):
 
         def _predicate(driver: WD):
             try:
-                element = ECEX._find_element_by(driver, locator, index)
+                element: WE = ECEX._find_element_by(driver, locator, index)
                 return element if not element.is_displayed() else False
             except (NoSuchElementException, StaleElementReferenceException):
                 if present:
@@ -376,7 +373,7 @@ class ECEX(Generic[WD, WE]):
         """
 
         def _predicate(driver: WD):
-            element = ECEX._find_element_by(driver, locator, index)
+            element: WE = ECEX._find_element_by(driver, locator, index)
             return element if element.is_displayed() and element.is_enabled() else False
 
         return _predicate
@@ -439,7 +436,7 @@ class ECEX(Generic[WD, WE]):
 
         def _predicate(driver: WD):
             try:
-                element = ECEX._find_element_by(driver, locator, index)
+                element: WE = ECEX._find_element_by(driver, locator, index)
                 return element if not (element.is_displayed() and element.is_enabled()) else False
             except (NoSuchElementException, StaleElementReferenceException):
                 if present:
@@ -508,7 +505,7 @@ class ECEX(Generic[WD, WE]):
         """
 
         def _predicate(driver: WD):
-            element = ECEX._find_element_by(driver, locator, index)
+            element: WE = ECEX._find_element_by(driver, locator, index)
             return element if element.is_selected() else False
 
         return _predicate
@@ -562,7 +559,7 @@ class ECEX(Generic[WD, WE]):
         """
 
         def _predicate(driver: WD):
-            element = ECEX._find_element_by(driver, locator, index)
+            element: WE = ECEX._find_element_by(driver, locator, index)
             return element if not element.is_selected() else False
 
         return _predicate
