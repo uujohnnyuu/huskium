@@ -22,7 +22,7 @@ from ..exception import NoSuchCacheException
 from ..logging import LogConfig, PageElementLoggerAdapter
 from ..types import WD, WE
 from ..wait import Wait
-from .common import _Name
+from ..common import _Name
 from .ecex import ECEX
 from .page import Page
 
@@ -889,17 +889,6 @@ class Element(Generic[P, WD, WE]):
             return self.present_caching.is_selected()
         except ELEMENT_REFERENCE_EXCEPTIONS:
             return self.present_element.is_selected()
-
-    def is_viewable(self, timeout: int | float | None = None) -> bool:
-        """
-        Appium API.
-        This method is typically used with swipe-based element searching.
-        Checks if the current element is visible on the mobile screen.
-        """
-        element = self.wait_present(timeout, False)
-        result = bool(element and element.is_displayed())
-        self._cache_visible_element(element, result)
-        return result
 
     @property
     def text(self) -> str:

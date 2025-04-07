@@ -22,7 +22,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from ..logging import LogConfig, PageElementLoggerAdapter
 from ..types import WD, WE
 from ..wait import Wait
-from .common import _Name
+from ..common import _Name
 from .ecex import ECEX
 from .page import Page
 

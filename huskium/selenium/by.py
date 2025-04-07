@@ -6,15 +6,10 @@
 
 from __future__ import annotations
 
-from appium.webdriver.common.appiumby import AppiumBy
+from selenium.webdriver.common.by import By
 
 
-class By(AppiumBy):
-    """All Selenium `By` and Appium `AppiumBy` methods."""
-    pass
-
-
-class ByAttribute:
+class ByAttr:
     """
     Mainly used for internal validation of `By`.
     It can also be used to check the available `By` attributes
@@ -27,5 +22,5 @@ class ByAttribute:
     VALUES = [getattr(By, attr) for attr in NAMES]
     """A list of all `By` attribute values."""
 
-    VALUES_WITH_NONE = VALUES + [None]
-    """A list of `VALUES`, including `None`."""
+    OPTIONAL_VALUES = VALUES + [None]
+    """A list of all `By` attribute values with `None`."""
