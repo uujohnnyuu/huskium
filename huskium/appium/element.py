@@ -57,7 +57,8 @@ class Element(BaseElement[Page, WebDriver, WebElement]):
         Args:
             duration: Length of time to tap, in ms.
         """
-        self.driver.tap([tuple(self.center.values())], duration)
+        center: list[tuple[int, int]] = [tuple(self.center.values())]
+        self.driver.tap(center, duration)
         return self
 
     def app_scroll(self, target: Element, duration: int | None = None) -> Self:

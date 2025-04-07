@@ -15,7 +15,7 @@ from .page import Page
 
 
 class Element(BaseElement[Page, WebDriver, WebElement]):
-    
+
     def _verify_by(self, by: str | None):
         if by not in ByAttr.OPTIONAL_VALUES:
             raise ValueError(f'The set "by" strategy "{by}" is invalid, please refer to "selenium By".')

@@ -33,6 +33,7 @@ from ..base.ecex import ECEX as BaseECEX
 
 class ECEX(BaseECEX[WebDriver, WebElement]):
 
+    @staticmethod
     def webview_is_present(
         switch: bool = True,
         index: int = -1

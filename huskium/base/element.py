@@ -91,7 +91,7 @@ class Element(Generic[P, WD, WE]):
         self._verify_data(by, value, index, timeout, cache, remark)
         self._set_data(by, value, index, timeout, cache, remark)
 
-    def __get__(self, instance: Page, owner: Type[Page]) -> Self:
+    def __get__(self, instance: P, owner: Type[P]) -> Self:
         """Make "Element" a descriptor of "Page"."""
         if not (isinstance(instance, Page) and issubclass(owner, Page)):
             raise TypeError(f'Element must be used within Page, got {type(instance).__name__}.')
@@ -102,7 +102,7 @@ class Element(Generic[P, WD, WE]):
         self._sync_data()
         return self
 
-    def __set__(self, instance: Page, value: Element) -> None:
+    def __set__(self, instance: P, value: Element) -> None:
         """Set dynamic element by `page.element = Element(...)` pattern."""
         if not isinstance(instance, Page):
             raise TypeError(f'Element must be used within Page, got {type(instance).__name__}.')
@@ -307,7 +307,7 @@ class Element(Generic[P, WD, WE]):
         return self._logger
 
     @property
-    def page(self) -> Page:
+    def page(self) -> P:
         """The Page instance from the descriptor."""
         return self._page
 

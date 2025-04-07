@@ -55,7 +55,7 @@ class Page(BasePage[WebDriver, WebElement]):
         Args:
             duration: length of time to tap, in ms. Default value is 100 ms.
         """
-        window_center = [tuple(self.get_window_center().values())]
+        window_center: list[tuple[int, int]] = [tuple(self.get_window_center().values())]
         self.driver.tap(window_center, duration)
         return self
 
@@ -329,7 +329,8 @@ class Page(BasePage[WebDriver, WebElement]):
         """
         self.logger.debug(f'origin dots: {dots}')
         if isinstance(dots, list) and all(isinstance(dot, dict) for dot in dots):
-            dots = [(dot["x"], dot["y"]) for dot in dots]
+            dict_dots = cast(list[dict[str, int]], dots)
+            dots = [(dot["x"], dot["y"]) for dot in dict_dots]
         self.logger.debug(f'tuple dots: {dots}')
 
         touch_input = PointerInput(interaction.POINTER_TOUCH, 'touch')
@@ -374,7 +375,8 @@ class Page(BasePage[WebDriver, WebElement]):
         """
         self.logger.debug(f'origin dots: {dots}')
         if isinstance(dots, list) and all(isinstance(dot, dict) for dot in dots):
-            dots = [(dot["x"], dot["y"]) for dot in dots]
+            dict_dots = cast(list[dict[str, int]], dots)
+            dots = [(dot["x"], dot["y"]) for dot in dict_dots]
         self.logger.debug(f'tuple dots: {dots}')
         self.logger.debug(f'gesture: {gesture}')
 
