@@ -53,7 +53,7 @@ class Page(Generic[WD, WE]):
             raise TypeError(f'The "driver" must be "WebDriver", got {type(driver).__name__}.')
         if not isinstance(timeout, int | float):
             raise TypeError(f'The "timeout" must be "int" or "float", got {type(timeout).__name__}.')
-        if not isinstance(reraise, int | float):
+        if not isinstance(reraise, bool):
             raise TypeError(f'The "reraise" must be "bool", got {type(reraise).__name__}.')
         if not isinstance(remark, str):
             raise TypeError(f'The "remark" must be "str", got {type(remark).__name__}.')
