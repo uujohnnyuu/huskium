@@ -13,4 +13,7 @@ from ..base.page import Page as BasePage
 
 
 class Page(BasePage[WebDriver, WebElement]):
-    pass
+
+    def _verify_driver(self, driver: WebDriver):
+        if type(driver) is not WebDriver:
+            raise TypeError(f'The "driver" must be exactly "selenium WebDriver", got {type(driver).__name__}.')
