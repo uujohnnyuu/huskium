@@ -49,14 +49,7 @@ class Page(Generic[WD, WE]):
                 `False` to return `False`.
             remark: Custom remark for identification or logging.
         """
-        if not isinstance(driver, WebDriver):
-            raise TypeError(f'The "driver" must be "WebDriver", got {type(driver).__name__}.')
-        if not isinstance(timeout, int | float):
-            raise TypeError(f'The "timeout" must be "int" or "float", got {type(timeout).__name__}.')
-        if not isinstance(reraise, bool):
-            raise TypeError(f'The "reraise" must be "bool", got {type(reraise).__name__}.')
-        if not isinstance(remark, str):
-            raise TypeError(f'The "remark" must be "str", got {type(remark).__name__}.')
+        self._verify_data(driver, timeout, reraise, remark)
         self._driver = driver
         self._timeout = timeout
         self._reraise = reraise
@@ -64,6 +57,34 @@ class Page(Generic[WD, WE]):
         self._wait = Wait(driver, timeout)
         self._action = ActionChains(driver)
         self._logger = PageElementLoggerAdapter(LOGGER, self)
+
+    def _verify_data(
+        self, 
+        driver: WebDriver, 
+        timeout: int | float, 
+        reraise: bool, 
+        remark: str
+    ) -> None:
+        self._verify_driver(driver)
+        self._verify_timeout(timeout)
+        self._verify_reraise(reraise)
+        self._verify_remark(remark)
+
+    def _verify_driver(self, driver: WebDriver) -> None:
+        if type(driver) is not WebDriver:
+            raise TypeError(f'The "driver" must be exactly "selenium WebDriver", got {type(driver).__name__}.')
+        
+    def _verify_timeout(self, timeout: int | float) -> None:
+        if not isinstance(timeout, int | float):
+            raise TypeError(f'The "timeout" must be "int" or "float", got {type(timeout).__name__}.')
+        
+    def _verify_reraise(self, reraise: bool) -> None:
+        if not isinstance(reraise, bool):
+            raise TypeError(f'The "reraise" must be "bool", got {type(reraise).__name__}.')
+        
+    def _verify_remark(self, remark: str) -> None:
+        if not isinstance(remark, str):
+            raise TypeError(f'The "remark" must be "str", got {type(remark).__name__}.')
 
     @property
     def driver(self) -> WD:

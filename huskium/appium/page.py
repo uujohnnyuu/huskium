@@ -24,6 +24,10 @@ from .ecex import ECEX
 
 class Page(BasePage[WebDriver, WebElement]):
 
+    def _verify_driver(self, driver: WebDriver):
+        if type(driver) is not WebDriver:
+            raise TypeError(f'The "driver" must be exactly "appium WebDriver", got {type(driver).__name__}.')
+
     def tap(
         self,
         positions: list[tuple[int, int]],
