@@ -19,7 +19,6 @@ from selenium.webdriver.common.print_page_options import PrintOptions
 from selenium.webdriver.remote.fedcm import FedCM
 from selenium.webdriver.remote.mobile import Mobile
 from selenium.webdriver.remote.script_key import ScriptKey
-from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support import expected_conditions as ec
 
 from ..logging import LogConfig, PageElementLoggerAdapter
