@@ -283,7 +283,7 @@ class Element(BaseElement[Page, WebDriver, WebElement]):
             if round == max_round:
                 self.logger.warning(f'Stop swiping. Element remains not viewable after max {max_round} rounds.\n')
                 return round
-            self.driver.swipe(*offset, duration)  # type: ignore[attr-defined]
+            self.driver.swipe(*offset, duration)
             round += 1
             self.logger.debug(f'Swiping round {round} done.\n')
         self.logger.debug(f'Stop swiping. Element is viewable after {round} rounds.\n')
@@ -305,7 +305,7 @@ class Element(BaseElement[Page, WebDriver, WebElement]):
                 self.logger.warning(
                     f'Stop flicking. Element remains not viewable after max {max_round} rounds.\n')
                 return round
-            self.driver.flick(*offset)  # type: ignore[attr-defined]
+            self.driver.flick(*offset)
             round += 1
             self.logger.debug(f'Flicking round {round} done.\n')
         self.logger.debug(f'Stop flicking. Element is viewable after {round} rounds.\n')
@@ -342,7 +342,7 @@ class Element(BaseElement[Page, WebDriver, WebElement]):
             if round == max_align:
                 self.logger.debug(f'Stop aligning after max {max_align} rounds.\n')
                 return round
-            self.driver.swipe(*aligned_offset, duration)  # type: ignore[attr-defined]
+            self.driver.swipe(*aligned_offset, duration)
             round += 1
             self.logger.debug(f'Aligning round {round} done.\n')
         self.logger.debug(f'Stop aligning after {round} round.\n')
