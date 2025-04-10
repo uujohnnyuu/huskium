@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import logging
 import time
-from typing import TYPE_CHECKING, Any, cast, Generic, Iterable, Literal, Self, Type, TypeVar
+from typing import Any, cast, Generic, Iterable, Literal, Self, Type, TypeVar
 
 from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains
@@ -37,14 +37,13 @@ P = TypeVar('P', bound=Page)
 
 class Element(Generic[P, WD, WE]):
 
-    if TYPE_CHECKING:
-        _page: P
-        _wait: Wait
-        _synced_cache: bool
-        _present_cache: WE
-        _visible_cache: WE
-        _clickable_cache: WE
-        _select_cache: Select
+    _page: P
+    _wait: Wait
+    _synced_cache: bool
+    _present_cache: WE
+    _visible_cache: WE
+    _clickable_cache: WE
+    _select_cache: Select
 
     _CACHE: bool = True
 

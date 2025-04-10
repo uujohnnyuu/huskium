@@ -35,9 +35,8 @@ P = TypeVar('P', bound=Page)
 
 class Elements(Generic[P, WD, WE]):
 
-    if TYPE_CHECKING:
-        _page: P
-        _wait: Wait
+    _page: P
+    _wait: Wait
 
     def __init__(
         self,

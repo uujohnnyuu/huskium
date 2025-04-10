@@ -8,12 +8,12 @@ from __future__ import annotations
 
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
+from appium.webdriver.webdriver import WebDriver as AppiumWebDriver
 
 from ..base.page import Page as BasePage
-
 
 class Page(BasePage[WebDriver, WebElement]):
 
     def _verify_driver(self, driver: WebDriver):
-        if type(driver) is not WebDriver:
-            raise TypeError(f'The "driver" must be exactly "selenium WebDriver", got {type(driver).__name__}.')
+        if (not isinstance(driver, WebDriver)) or isinstance(driver, AppiumWebDriver):
+            raise TypeError(f'The "driver" must be "selenium WebDriver", got {type(driver).__name__}.')
