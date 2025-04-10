@@ -102,7 +102,7 @@ class Element(Generic[P, WD, WE]):
         self._sync_data()
         return self
 
-    def __set__(self, instance: P, value: Any) -> None:
+    def __set__(self, instance: P, value: Element) -> None:
         """Set dynamic element by `page.element = Element(...)` pattern."""
         self._verify_instance(instance)
         self._verify_set_value(value)
@@ -232,7 +232,7 @@ class Element(Generic[P, WD, WE]):
     def _verify_owner(self, owner: Type[P]):
         raise NotImplementedError('"_verify_instance" must be implemented in selenium or appium module.')
 
-    def _verify_set_value(self, value: Element):
+    def _verify_set_value(self, value: Any):
         raise NotImplementedError('"_verify_set_value" must be implemented in selenium or appium module.')
 
     @property
