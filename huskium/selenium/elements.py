@@ -28,7 +28,7 @@ class Elements(BaseElements[Page, WebDriver, WebElement]):
             raise TypeError(
                 f'"selenium Element" must be used in "selenium Page" or "appium Page", not {type(instance).__name__}'
             )
-    
+
     def _verify_owner(self, owner: Type[Page | AppiumPage]):
         if not issubclass(owner, Page | AppiumPage):
             raise TypeError(

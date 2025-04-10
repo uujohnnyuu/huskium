@@ -27,13 +27,13 @@ class Elements(BaseElements[Page, WebDriver, WebElement]):
     def _verify_by(self, by: str | None):
         if by not in ByAttr.OPTIONAL_VALUES:
             raise ValueError(f'The set "by" strategy "{by}" is invalid, please refer to "appium By".')
-        
+
     def _verify_instance(self, instance: Page):
         if not isinstance(instance, Page):
             raise TypeError(
                 f'"appium Element" must be used in "appium Page", got {type(instance).__name__}'
             )
-    
+
     def _verify_owner(self, owner: Type[Page]):
         if not issubclass(owner, Page):
             raise TypeError(
