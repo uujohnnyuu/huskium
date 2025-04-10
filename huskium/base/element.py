@@ -1092,7 +1092,7 @@ class Element(Generic[P, WD, WE]):
         except ELEMENT_REFERENCE_EXCEPTIONS:
             return self.present_element.get_attribute(name)
 
-    def get_property(self, name: Any) -> str | bool | WebElement | dict:
+    def get_property(self, name: Any) -> WE | bool | str | dict:
         """
         Gets the given property of the element.
 
@@ -1861,7 +1861,7 @@ class Element(Generic[P, WD, WE]):
     # ==================================================================================================================
 
     @property
-    def options(self) -> list[WebElement]:
+    def options(self) -> list[WE]:
         """
         Select API.
         Returns a list of all options belonging to this select tag.
@@ -1872,7 +1872,7 @@ class Element(Generic[P, WD, WE]):
             return self.select.options
 
     @property
-    def all_selected_options(self) -> list[WebElement]:
+    def all_selected_options(self) -> list[WE]:
         """
         Select API.
         Returns a list of all selected options belonging to this select tag.

@@ -272,7 +272,7 @@ class Elements(Generic[P, WD, WE]):
         index: int | None = None,
         timeout: int | float | None = None,
         reraise: bool | None = None
-    ) -> list[WE] | WebElement | Literal[False]:
+    ) -> list[WE] | WE | Literal[False]:
         """
         Waits for the element or elements to be present.
 
@@ -601,6 +601,6 @@ class Elements(Generic[P, WD, WE]):
         """The specific attributes or properties of all present elements."""
         return [element.get_attribute(name) for element in self.all_present_elements]
 
-    def get_properties(self, name: str) -> list[WebElement | bool | dict | str]:
+    def get_properties(self, name: str) -> list[WE | bool | str | dict]:
         """The specific properties of all present elements."""
         return [element.get_property(name) for element in self.all_present_elements]
