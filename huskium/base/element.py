@@ -1106,9 +1106,9 @@ class Element(Generic[P, WD, WE]):
 
         """
         try:
-            return self.present_caching.get_property(name)
+            return cast(WE | bool | str | dict, self.present_caching.get_property(name))
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            return self.present_element.get_property(name)
+            return cast(WE | bool | str | dict, self.present_element.get_property(name))
 
     def value_of_css_property(self, property_name: Any) -> str:
         """
@@ -1867,9 +1867,9 @@ class Element(Generic[P, WD, WE]):
         Returns a list of all options belonging to this select tag.
         """
         try:
-            return self.select_caching.options
+            return cast(list[WE], self.select_caching.options)
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            return self.select.options
+            return cast(list[WE], self.select.options)
 
     @property
     def all_selected_options(self) -> list[WE]:
@@ -1878,9 +1878,9 @@ class Element(Generic[P, WD, WE]):
         Returns a list of all selected options belonging to this select tag.
         """
         try:
-            return self.select_caching.all_selected_options
+            return cast(list[WE], self.select_caching.all_selected_options)
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            return self.select.all_selected_options
+            return cast(list[WE], self.select.all_selected_options)
 
     @property
     def first_selected_option(self) -> WE:
