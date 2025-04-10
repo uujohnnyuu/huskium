@@ -22,7 +22,7 @@ class Element(BaseElement[Page, WebDriver, WebElement]):
 
     def _verify_by(self, by: str | None):
         if by not in ByAttr.OPTIONAL_VALUES:
-            raise ValueError(f'The set "by" strategy "{by}" is invalid, please refer to "appium By".')
+            raise ValueError(f'Invalid "by": "{by}". Use values from "By" (from huskium.appium import By).')
 
     def _verify_instance(self, instance: Page):
         if not isinstance(instance, Page):
