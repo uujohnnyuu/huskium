@@ -603,6 +603,6 @@ class Elements(Generic[P, WD, WE]):
     def get_properties(self, name: str) -> list[WE | bool | str | dict]:
         """The specific properties of all present elements."""
         return [
-            cast(list[WE | bool | str | dict], element.get_property(name)) 
+            cast(WE | bool | str | dict, element.get_property(name))
             for element in self.all_present_elements
         ]
