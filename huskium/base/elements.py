@@ -13,7 +13,7 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Any, cast, Generic, Iterable, Literal, Self, Type, TypeVar
+from typing import Any, cast, Generic, Iterable, Literal, Self, Type, TypeVar
 
 from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 from selenium.webdriver.remote.shadowroot import ShadowRoot

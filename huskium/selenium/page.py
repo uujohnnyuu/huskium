@@ -12,6 +12,7 @@ from appium.webdriver.webdriver import WebDriver as AppiumWebDriver
 
 from ..base.page import Page as BasePage
 
+
 class Page(BasePage[WebDriver, WebElement]):
 
     def _verify_driver(self, driver: WebDriver):
