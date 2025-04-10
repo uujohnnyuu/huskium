@@ -63,8 +63,8 @@ class Elements(Generic[P, WD, WE]):
 
     def __get__(self, instance: P, owner: Type[P]) -> Self:
         """Make "Elements" a descriptor of "Page"."""
-        if not (isinstance(instance, Page) and issubclass(owner, Page)):
-            raise TypeError(f'Element must be used within Page, got {type(instance).__name__}.')
+        self._verify_instance(instance)
+        self._verify_owner(owner)
         if getattr(self, _Name._page, None) is not instance:
             self._page = instance
             self._wait = Wait(instance._driver, 1)
@@ -73,10 +73,8 @@ class Elements(Generic[P, WD, WE]):
 
     def __set__(self, instance: P, value: Elements) -> None:
         """Set dynamic element by `page.elements = Elements(...)` pattern."""
-        if not isinstance(instance, Page):
-            raise TypeError(f'Element must be used within Page, got {type(instance).__name__}.')
-        if not isinstance(value, Elements):
-            raise TypeError(f'Assigned value must be an Element, got {type(value).__name__}.')
+        self._verify_instance(instance)
+        self._verify_set_value(value)
         self._set_data(value._by, value._value, value._timeout, value._remark)
 
     def dynamic(
@@ -168,6 +166,15 @@ class Elements(Generic[P, WD, WE]):
     def _verify_remark(self, remark: str | None) -> None:
         if not isinstance(remark, str | None):
             raise TypeError(f'The set "remark" must be str, got {type(remark).__name__}.')
+        
+    def _verify_instance(self, instance: P):
+        raise NotImplementedError('"_verify_instance" must be implemented in selenium or appium module.')
+    
+    def _verify_owner(self, owner: Type[P]):
+        raise NotImplementedError('"_verify_instance" must be implemented in selenium or appium module.')
+    
+    def _verify_set_value(self, value: Elements):
+        raise NotImplementedError('"_verify_set_value" must be implemented in selenium or appium module.')
 
     @property
     def by(self) -> str | None:

@@ -6,7 +6,7 @@
 
 from __future__ import annotations
 
-from typing import cast, Self
+from typing import cast, Self, Type
 
 from appium.webdriver.webdriver import WebDriver
 from appium.webdriver.webelement import WebElement
@@ -23,6 +23,22 @@ class Element(BaseElement[Page, WebDriver, WebElement]):
     def _verify_by(self, by: str | None):
         if by not in ByAttr.OPTIONAL_VALUES:
             raise ValueError(f'The set "by" strategy "{by}" is invalid, please refer to "appium By".')
+        
+    def _verify_instance(self, instance: Page):
+        if not isinstance(instance, Page):
+            raise TypeError(
+                f'"appium Element" must be used in "appium Page", got {type(instance).__name__}'
+            )
+    
+    def _verify_owner(self, owner: Type[Page]):
+        if not issubclass(owner, Page):
+            raise TypeError(
+                f'"appium Element" must be used in "appium Page", got {type(owner).__name__}'
+            )
+
+    def _verify_set_value(self, value: Element):
+        if not isinstance(value, Element):
+            raise TypeError(f'Assigned value must be "appium Element", got {type(value).__name__}.')
 
     def is_viewable(self, timeout: int | float | None = None) -> bool:
         """
