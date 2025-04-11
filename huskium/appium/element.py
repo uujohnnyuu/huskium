@@ -11,14 +11,14 @@ from typing import cast, Self, Type
 from appium.webdriver.webdriver import WebDriver
 from appium.webdriver.webelement import WebElement
 
-from ..base.element import ELEMENT_REFERENCE_EXCEPTIONS, Element as BaseElement
+from ..selenium.element import ELEMENT_REFERENCE_EXCEPTIONS, Element as SeleniumElement
 from ..common import Area, Offset
 from ..types import Coordinate
 from .by import ByAttr
 from .page import Page
 
 
-class Element(BaseElement[Page, WebDriver, WebElement]):
+class Element(SeleniumElement[Page, WebDriver, WebElement]):
 
     def _verify_by(self, by: str | None):
         if by not in ByAttr.OPTIONAL_VALUES:

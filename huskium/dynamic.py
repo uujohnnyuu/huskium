@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from functools import wraps
 
-from .base import Element, Elements
+from .selenium import Element, Elements
 
 
 def dynamic(func):

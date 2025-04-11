@@ -17,12 +17,12 @@ from appium.webdriver.webdriver import WebDriver
 from appium.webdriver.webelement import WebElement
 
 from ..common import Area, Offset
-from ..base.page import Page as BasePage
+from ..selenium.page import Page as SeleniumPage
 from ..types import Coordinate, TupleCoordinate
 from .ecex import ECEX
 
 
-class Page(BasePage[WebDriver, WebElement]):
+class Page(SeleniumPage[WebDriver, WebElement]):
 
     def _verify_driver(self, driver: WebDriver):
         if not isinstance(driver, WebDriver):

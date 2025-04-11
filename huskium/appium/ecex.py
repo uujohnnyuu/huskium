@@ -28,10 +28,10 @@ from typing import Callable, Literal
 from appium.webdriver.webdriver import WebDriver
 from appium.webdriver.webelement import WebElement
 
-from ..base.ecex import ECEX as BaseECEX
+from ..selenium.ecex import ECEX as SeleniumECEX
 
 
-class ECEX(BaseECEX[WebDriver, WebElement]):
+class ECEX(SeleniumECEX[WebDriver, WebElement]):
 
     @staticmethod
     def webview_is_present(
