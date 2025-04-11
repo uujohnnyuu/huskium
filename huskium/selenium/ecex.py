@@ -182,7 +182,7 @@ class ECEX(Generic[WD, WE]):
         """
 
         def _predicate(driver: WD):
-            element: WE = ECEX._find_element_by(driver, locator, index)
+            element = ECEX._find_element_by(driver, locator, index)
             return element if element.is_displayed() else False
 
         return _predicate
@@ -304,7 +304,7 @@ class ECEX(Generic[WD, WE]):
 
         def _predicate(driver: WD):
             try:
-                element: WE = ECEX._find_element_by(driver, locator, index)
+                element = ECEX._find_element_by(driver, locator, index)
                 return element if not element.is_displayed() else False
             except (NoSuchElementException, StaleElementReferenceException):
                 if present:
@@ -373,7 +373,7 @@ class ECEX(Generic[WD, WE]):
         """
 
         def _predicate(driver: WD):
-            element: WE = ECEX._find_element_by(driver, locator, index)
+            element = ECEX._find_element_by(driver, locator, index)
             return element if element.is_displayed() and element.is_enabled() else False
 
         return _predicate
@@ -436,7 +436,7 @@ class ECEX(Generic[WD, WE]):
 
         def _predicate(driver: WD):
             try:
-                element: WE = ECEX._find_element_by(driver, locator, index)
+                element = ECEX._find_element_by(driver, locator, index)
                 return element if not (element.is_displayed() and element.is_enabled()) else False
             except (NoSuchElementException, StaleElementReferenceException):
                 if present:
@@ -505,7 +505,7 @@ class ECEX(Generic[WD, WE]):
         """
 
         def _predicate(driver: WD):
-            element: WE = ECEX._find_element_by(driver, locator, index)
+            element = ECEX._find_element_by(driver, locator, index)
             return element if element.is_selected() else False
 
         return _predicate
@@ -559,7 +559,7 @@ class ECEX(Generic[WD, WE]):
         """
 
         def _predicate(driver: WD):
-            element: WE = ECEX._find_element_by(driver, locator, index)
+            element = ECEX._find_element_by(driver, locator, index)
             return element if not element.is_selected() else False
 
         return _predicate
