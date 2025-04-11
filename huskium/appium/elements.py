@@ -12,7 +12,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Type
+from typing import Any
 
 from appium.webdriver.webdriver import WebDriver
 from appium.webdriver.webelement import WebElement

@@ -6,7 +6,7 @@
 
 from __future__ import annotations
 
-from typing import Any, cast, Self, Type
+from typing import Any, cast, Self
 
 from appium.webdriver.webdriver import WebDriver
 from appium.webdriver.webelement import WebElement
