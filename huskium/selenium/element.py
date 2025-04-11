@@ -203,43 +203,43 @@ class Element(Generic[P, WD, WE]):
         for cache_name in _Name._caches:
             vars(self).pop(cache_name, None)
 
-    def _verify_by(self, by: str | None):
+    def _verify_by(self, by: Any):
         if by not in ByAttr.OPTIONAL_VALUES:
             raise ValueError(f'Invalid "by": "{by}". Use values from "By" (from huskium.selenium import By).')
 
-    def _verify_value(self, value: str | None) -> None:
+    def _verify_value(self, value: Any) -> None:
         if not isinstance(value, str | None):
             raise TypeError(f'The set "value" must be str, got {type(value).__name__}.')
 
-    def _verify_index(self, index: int | None) -> None:
+    def _verify_index(self, index: Any) -> None:
         if not isinstance(index, int | None):
             raise TypeError(f'The set "index" must be int, got {type(index).__name__}.')
 
-    def _verify_timeout(self, timeout: int | float | None) -> None:
+    def _verify_timeout(self, timeout: Any) -> None:
         if not isinstance(timeout, int | float | None):
             raise TypeError(f'The set "timeout" must be int or float, got {type(timeout).__name__}.')
 
-    def _verify_cache(self, cache: bool | None) -> None:
+    def _verify_cache(self, cache: Any) -> None:
         if not isinstance(cache, bool | None):
             raise TypeError(f'The set "cache" must be bool, got {type(cache).__name__}.')
 
-    def _verify_remark(self, remark: str | None) -> None:
+    def _verify_remark(self, remark: Any) -> None:
         if not isinstance(remark, str | None):
             raise TypeError(f'The set "remark" must be str, got {type(remark).__name__}.')
 
-    def _verify_instance(self, instance: P):
+    def _verify_instance(self, instance: Any):
         if not isinstance(instance, Page):
             raise TypeError(
                 f'"selenium Element" must be used in "selenium Page" or "appium Page", got {type(instance).__name__}'
             )
 
-    def _verify_owner(self, owner: Type[P]):
+    def _verify_owner(self, owner: Any):
         if not issubclass(owner, Page):
             raise TypeError(
                 f'"selenium Element" must be used in "selenium Page" or "appium Page", got {type(owner).__name__}'
             )
 
-    def _verify_set_value(self, value: Element):
+    def _verify_set_value(self, value: Any):
         if not isinstance(value, Element):
             raise TypeError(f'Assigned value must be "selenium Element", got {type(value).__name__}.')
 
@@ -329,7 +329,7 @@ class Element(Generic[P, WD, WE]):
     @property
     def driver(self) -> WD:
         """The WebDriver instance used by the page."""
-        return self._page._driver
+        return cast(WD, self._page._driver)
 
     @property
     def action(self) -> ActionChains:
@@ -509,11 +509,11 @@ class Element(Generic[P, WD, WE]):
                 after the timeout(`reraise=True`).
         """
         try:
-            element: WE = self.waiting(timeout).until(
+            element = self.waiting(timeout).until(
                 ECEX.presence_of_element_located(self.locator, self.index)
             )
             self._cache_present_element(element)
-            return element
+            return cast(WE, element)
         except TimeoutException as exc:
             return self._timeout_process('present', exc, reraise)
 
@@ -584,11 +584,11 @@ class Element(Generic[P, WD, WE]):
                 )
                 return self._visible_cache
             except ELEMENT_REFERENCE_EXCEPTIONS:
-                element: WE = self.waiting(timeout, StaleElementReferenceException).until(
+                element = self.waiting(timeout, StaleElementReferenceException).until(
                     ECEX.visibility_of_element_located(self.locator, self.index)
                 )
                 self._cache_visible_element(element)
-                return element
+                return cast(WE, element)
         except TimeoutException as exc:
             return self._timeout_process('visible', exc, reraise)
 
@@ -632,13 +632,11 @@ class Element(Generic[P, WD, WE]):
                     )
                 )
             except ELEMENT_REFERENCE_EXCEPTIONS:
-                element_or_true: WE | Literal[True] = self.waiting(
-                    timeout, StaleElementReferenceException
-                ).until(
+                element_or_true = self.waiting(timeout, StaleElementReferenceException).until(
                     ECEX.invisibility_of_element_located(self.locator, self.index, present)
                 )
                 self._cache_present_element(element_or_true)
-                return element_or_true
+                return cast(WE | Literal[True], element_or_true)
         except TimeoutException as exc:
             return self._timeout_process('invisible', exc, reraise, present)
 
@@ -676,11 +674,11 @@ class Element(Generic[P, WD, WE]):
                 )
                 return self._clickable_cache
             except ELEMENT_REFERENCE_EXCEPTIONS:
-                element: WE = self.waiting(timeout, StaleElementReferenceException).until(
+                element = self.waiting(timeout, StaleElementReferenceException).until(
                     ECEX.element_located_to_be_clickable(self.locator, self.index)
                 )
                 self._cache_clickable_element(element)
-                return element
+                return cast(WE, element)
         except TimeoutException as exc:
             return self._timeout_process('clickable', exc, reraise)
 
@@ -724,13 +722,11 @@ class Element(Generic[P, WD, WE]):
                     )
                 )
             except ELEMENT_REFERENCE_EXCEPTIONS:
-                element_or_true: WE | Literal[True] = self.waiting(
-                    timeout, StaleElementReferenceException
-                ).until(
+                element_or_true = self.waiting(timeout, StaleElementReferenceException).until(
                     ECEX.element_located_to_be_unclickable(self.locator, self.index, present)
                 )
                 self._cache_present_element(element_or_true)
-                return element_or_true
+                return cast(WE | Literal[True], element_or_true)
         except TimeoutException as exc:
             return self._timeout_process('unclickable', exc, reraise, present)
 
@@ -767,11 +763,11 @@ class Element(Generic[P, WD, WE]):
                     ECEX.element_to_be_selected(self.present_caching)
                 )
             except ELEMENT_REFERENCE_EXCEPTIONS:
-                element: WE = self.waiting(timeout, StaleElementReferenceException).until(
+                element = self.waiting(timeout, StaleElementReferenceException).until(
                     ECEX.element_located_to_be_selected(self.locator, self.index)
                 )
                 self._cache_present_element(element)
-                return element
+                return cast(WE, element)
         except TimeoutException as exc:
             return self._timeout_process('selected', exc, reraise)
 
@@ -808,11 +804,11 @@ class Element(Generic[P, WD, WE]):
                     ECEX.element_to_be_unselected(self.present_caching)
                 )
             except ELEMENT_REFERENCE_EXCEPTIONS:
-                element: WE = self.waiting(timeout, StaleElementReferenceException).until(
+                element = self.waiting(timeout, StaleElementReferenceException).until(
                     ECEX.element_located_to_be_unselected(self.locator, self.index)
                 )
                 self._cache_present_element(element)
-                return element
+                return cast(WE, element)
         except TimeoutException as exc:
             return self._timeout_process('unselected', exc, reraise)
 

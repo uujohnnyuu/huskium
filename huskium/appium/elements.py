@@ -12,7 +12,7 @@
 
 from __future__ import annotations
 
-from typing import Type
+from typing import Any, Type
 
 from appium.webdriver.webdriver import WebDriver
 from appium.webdriver.webelement import WebElement
@@ -22,25 +22,25 @@ from .by import ByAttr
 from .page import Page
 
 
-class Elements(SeleniumElements[Page, WebDriver, WebElement]):
+class Elements(SeleniumElements[Page, WebDriver, WebElement]):  # type: ignore[type-var]
 
-    def _verify_by(self, by: str | None):
+    def _verify_by(self, by: Any):
         if by not in ByAttr.OPTIONAL_VALUES:
             raise ValueError(f'Invalid "by": "{by}". Use values from "By" (from huskium.appium import By).')
 
-    def _verify_instance(self, instance: Page):
+    def _verify_instance(self, instance: Any):
         if not isinstance(instance, Page):
             raise TypeError(
                 f'"appium Elements" must be used in "appium Page", got {type(instance).__name__}'
             )
 
-    def _verify_owner(self, owner: Type[Page]):
+    def _verify_owner(self, owner: Any):
         if not issubclass(owner, Page):
             raise TypeError(
                 f'"appium Elements" must be used in "appium Page", got {type(owner).__name__}'
             )
 
-    def _verify_set_value(self, value: Elements):
+    def _verify_set_value(self, value: Any):
         if not isinstance(value, Elements):
             raise TypeError(f'Assigned value must be "appium Elements", got {type(value).__name__}.')
 

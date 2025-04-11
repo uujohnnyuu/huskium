@@ -71,21 +71,21 @@ class Page(Generic[WD, WE]):
         self._verify_reraise(reraise)
         self._verify_remark(remark)
 
-    def _verify_driver(self, driver: WebDriver):
+    def _verify_driver(self, driver: Any):
         if not isinstance(driver, WebDriver):
             raise TypeError(f'The "driver" must be "selenium WebDriver", got {type(driver).__name__}.')
         if isinstance(driver, AppiumWebDriver):
             raise TypeError('The "driver" must be "selenium WebDriver", got "appium WebDriver".')
 
-    def _verify_timeout(self, timeout: int | float) -> None:
+    def _verify_timeout(self, timeout: Any) -> None:
         if not isinstance(timeout, int | float):
             raise TypeError(f'The "timeout" must be "int" or "float", got {type(timeout).__name__}.')
 
-    def _verify_reraise(self, reraise: bool) -> None:
+    def _verify_reraise(self, reraise: Any) -> None:
         if not isinstance(reraise, bool):
             raise TypeError(f'The "reraise" must be "bool", got {type(reraise).__name__}.')
 
-    def _verify_remark(self, remark: str) -> None:
+    def _verify_remark(self, remark: Any) -> None:
         if not isinstance(remark, str):
             raise TypeError(f'The "remark" must be "str", got {type(remark).__name__}.')
 

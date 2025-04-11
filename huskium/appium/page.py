@@ -24,7 +24,7 @@ from .ecex import ECEX
 
 class Page(SeleniumPage[WebDriver, WebElement]):
 
-    def _verify_driver(self, driver: WebDriver):
+    def _verify_driver(self, driver: Any):
         if not isinstance(driver, WebDriver):
             raise TypeError(f'The "driver" must be "appium WebDriver", got {type(driver).__name__}.')
 

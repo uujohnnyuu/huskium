@@ -151,35 +151,35 @@ class Elements(Generic[P, WD, WE]):
         """Synchronize necessary attributes."""
         self._wait.timeout = self._page._timeout if self._timeout is None else self._timeout
 
-    def _verify_by(self, by: str | None):
+    def _verify_by(self, by: Any):
         if by not in ByAttr.OPTIONAL_VALUES:
             raise ValueError(f'Invalid "by": "{by}". Use values from "By" (from huskium.selenium import By).')
 
-    def _verify_value(self, value: str | None) -> None:
+    def _verify_value(self, value: Any) -> None:
         if not isinstance(value, str | None):
             raise TypeError(f'The set "value" must be str, got {type(value).__name__}.')
 
-    def _verify_timeout(self, timeout: int | float | None) -> None:
+    def _verify_timeout(self, timeout: Any) -> None:
         if not isinstance(timeout, int | float | None):
             raise TypeError(f'The set "timeout" must be int or float, got {type(timeout).__name__}.')
 
-    def _verify_remark(self, remark: str | None) -> None:
+    def _verify_remark(self, remark: Any) -> None:
         if not isinstance(remark, str | None):
             raise TypeError(f'The set "remark" must be str, got {type(remark).__name__}.')
 
-    def _verify_instance(self, instance: P):
+    def _verify_instance(self, instance: Any):
         if not isinstance(instance, Page):
             raise TypeError(
                 f'"selenium Elements" must be used in "selenium Page" or "appium Page", got {type(instance).__name__}'
             )
 
-    def _verify_owner(self, owner: Type[P]):
+    def _verify_owner(self, owner: Any):
         if not issubclass(owner, Page):
             raise TypeError(
                 f'"selenium Elements" must be used in "selenium Page" or "appium Page", got {type(owner).__name__}'
             )
 
-    def _verify_set_value(self, value: Elements):
+    def _verify_set_value(self, value: Any):
         if not isinstance(value, Elements):
             raise TypeError(f'Assigned value must be "selenium Elemens", got {type(value).__name__}.')
 
@@ -244,7 +244,7 @@ class Elements(Generic[P, WD, WE]):
     @property
     def driver(self) -> WD:
         """The WebDriver instance used by the page."""
-        return self._page._driver
+        return cast(WD, self._page._driver)
 
     @property
     def wait(self) -> Wait:
