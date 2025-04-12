@@ -30,7 +30,7 @@ from .page import Page
 LOGGER = logging.getLogger(__name__)
 LOGGER.addFilter(LogConfig.PREFIX_FILTER)
 
-P = TypeVar('P', bound=Page, default=Page)
+P = TypeVar('P', bound=Page[Any, Any], default=Page[Any, Any])
 
 
 class Elements(Generic[P, WD, WE]):

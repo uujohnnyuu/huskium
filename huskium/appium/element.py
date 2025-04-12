@@ -18,7 +18,7 @@ from .by import ByAttr
 from .page import Page
 
 
-class Element(SeleniumElement[Page, WebDriver, WebElement]):  # type: ignore[type-var]
+class Element(SeleniumElement[Page, WebDriver, WebElement]):
 
     def _verify_by(self, by: Any):
         if by not in ByAttr.OPTIONAL_VALUES:
