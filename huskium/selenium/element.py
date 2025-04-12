@@ -33,7 +33,7 @@ ELEMENT_REFERENCE_EXCEPTIONS = (NoSuchCacheException, StaleElementReferenceExcep
 LOGGER = logging.getLogger(__name__)
 LOGGER.addFilter(LogConfig.PREFIX_FILTER)
 
-P = TypeVar('P', bound=Page)
+P = TypeVar('P', bound=Page, default=Page)
 
 
 class Element(Generic[P, WD, WE]):
