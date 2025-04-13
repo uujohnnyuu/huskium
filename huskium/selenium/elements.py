@@ -265,10 +265,6 @@ class Elements(Generic[P, WD, WE]):
         self._wait.ignored_exceptions = ignored_exceptions
         return self._wait
 
-    # ==================================================================================================================
-    # Find Elements
-    # ==================================================================================================================
-
     def find_elements(self, index: int | None = None) -> list[WE] | WE:
         """
         Using the traditional `find_elements()` or
@@ -471,10 +467,6 @@ class Elements(Generic[P, WD, WE]):
     def any_visible_elements(self) -> list[WE]:
         """The same as elements.wait_any_visible(reraise=True)."""
         return cast(list[WE], self.wait_any_visible(reraise=True))
-
-    # ==================================================================================================================
-    # Basic WebElement Process
-    # ==================================================================================================================
 
     def are_all_present(self, timeout: int | float | None = None) -> bool:
         """

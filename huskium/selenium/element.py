@@ -355,10 +355,6 @@ class Element(Generic[P, WD, WE]):
         self._wait.ignored_exceptions = ignored_exceptions
         return self._wait
 
-    # ==================================================================================================================
-    # Find Element
-    # ==================================================================================================================
-
     def find_element(self) -> WE:
         """
         Using the traditional `find_element()` or `find_elements()[index]`
@@ -861,10 +857,6 @@ class Element(Generic[P, WD, WE]):
         """The Select instance, `None` otherwise."""
         return getattr(self, _Name._select_cache, None)
 
-    # ==================================================================================================================
-    # Basic WebElement Process
-    # ==================================================================================================================
-
     def is_present(self, timeout: int | float | None = None) -> bool:
         """Whether the element is present within the timeout."""
         return bool(self.wait_present(timeout, False))
@@ -1242,10 +1234,6 @@ class Element(Generic[P, WD, WE]):
             return self.present_caching.screenshot(filename)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             return self.present_element.screenshot(filename)
-
-    # ==================================================================================================================
-    # ActionChains Process
-    # ==================================================================================================================
 
     def perform(self) -> None:
         """
@@ -1864,10 +1852,6 @@ class Element(Generic[P, WD, WE]):
         scroll_origin = ScrollOrigin.from_viewport(x_offset, y_offset)
         self.action.scroll_from_origin(scroll_origin, delta_x, delta_y)
         return self
-
-    # ==================================================================================================================
-    # Select Process
-    # ==================================================================================================================
 
     @property
     def options(self) -> list[WE]:
