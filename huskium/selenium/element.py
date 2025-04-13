@@ -34,6 +34,9 @@ ELEMENT_REFERENCE_EXCEPTIONS = (NoSuchCacheException, StaleElementReferenceExcep
 LOGGER = logging.getLogger(__name__)
 LOGGER.addFilter(LogConfig.PREFIX_FILTER)
 
+# Since Page is a generic class with a default of Page[SeleniumWebDriver, SeleniumWebElement],
+# we must rebind the bound to Page[Any, Any] to allow subclasses to be correctly recognized,
+# otherwise mypy will raise a [type-var] error.
 P = TypeVar('P', bound=Page[Any, Any], default=Page)
 
 

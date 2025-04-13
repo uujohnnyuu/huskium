@@ -328,13 +328,13 @@ class Page(SeleniumPage[WebDriver, WebElement]):
 
         Args:
             dots: A list of coordinates for the target dots,
-                e.g., [{'x': 100, 'y': 100}, {'x': 200, 'y': 200}, ...].
+                e.g., [{'x': 100, 'y': 100}, {'x': 200, 'y': 300}, ...];
+                or [(100, 100), (200, 300), ...].
             duration: The time taken to draw between two points.
         """
         self.logger.debug(f'origin dots: {dots}')
         if isinstance(dots, list) and all(isinstance(dot, dict) for dot in dots):
-            dict_dots = cast(list[dict[str, int]], dots)
-            dots = [(dot["x"], dot["y"]) for dot in dict_dots]
+            dots = [(dot["x"], dot["y"]) for dot in cast(list[dict[str, int]], dots)]
         self.logger.debug(f'tuple dots: {dots}')
 
         touch_input = PointerInput(interaction.POINTER_TOUCH, 'touch')
@@ -372,15 +372,15 @@ class Page(SeleniumPage[WebDriver, WebElement]):
 
         Args:
             dots: Define dots in order [1, 2, 3, …, 9],
-                e.g., [{'x': 100, 'y': 100}, {'x': 200, 'y': 100}, ...].
+                e.g., [{'x': 100, 'y': 100}, {'x': 200, 'y': 100}, ...];
+                or [(100, 100), (200, 100), ...].
                 If dots are elements, use `page.elements.centers`.
             gesture: A string containing the actual positions of the nine dots,
                 such as '1235789' for drawing a Z shape.
         """
         self.logger.debug(f'origin dots: {dots}')
         if isinstance(dots, list) and all(isinstance(dot, dict) for dot in dots):
-            dict_dots = cast(list[dict[str, int]], dots)
-            dots = [(dot["x"], dot["y"]) for dot in dict_dots]
+            dots = [(dot["x"], dot["y"]) for dot in cast(list[dict[str, int]], dots)]
         self.logger.debug(f'tuple dots: {dots}')
         self.logger.debug(f'gesture: {gesture}')
 
