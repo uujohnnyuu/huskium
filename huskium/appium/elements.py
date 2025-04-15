@@ -17,12 +17,12 @@ from typing import Any
 from appium.webdriver.webdriver import WebDriver
 from appium.webdriver.webelement import WebElement
 
-from ..selenium.elements import Elements as SeleniumElements
+from ..selenium.elements import GenericElements
 from .by import ByAttr
 from .page import Page
 
 
-class Elements(SeleniumElements[Page, WebDriver, WebElement]):
+class Elements(GenericElements[Page, WebDriver, WebElement]):
 
     def _verify_by(self, by: Any):
         if by not in ByAttr.OPTIONAL_VALUES:

@@ -8,7 +8,8 @@ from __future__ import annotations
 
 from functools import wraps
 
-from .selenium import Element, Elements
+from .selenium.element import GenericElement
+from .selenium.elements import GenericElements
 
 
 def dynamic(func):
@@ -35,7 +36,7 @@ def dynamic(func):
     @wraps(func)
     def wrapper(self, *args, **kwargs):
         target = func(self, *args, **kwargs)
-        if isinstance(target, Element | Elements):
+        if isinstance(target, GenericElement | GenericElements):
             return target.__get__(self, type(self))
         raise TypeError(
             f'The decorated function "{func.__name__}" must returns an Element or Elements object.'

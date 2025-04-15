@@ -14,30 +14,26 @@ from __future__ import annotations
 
 import logging
 from typing import Any, cast, Generic, Iterable, Literal, Self, Type
-from typing_extensions import TypeVar
 
 from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 from selenium.webdriver.remote.shadowroot import ShadowRoot
+from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.remote.webelement import WebElement
 
 from ..logging import LogConfig, PageElementLoggerAdapter
 from ..types import WD, WE
 from ..wait import Wait
 from ..common import _Name
 from .by import ByAttr
-from .ecex import ECEX
-from .page import Page
+from .ecex import GenericECEX
+from .page import P, GenericPage, Page
 
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.addFilter(LogConfig.PREFIX_FILTER)
 
-# Since Page is a generic class with a default of Page[SeleniumWebDriver, SeleniumWebElement],
-# we must rebind the bound to Page[Any, Any] to allow subclasses to be correctly recognized,
-# otherwise mypy will raise a [type-var] error.
-P = TypeVar('P', bound=Page[Any, Any], default=Page)
 
-
-class Elements(Generic[P, WD, WE]):
+class GenericElements(Generic[P, WD, WE]):
 
     _page: P
     _wait: Wait
@@ -74,7 +70,7 @@ class Elements(Generic[P, WD, WE]):
         self._sync_data()
         return self
 
-    def __set__(self, instance: P, value: Elements) -> None:
+    def __set__(self, instance: P, value: GenericElements) -> None:
         """Set dynamic element by `page.elements = Elements(...)` pattern."""
         self._verify_instance(instance)
         self._verify_set_value(value)
@@ -172,19 +168,19 @@ class Elements(Generic[P, WD, WE]):
             raise TypeError(f'The set "remark" must be str, got {type(remark).__name__}.')
 
     def _verify_instance(self, instance: Any):
-        if not isinstance(instance, Page):
+        if not isinstance(instance, GenericPage):
             raise TypeError(
                 f'"selenium Elements" must be used in "selenium Page" or "appium Page", got {type(instance).__name__}'
             )
 
     def _verify_owner(self, owner: Any):
-        if not issubclass(owner, Page):
+        if not issubclass(owner, GenericPage):
             raise TypeError(
                 f'"selenium Elements" must be used in "selenium Page" or "appium Page", got {type(owner).__name__}'
             )
 
     def _verify_set_value(self, value: Any):
-        if not isinstance(value, Elements):
+        if not isinstance(value, GenericElements):
             raise TypeError(f'Assigned value must be "selenium Elemens", got {type(value).__name__}.')
 
     @property
@@ -347,7 +343,7 @@ class Elements(Generic[P, WD, WE]):
         """
         try:
             return self.waiting(timeout).until(
-                ECEX.presence_of_all_elements_located(self.locator)
+                GenericECEX[WD, WE].presence_of_all_elements_located(self.locator)
             )
         except TimeoutException as exc:
             return self._timeout_process('all present', exc, reraise)
@@ -380,7 +376,7 @@ class Elements(Generic[P, WD, WE]):
         """
         try:
             return self.waiting(timeout).until(
-                ECEX.absence_of_all_elements_located(self.locator)
+                GenericECEX[WD, WE].absence_of_all_elements_located(self.locator)
             )
         except TimeoutException as exc:
             return self._timeout_process('all absent', exc, reraise)
@@ -414,7 +410,7 @@ class Elements(Generic[P, WD, WE]):
         """
         try:
             return self.waiting(timeout, StaleElementReferenceException).until(
-                ECEX.visibility_of_all_elements_located(self.locator)
+                GenericECEX[WD, WE].visibility_of_all_elements_located(self.locator)
             )
         except TimeoutException as exc:
             return self._timeout_process('all visible', exc, reraise)
@@ -448,7 +444,7 @@ class Elements(Generic[P, WD, WE]):
         """
         try:
             return self.waiting(timeout, StaleElementReferenceException).until(
-                ECEX.visibility_of_any_elements_located(self.locator)
+                GenericECEX[WD, WE].visibility_of_any_elements_located(self.locator)
             )
         except TimeoutException as exc:
             return self._timeout_process('any visible', exc, reraise)
@@ -611,3 +607,7 @@ class Elements(Generic[P, WD, WE]):
             cast(WE | bool | str | dict, element.get_property(name))
             for element in self.all_present_elements
         ]
+
+
+class Elements(GenericElements[Page, WebDriver, WebElement]):
+    pass

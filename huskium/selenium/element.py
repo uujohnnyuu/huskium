@@ -9,12 +9,12 @@ from __future__ import annotations
 import logging
 import time
 from typing import Any, cast, Generic, Iterable, Literal, Self, Type
-from typing_extensions import TypeVar
 
 from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.actions.wheel_input import ScrollOrigin
 from selenium.webdriver.remote.shadowroot import ShadowRoot
+from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.select import Select
@@ -25,8 +25,8 @@ from ..types import WD, WE
 from ..wait import Wait
 from ..common import _Name
 from .by import ByAttr
-from .ecex import ECEX
-from .page import Page
+from .ecex import GenericECEX
+from .page import P, GenericPage, Page
 
 
 ELEMENT_REFERENCE_EXCEPTIONS = (NoSuchCacheException, StaleElementReferenceException)
@@ -34,13 +34,8 @@ ELEMENT_REFERENCE_EXCEPTIONS = (NoSuchCacheException, StaleElementReferenceExcep
 LOGGER = logging.getLogger(__name__)
 LOGGER.addFilter(LogConfig.PREFIX_FILTER)
 
-# Since Page is a generic class with a default of Page[SeleniumWebDriver, SeleniumWebElement],
-# we must rebind the bound to Page[Any, Any] to allow subclasses to be correctly recognized,
-# otherwise mypy will raise a [type-var] error.
-P = TypeVar('P', bound=Page[Any, Any], default=Page)
 
-
-class Element(Generic[P, WD, WE]):
+class GenericElement(Generic[P, WD, WE]):
 
     _page: P
     _wait: Wait
@@ -106,7 +101,7 @@ class Element(Generic[P, WD, WE]):
         self._sync_data()
         return self
 
-    def __set__(self, instance: P, value: Element) -> None:
+    def __set__(self, instance: P, value: GenericElement) -> None:
         """Set dynamic element by `page.element = Element(...)` pattern."""
         self._verify_instance(instance)
         self._verify_set_value(value)
@@ -232,19 +227,19 @@ class Element(Generic[P, WD, WE]):
             raise TypeError(f'The set "remark" must be str, got {type(remark).__name__}.')
 
     def _verify_instance(self, instance: Any):
-        if not isinstance(instance, Page):
+        if not isinstance(instance, GenericPage):
             raise TypeError(
                 f'"selenium Element" must be used in "selenium Page" or "appium Page", got {type(instance).__name__}'
             )
 
     def _verify_owner(self, owner: Any):
-        if not issubclass(owner, Page):
+        if not issubclass(owner, GenericPage):
             raise TypeError(
                 f'"selenium Element" must be used in "selenium Page" or "appium Page", got {type(owner).__name__}'
             )
 
     def _verify_set_value(self, value: Any):
-        if not isinstance(value, Element):
+        if not isinstance(value, GenericElement):
             raise TypeError(f'Assigned value must be "selenium Element", got {type(value).__name__}.')
 
     @property
@@ -510,7 +505,7 @@ class Element(Generic[P, WD, WE]):
         """
         try:
             element = self.waiting(timeout).until(
-                ECEX.presence_of_element_located(self.locator, self.index)
+                GenericECEX[WD, WE].presence_of_element_located(self.locator, self.index)
             )
             self._cache_present_element(element)
             return cast(WE, element)
@@ -545,7 +540,7 @@ class Element(Generic[P, WD, WE]):
         """
         try:
             return self.waiting(timeout).until(
-                ECEX.absence_of_element_located(self.locator, self.index)
+                GenericECEX[WD, WE].absence_of_element_located(self.locator, self.index)
             )
         except TimeoutException as exc:
             return self._timeout_process('absent', exc, reraise)
@@ -580,12 +575,12 @@ class Element(Generic[P, WD, WE]):
         try:
             try:
                 self._visible_cache = self.waiting(timeout).until(
-                    ECEX.visibility_of_element(self.present_caching)
+                    GenericECEX[WD, WE].visibility_of_element(self.present_caching)
                 )
                 return self._visible_cache
             except ELEMENT_REFERENCE_EXCEPTIONS:
                 element = self.waiting(timeout, StaleElementReferenceException).until(
-                    ECEX.visibility_of_element_located(self.locator, self.index)
+                    GenericECEX[WD, WE].visibility_of_element_located(self.locator, self.index)
                 )
                 self._cache_visible_element(element)
                 return cast(WE, element)
@@ -628,12 +623,12 @@ class Element(Generic[P, WD, WE]):
                 return cast(
                     WE | Literal[True],
                     self.waiting(timeout).until(
-                        ECEX.invisibility_of_element(self.present_caching, present)
+                        GenericECEX[WD, WE].invisibility_of_element(self.present_caching, present)
                     )
                 )
             except ELEMENT_REFERENCE_EXCEPTIONS:
                 element_or_true = self.waiting(timeout, StaleElementReferenceException).until(
-                    ECEX.invisibility_of_element_located(self.locator, self.index, present)
+                    GenericECEX[WD, WE].invisibility_of_element_located(self.locator, self.index, present)
                 )
                 self._cache_present_element(element_or_true)
                 return cast(WE | Literal[True], element_or_true)
@@ -670,12 +665,12 @@ class Element(Generic[P, WD, WE]):
         try:
             try:
                 self._clickable_cache = self._visible_cache = self.waiting(timeout).until(
-                    ECEX.element_to_be_clickable(self.present_caching)
+                    GenericECEX[WD, WE].element_to_be_clickable(self.present_caching)
                 )
                 return self._clickable_cache
             except ELEMENT_REFERENCE_EXCEPTIONS:
                 element = self.waiting(timeout, StaleElementReferenceException).until(
-                    ECEX.element_located_to_be_clickable(self.locator, self.index)
+                    GenericECEX[WD, WE].element_located_to_be_clickable(self.locator, self.index)
                 )
                 self._cache_clickable_element(element)
                 return cast(WE, element)
@@ -718,12 +713,12 @@ class Element(Generic[P, WD, WE]):
                 return cast(
                     WE | Literal[True],
                     self.waiting(timeout).until(
-                        ECEX.element_to_be_unclickable(self.present_caching, present)
+                        GenericECEX[WD, WE].element_to_be_unclickable(self.present_caching, present)
                     )
                 )
             except ELEMENT_REFERENCE_EXCEPTIONS:
                 element_or_true = self.waiting(timeout, StaleElementReferenceException).until(
-                    ECEX.element_located_to_be_unclickable(self.locator, self.index, present)
+                    GenericECEX[WD, WE].element_located_to_be_unclickable(self.locator, self.index, present)
                 )
                 self._cache_present_element(element_or_true)
                 return cast(WE | Literal[True], element_or_true)
@@ -760,11 +755,11 @@ class Element(Generic[P, WD, WE]):
         try:
             try:
                 return self.waiting(timeout).until(
-                    ECEX.element_to_be_selected(self.present_caching)
+                    GenericECEX[WD, WE].element_to_be_selected(self.present_caching)
                 )
             except ELEMENT_REFERENCE_EXCEPTIONS:
                 element = self.waiting(timeout, StaleElementReferenceException).until(
-                    ECEX.element_located_to_be_selected(self.locator, self.index)
+                    GenericECEX[WD, WE].element_located_to_be_selected(self.locator, self.index)
                 )
                 self._cache_present_element(element)
                 return cast(WE, element)
@@ -801,11 +796,11 @@ class Element(Generic[P, WD, WE]):
         try:
             try:
                 return self.waiting(timeout).until(
-                    ECEX.element_to_be_unselected(self.present_caching)
+                    GenericECEX[WD, WE].element_to_be_unselected(self.present_caching)
                 )
             except ELEMENT_REFERENCE_EXCEPTIONS:
                 element = self.waiting(timeout, StaleElementReferenceException).until(
-                    ECEX.element_located_to_be_unselected(self.locator, self.index)
+                    GenericECEX[WD, WE].element_located_to_be_unselected(self.locator, self.index)
                 )
                 self._cache_present_element(element)
                 return cast(WE, element)
@@ -1430,7 +1425,7 @@ class Element(Generic[P, WD, WE]):
         self.action.double_click()
         return self
 
-    def drag_and_drop(self, target: Element) -> Self:
+    def drag_and_drop(self, target: GenericElement) -> Self:
         """
         ActionChains API.
         Holds down the left mouse button on the source element,
@@ -1993,3 +1988,7 @@ class Element(Generic[P, WD, WE]):
             self.select_caching.deselect_by_visible_text(text)
         except ELEMENT_REFERENCE_EXCEPTIONS:
             self.select.deselect_by_visible_text(text)
+
+
+class Element(GenericElement[Page, WebDriver, WebElement]):
+    pass

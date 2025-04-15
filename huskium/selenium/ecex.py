@@ -28,11 +28,13 @@ from __future__ import annotations
 from typing import Callable, cast, Generic, Literal
 
 from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
+from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.remote.webelement import WebElement
 
 from ..types import WD, WE
 
 
-class ECEX(Generic[WD, WE]):
+class GenericECEX(Generic[WD, WE]):
 
     @staticmethod
     def _find_element_by(
@@ -87,7 +89,7 @@ class ECEX(Generic[WD, WE]):
         """
 
         def _predicate(driver: WD):
-            return ECEX._find_element_by(driver, locator, index)
+            return GenericECEX._find_element_by(driver, locator, index)
 
         return _predicate
 
@@ -131,7 +133,7 @@ class ECEX(Generic[WD, WE]):
 
         def _predicate(driver: WD):
             try:
-                ECEX._find_element_by(driver, locator, index)
+                GenericECEX._find_element_by(driver, locator, index)
                 return False
             except NoSuchElementException:
                 return True
@@ -182,7 +184,7 @@ class ECEX(Generic[WD, WE]):
         """
 
         def _predicate(driver: WD):
-            element = ECEX._find_element_by(driver, locator, index)
+            element = GenericECEX._find_element_by(driver, locator, index)
             return element if element.is_displayed() else False
 
         return _predicate
@@ -235,7 +237,7 @@ class ECEX(Generic[WD, WE]):
         """
 
         def _predicate(driver: WD):
-            elements: list[WE] = ECEX._find_elements_by(driver, locator)
+            elements: list[WE] = GenericECEX._find_elements_by(driver, locator)
             return [element for element in elements if element.is_displayed()]
 
         return _predicate
@@ -263,7 +265,7 @@ class ECEX(Generic[WD, WE]):
         """
 
         def _predicate(driver: WD):
-            elements: list[WE] = ECEX._find_elements_by(driver, locator)
+            elements: list[WE] = GenericECEX._find_elements_by(driver, locator)
             for element in elements:
                 if not element.is_displayed():
                     return False
@@ -304,7 +306,7 @@ class ECEX(Generic[WD, WE]):
 
         def _predicate(driver: WD):
             try:
-                element = ECEX._find_element_by(driver, locator, index)
+                element = GenericECEX._find_element_by(driver, locator, index)
                 return element if not element.is_displayed() else False
             except (NoSuchElementException, StaleElementReferenceException):
                 if present:
@@ -373,7 +375,7 @@ class ECEX(Generic[WD, WE]):
         """
 
         def _predicate(driver: WD):
-            element = ECEX._find_element_by(driver, locator, index)
+            element = GenericECEX._find_element_by(driver, locator, index)
             return element if element.is_displayed() and element.is_enabled() else False
 
         return _predicate
@@ -436,7 +438,7 @@ class ECEX(Generic[WD, WE]):
 
         def _predicate(driver: WD):
             try:
-                element = ECEX._find_element_by(driver, locator, index)
+                element = GenericECEX._find_element_by(driver, locator, index)
                 return element if not (element.is_displayed() and element.is_enabled()) else False
             except (NoSuchElementException, StaleElementReferenceException):
                 if present:
@@ -505,7 +507,7 @@ class ECEX(Generic[WD, WE]):
         """
 
         def _predicate(driver: WD):
-            element = ECEX._find_element_by(driver, locator, index)
+            element = GenericECEX._find_element_by(driver, locator, index)
             return element if element.is_selected() else False
 
         return _predicate
@@ -559,7 +561,7 @@ class ECEX(Generic[WD, WE]):
         """
 
         def _predicate(driver: WD):
-            element = ECEX._find_element_by(driver, locator, index)
+            element = GenericECEX._find_element_by(driver, locator, index)
             return element if not element.is_selected() else False
 
         return _predicate
@@ -589,3 +591,7 @@ class ECEX(Generic[WD, WE]):
             return element if not element.is_selected() else False
 
         return _predicate
+
+
+class ECEX(GenericECEX[WebDriver, WebElement]):
+    pass

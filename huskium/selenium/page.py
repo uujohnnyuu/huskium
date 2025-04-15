@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import logging
 from typing import Any, cast, Generic, Iterable, Literal, Self, Type
+from typing_extensions import TypeVar
 
 from selenium.common.exceptions import TimeoutException
 from selenium.types import WaitExcTypes
@@ -20,6 +21,7 @@ from selenium.webdriver.remote.fedcm import FedCM
 from selenium.webdriver.remote.mobile import Mobile
 from selenium.webdriver.remote.script_key import ScriptKey
 from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
 from appium.webdriver.webdriver import WebDriver as AppiumWebDriver
 
@@ -32,7 +34,7 @@ LOGGER = logging.getLogger(__name__)
 LOGGER.addFilter(LogConfig.PREFIX_FILTER)
 
 
-class Page(Generic[WD, WE]):
+class GenericPage(Generic[WD, WE]):
 
     def __init__(
         self,
@@ -1105,3 +1107,10 @@ class Page(Generic[WD, WE]):
 
         """
         self.driver.set_page_load_timeout(time_to_wait)
+
+
+P = TypeVar('P', bound=GenericPage[Any, Any], default=GenericPage)
+
+
+class Page(GenericPage[WebDriver, WebElement]):
+    pass
