@@ -26,7 +26,7 @@ from ..wait import Wait
 from ..common import _Name
 from .by import ByAttr
 from .ecex import GenericECEX
-from .page import P, GenericPage, Page
+from .page import GenericPage
 
 
 ELEMENT_REFERENCE_EXCEPTIONS = (NoSuchCacheException, StaleElementReferenceException)
@@ -35,9 +35,9 @@ LOGGER = logging.getLogger(__name__)
 LOGGER.addFilter(LogConfig.PREFIX_FILTER)
 
 
-class GenericElement(Generic[P, WD, WE]):
+class GenericElement(Generic[WD, WE]):
 
-    _page: P
+    _page: GenericPage[WD, WE]
     _wait: Wait
     _synced_cache: bool
     _present_cache: WE
@@ -90,7 +90,7 @@ class GenericElement(Generic[P, WD, WE]):
         self._verify_data(by, value, index, timeout, cache, remark)
         self._set_data(by, value, index, timeout, cache, remark)
 
-    def __get__(self, instance: P, owner: Type[P]) -> Self:
+    def __get__(self, instance: GenericPage[WD, WE], owner: Type[GenericPage[WD, WE]]) -> Self:
         """Make "Element" a descriptor of "Page"."""
         self._verify_instance(instance)
         self._verify_owner(owner)
@@ -101,7 +101,7 @@ class GenericElement(Generic[P, WD, WE]):
         self._sync_data()
         return self
 
-    def __set__(self, instance: P, value: GenericElement) -> None:
+    def __set__(self, instance: GenericPage[WD, WE], value: GenericElement) -> None:
         """Set dynamic element by `page.element = Element(...)` pattern."""
         self._verify_instance(instance)
         self._verify_set_value(value)
@@ -321,14 +321,14 @@ class GenericElement(Generic[P, WD, WE]):
         return self._logger
 
     @property
-    def page(self) -> P:
+    def page(self) -> GenericPage[WD, WE]:
         """The Page instance from the descriptor."""
         return self._page
 
     @property
     def driver(self) -> WD:
         """The WebDriver instance used by the page."""
-        return cast(WD, self._page._driver)
+        return self._page._driver
 
     @property
     def action(self) -> ActionChains:
@@ -508,7 +508,7 @@ class GenericElement(Generic[P, WD, WE]):
                 GenericECEX[WD, WE].presence_of_element_located(self.locator, self.index)
             )
             self._cache_present_element(element)
-            return cast(WE, element)
+            return element
         except TimeoutException as exc:
             return self._timeout_process('present', exc, reraise)
 
@@ -583,7 +583,7 @@ class GenericElement(Generic[P, WD, WE]):
                     GenericECEX[WD, WE].visibility_of_element_located(self.locator, self.index)
                 )
                 self._cache_visible_element(element)
-                return cast(WE, element)
+                return element
         except TimeoutException as exc:
             return self._timeout_process('visible', exc, reraise)
 
@@ -673,7 +673,7 @@ class GenericElement(Generic[P, WD, WE]):
                     GenericECEX[WD, WE].element_located_to_be_clickable(self.locator, self.index)
                 )
                 self._cache_clickable_element(element)
-                return cast(WE, element)
+                return element
         except TimeoutException as exc:
             return self._timeout_process('clickable', exc, reraise)
 
@@ -762,7 +762,7 @@ class GenericElement(Generic[P, WD, WE]):
                     GenericECEX[WD, WE].element_located_to_be_selected(self.locator, self.index)
                 )
                 self._cache_present_element(element)
-                return cast(WE, element)
+                return element
         except TimeoutException as exc:
             return self._timeout_process('selected', exc, reraise)
 
@@ -803,7 +803,7 @@ class GenericElement(Generic[P, WD, WE]):
                     GenericECEX[WD, WE].element_located_to_be_unselected(self.locator, self.index)
                 )
                 self._cache_present_element(element)
-                return cast(WE, element)
+                return element
         except TimeoutException as exc:
             return self._timeout_process('unselected', exc, reraise)
 
@@ -1088,7 +1088,7 @@ class GenericElement(Generic[P, WD, WE]):
         except ELEMENT_REFERENCE_EXCEPTIONS:
             return self.present_element.get_attribute(name)
 
-    def get_property(self, name: Any) -> WE | bool | str | dict:
+    def get_property(self, name: Any) -> str | bool | dict | WE:
         """
         Gets the given property of the element.
 
@@ -1102,9 +1102,9 @@ class GenericElement(Generic[P, WD, WE]):
 
         """
         try:
-            return cast(WE | bool | str | dict, self.present_caching.get_property(name))
+            return cast(str | bool | dict | WE, self.present_caching.get_property(name))
         except ELEMENT_REFERENCE_EXCEPTIONS:
-            return cast(WE | bool | str | dict, self.present_element.get_property(name))
+            return cast(str | bool | dict | WE, self.present_element.get_property(name))
 
     def value_of_css_property(self, property_name: Any) -> str:
         """
@@ -1990,5 +1990,5 @@ class GenericElement(Generic[P, WD, WE]):
             self.select.deselect_by_visible_text(text)
 
 
-class Element(GenericElement[Page, WebDriver, WebElement]):
+class Element(GenericElement[WebDriver, WebElement]):
     pass

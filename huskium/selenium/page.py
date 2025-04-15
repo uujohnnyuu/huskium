@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import logging
 from typing import Any, cast, Generic, Iterable, Literal, Self, Type
-from typing_extensions import TypeVar
 
 from selenium.common.exceptions import TimeoutException
 from selenium.types import WaitExcTypes
@@ -1107,9 +1106,6 @@ class GenericPage(Generic[WD, WE]):
 
         """
         self.driver.set_page_load_timeout(time_to_wait)
-
-
-P = TypeVar('P', bound=GenericPage[Any, Any], default=GenericPage)
 
 
 class Page(GenericPage[WebDriver, WebElement]):

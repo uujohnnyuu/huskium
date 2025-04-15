@@ -18,7 +18,9 @@ from .by import ByAttr
 from .page import Page
 
 
-class Element(GenericElement[Page, WebDriver, WebElement]):
+class Element(GenericElement[WebDriver, WebElement]):
+
+    page: Page
 
     def _verify_by(self, by: Any):
         if by not in ByAttr.OPTIONAL_VALUES:

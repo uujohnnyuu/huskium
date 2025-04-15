@@ -22,7 +22,9 @@ from .by import ByAttr
 from .page import Page
 
 
-class Elements(GenericElements[Page, WebDriver, WebElement]):
+class Elements(GenericElements[WebDriver, WebElement]):
+
+    page: Page
 
     def _verify_by(self, by: Any):
         if by not in ByAttr.OPTIONAL_VALUES:

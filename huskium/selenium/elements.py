@@ -26,16 +26,16 @@ from ..wait import Wait
 from ..common import _Name
 from .by import ByAttr
 from .ecex import GenericECEX
-from .page import P, GenericPage, Page
+from .page import GenericPage
 
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.addFilter(LogConfig.PREFIX_FILTER)
 
 
-class GenericElements(Generic[P, WD, WE]):
+class GenericElements(Generic[WD, WE]):
 
-    _page: P
+    _page: GenericPage[WD, WE]
     _wait: Wait
 
     def __init__(
@@ -60,7 +60,7 @@ class GenericElements(Generic[P, WD, WE]):
         self._verify_data(by, value, timeout, remark)
         self._set_data(by, value, timeout, remark)
 
-    def __get__(self, instance: P, owner: Type[P]) -> Self:
+    def __get__(self, instance: GenericPage[WD, WE], owner: Type[GenericPage[WD, WE]]) -> Self:
         """Make "Elements" a descriptor of "Page"."""
         self._verify_instance(instance)
         self._verify_owner(owner)
@@ -70,7 +70,7 @@ class GenericElements(Generic[P, WD, WE]):
         self._sync_data()
         return self
 
-    def __set__(self, instance: P, value: GenericElements) -> None:
+    def __set__(self, instance: GenericPage[WD, WE], value: GenericElements) -> None:
         """Set dynamic element by `page.elements = Elements(...)` pattern."""
         self._verify_instance(instance)
         self._verify_set_value(value)
@@ -237,14 +237,14 @@ class GenericElements(Generic[P, WD, WE]):
         return self._logger
 
     @property
-    def page(self) -> P:
+    def page(self) -> GenericPage[WD, WE]:
         """The Page instance from the descriptor."""
         return self._page
 
     @property
     def driver(self) -> WD:
         """The WebDriver instance used by the page."""
-        return cast(WD, self._page._driver)
+        return self._page._driver
 
     @property
     def wait(self) -> Wait:
@@ -601,13 +601,13 @@ class GenericElements(Generic[P, WD, WE]):
         """The specific attributes or properties of all present elements."""
         return [element.get_attribute(name) for element in self.all_present_elements]
 
-    def get_properties(self, name: str) -> list[WE | bool | str | dict]:
+    def get_properties(self, name: str) -> list[str | bool | dict | WE]:
         """The specific properties of all present elements."""
         return [
-            cast(WE | bool | str | dict, element.get_property(name))
+            cast(str | bool | dict | WE, element.get_property(name))
             for element in self.all_present_elements
         ]
 
 
-class Elements(GenericElements[Page, WebDriver, WebElement]):
+class Elements(GenericElements[WebDriver, WebElement]):
     pass
