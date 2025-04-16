@@ -90,8 +90,8 @@ class Element[WD: WebDriver, WE: WebElement]:
 
     def __get__(self, instance: Page[WD, WE], owner: Type[Page[WD, WE]]) -> Self:
         """Make "Element" a descriptor of "Page"."""
-        self._verify_instance(instance)
-        self._verify_owner(owner)
+        self._verify_get_instance(instance)
+        self._verify_get_owner(owner)
         if getattr(self, _Name._page, None) is not instance:
             self._page = instance
             self._wait = Wait(instance._driver, 1)
@@ -101,8 +101,8 @@ class Element[WD: WebDriver, WE: WebElement]:
 
     def __set__(self, instance: Page[WD, WE], value: Element) -> None:
         """Set dynamic element by `page.element = Element(...)` pattern."""
-        self._verify_instance(instance)
-        self._verify_set(value)
+        self._verify_get_instance(instance)
+        self._verify_set_value(value)
         self._set_data(value._by, value._value, value._index, value._timeout, value._cache, value._remark)
         self._clear_caches()
 
@@ -226,19 +226,19 @@ class Element[WD: WebDriver, WE: WebElement]:
         if not isinstance(remark, str | None):
             raise TypeError(f'The set "remark" must be str, got {type(remark).__name__}.')
 
-    def _verify_instance(self, instance: Any) -> None:
-        """
-        This must be implemented in selenium or appium Element.
-        """
-        raise NotImplementedError('"_verify_instance" must be implemented in selenium or appium Element.')
+    def _verify_get_instance(self, instance: Any) -> None:
+        if not isinstance(instance, Page):
+            raise TypeError(
+                f'"selenium Element" must be used in "selenium Page" or "appium Page", got {type(instance).__name__}'
+            )
 
-    def _verify_owner(self, owner: Any) -> None:
-        """
-        This must be implemented in selenium or appium Element.
-        """
-        raise NotImplementedError('"_verify_owner" must be implemented in selenium or appium Element.')
+    def _verify_get_owner(self, owner: Any) -> None:
+        if not issubclass(owner, Page):
+            raise TypeError(
+                f'"selenium Element" must be used in "selenium Page" or "appium Page", got {type(owner).__name__}'
+            )
 
-    def _verify_set(self, value: Any) -> None:
+    def _verify_set_value(self, value: Any) -> None:
         """
         This must be implemented in selenium or appium Element.
         """

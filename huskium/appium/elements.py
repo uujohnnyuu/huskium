@@ -42,7 +42,7 @@ class Elements(GenericElements[WebDriver, WebElement]):
                 f'"appium Elements" must be used in "appium Page", got {type(owner).__name__}'
             )
 
-    def _verify_set(self, value: Any) -> None:
+    def _verify_set_value(self, value: Any) -> None:
         if not isinstance(value, Elements):
             raise TypeError(f'Assigned value must be "appium Elements", got {type(value).__name__}.')
 

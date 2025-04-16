@@ -6,19 +6,16 @@
 
 from __future__ import annotations
 
-from typing import Any
-
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
-from appium.webdriver.webdriver import WebDriver as AppiumWebDriver
 
 from ..generic import Page as GenericPage
 
 
 class Page(GenericPage[WebDriver, WebElement]):
-
-    def _verify_driver(self, driver: Any) -> None:
-        if not isinstance(driver, WebDriver):
-            raise TypeError(f'The "driver" must be "selenium WebDriver", got {type(driver).__name__}.')
-        if isinstance(driver, AppiumWebDriver):
-            raise TypeError('The "driver" must be "selenium WebDriver", got "appium WebDriver".')
+    # Delegate "_verify_driver" to "GenericPage" to allow users to combine 
+    # "AppiumPage" with "SeleniumElement", which is useful in mobile web contexts. 
+    # If "SeleniumElement" is already defined in "WebPage",
+    # it can be reused in "AppiumPage" via a class like "MyPage(WebPage, AppiumPage)", 
+    # without needing to redefine "SeleniumElement".
+    pass

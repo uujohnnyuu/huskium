@@ -22,6 +22,7 @@ from selenium.webdriver.remote.script_key import ScriptKey
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
+from appium.webdriver.webdriver import WebDriver as AppiumWebDriver
 
 from ..logging import LogConfig, PageElementLoggerAdapter
 from ..wait import Wait
@@ -71,10 +72,10 @@ class Page[WD: WebDriver, WE: WebElement]:
         self._verify_remark(remark)
 
     def _verify_driver(self, driver: Any) -> None:
-        """
-        This must be implemented in selenium or appium Page.
-        """
-        raise NotImplementedError('"_verify_driver" must be implemented in selenium or appium Page.')
+        if not isinstance(driver, WebDriver):
+            raise TypeError(f'The "driver" must be "selenium WebDriver", got {type(driver).__name__}.')
+        if isinstance(driver, AppiumWebDriver):
+            raise TypeError('The "driver" must be "selenium WebDriver", got "appium WebDriver".')
 
     def _verify_timeout(self, timeout: Any) -> None:
         if not isinstance(timeout, int | float):
