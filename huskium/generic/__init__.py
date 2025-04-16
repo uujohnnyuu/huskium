@@ -4,4 +4,7 @@
 # GitHub: https://github.com/uujohnnyuu/huskium
 
 
-__version__ = "1.2.0"
+from .ecex import ECEX
+from .element import Element
+from .elements import Elements
+from .page import Page

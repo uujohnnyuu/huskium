@@ -4,6 +4,9 @@
 # GitHub: https://github.com/uujohnnyuu/huskium
 
 
+__version__ = "1.2.0"
+
+
 from .logging import LogConfig, PrefixFilter, FuncPrefixFilter, FilePrefixFilter
 from .common import Area, Offset
 from .dynamic import dynamic

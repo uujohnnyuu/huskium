@@ -24,7 +24,7 @@ Homepage = "https://github.com/uujohnnyuu/huskium"
 packages = ["huskium", "huskium.core"]
 
 [tool.setuptools.dynamic]
-version = {attr = "huskium.version.__version__"}
+version = {attr = "huskium.__version__"}
 
 [tool.setuptools.package-data]
 huskium = ["*.py"]
