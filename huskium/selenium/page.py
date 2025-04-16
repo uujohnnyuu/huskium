@@ -13,9 +13,9 @@ from ..generic import Page as GenericPage
 
 
 class Page(GenericPage[WebDriver, WebElement]):
-    # Delegate "_verify_driver" to "GenericPage" to allow users to combine 
-    # "AppiumPage" with "SeleniumElement", which is useful in mobile web contexts. 
+    # Delegate "_verify_driver" to "GenericPage" to allow users to combine
+    # "AppiumPage" with "SeleniumElement", which is useful in mobile web contexts.
     # If "SeleniumElement" is already defined in "WebPage",
-    # it can be reused in "AppiumPage" via a class like "MyPage(WebPage, AppiumPage)", 
+    # it can be reused in "AppiumPage" via a class like "MyPage(WebPage, AppiumPage)",
     # without needing to redefine "SeleniumElement".
     pass
