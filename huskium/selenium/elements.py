@@ -22,7 +22,7 @@ from .by import ByAttr
 
 
 class Elements(GenericElements[WebDriver, WebElement]):
-    
+
     def _verify_by(self, by: Any) -> None:
         if by not in ByAttr.OPTIONAL_VALUES:
             raise ValueError(f'Invalid "by": "{by}". Use values from "By" (from huskium.selenium import By).')

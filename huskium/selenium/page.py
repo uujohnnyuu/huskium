@@ -16,7 +16,7 @@ from ..generic import Page as GenericPage
 
 
 class Page(GenericPage[WebDriver, WebElement]):
-    
+
     def _verify_driver(self, driver: Any) -> None:
         if not isinstance(driver, WebDriver):
             raise TypeError(f'The "driver" must be "selenium WebDriver", got {type(driver).__name__}.')
