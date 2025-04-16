@@ -9,3 +9,4 @@ from __future__ import annotations
 
 type TupleCoordinate = tuple[int, int, int, int] | tuple[float, float, float, float]
 type Coordinate = TupleCoordinate | dict[str, int] | dict[str, float]
+
