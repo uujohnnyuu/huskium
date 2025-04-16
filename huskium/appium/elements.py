@@ -17,7 +17,7 @@ from typing import Any
 from appium.webdriver.webdriver import WebDriver
 from appium.webdriver.webelement import WebElement
 
-from ..selenium.elements import GenericElements
+from ..generic import Elements as GenericElements
 from .by import ByAttr
 from .page import Page
 
@@ -26,23 +26,23 @@ class Elements(GenericElements[WebDriver, WebElement]):
 
     page: Page
 
-    def _verify_by(self, by: Any):
+    def _verify_by(self, by: Any) -> None:
         if by not in ByAttr.OPTIONAL_VALUES:
             raise ValueError(f'Invalid "by": "{by}". Use values from "By" (from huskium.appium import By).')
 
-    def _verify_instance(self, instance: Any):
+    def _verify_instance(self, instance: Any) -> None:
         if not isinstance(instance, Page):
             raise TypeError(
                 f'"appium Elements" must be used in "appium Page", got {type(instance).__name__}'
             )
 
-    def _verify_owner(self, owner: Any):
+    def _verify_owner(self, owner: Any) -> None:
         if not issubclass(owner, Page):
             raise TypeError(
                 f'"appium Elements" must be used in "appium Page", got {type(owner).__name__}'
             )
 
-    def _verify_set_value(self, value: Any):
+    def _verify_set(self, value: Any) -> None:
         if not isinstance(value, Elements):
             raise TypeError(f'Assigned value must be "appium Elements", got {type(value).__name__}.')
 

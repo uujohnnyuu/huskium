@@ -28,7 +28,7 @@ from typing import Callable, Literal
 from appium.webdriver.webdriver import WebDriver
 from appium.webdriver.webelement import WebElement
 
-from ..selenium.ecex import GenericECEX
+from ..generic import ECEX as GenericECEX
 
 
 class ECEX(GenericECEX[WebDriver, WebElement]):

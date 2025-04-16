@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import logging
 import time
-from typing import Any, cast, Iterable, Literal, Never, Self, Type
+from typing import Any, cast, Iterable, Literal, Self, Type
 
 from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains
@@ -200,7 +200,7 @@ class Element[WD: WebDriver, WE: WebElement]:
         for cache_name in _Name._caches:
             vars(self).pop(cache_name, None)
 
-    def _verify_by(self, by: Any) -> Never:
+    def _verify_by(self, by: Any) -> None:
         """
         This must be implemented in selenium or appium Element.
         """
@@ -226,19 +226,19 @@ class Element[WD: WebDriver, WE: WebElement]:
         if not isinstance(remark, str | None):
             raise TypeError(f'The set "remark" must be str, got {type(remark).__name__}.')
 
-    def _verify_instance(self, instance: Any) -> Never:
+    def _verify_instance(self, instance: Any) -> None:
         """
         This must be implemented in selenium or appium Element.
         """
         raise NotImplementedError('"_verify_instance" must be implemented in selenium or appium Element.')
 
-    def _verify_owner(self, owner: Any) -> Never:
+    def _verify_owner(self, owner: Any) -> None:
         """
         This must be implemented in selenium or appium Element.
         """
         raise NotImplementedError('"_verify_owner" must be implemented in selenium or appium Element.')
 
-    def _verify_set(self, value: Any) -> Never:
+    def _verify_set(self, value: Any) -> None:
         """
         This must be implemented in selenium or appium Element.
         """

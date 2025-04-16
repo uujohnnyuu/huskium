@@ -17,14 +17,14 @@ from appium.webdriver.webdriver import WebDriver
 from appium.webdriver.webelement import WebElement
 
 from ..common import Area, Offset
-from ..selenium.page import GenericPage
+from ..generic import Page as GenericPage
 from ..types import Coordinate, TupleCoordinate
 from .ecex import ECEX
 
 
 class Page(GenericPage[WebDriver, WebElement]):
 
-    def _verify_driver(self, driver: Any):
+    def _verify_driver(self, driver: Any) -> None:
         if not isinstance(driver, WebDriver):
             raise TypeError(f'The "driver" must be "appium WebDriver", got {type(driver).__name__}.')
 

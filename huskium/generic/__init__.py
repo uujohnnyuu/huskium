@@ -5,6 +5,6 @@
 
 
 from .ecex import ECEX
-from .element import Element
+from .element import ELEMENT_REFERENCE_EXCEPTIONS, Element
 from .elements import Elements
 from .page import Page

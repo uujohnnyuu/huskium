@@ -7,7 +7,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, cast, Iterable, Literal, Never, Self, Type
+from typing import Any, cast, Iterable, Literal, Self, Type
 
 from selenium.common.exceptions import TimeoutException
 from selenium.types import WaitExcTypes
@@ -22,7 +22,6 @@ from selenium.webdriver.remote.script_key import ScriptKey
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
-from appium.webdriver.webdriver import WebDriver as AppiumWebDriver
 
 from ..logging import LogConfig, PageElementLoggerAdapter
 from ..wait import Wait
@@ -71,7 +70,7 @@ class Page[WD: WebDriver, WE: WebElement]:
         self._verify_reraise(reraise)
         self._verify_remark(remark)
 
-    def _verify_driver(self, driver: Any) -> Never:
+    def _verify_driver(self, driver: Any) -> None:
         """
         This must be implemented in selenium or appium Page.
         """
@@ -179,7 +178,7 @@ class Page[WD: WebDriver, WE: WebElement]:
         """
         return self.driver.get_log(log_type)
 
-    def get_downloadable_files(self) -> dict:
+    def get_downloadable_files(self) -> list:
         """
         Retrieves the downloadable files as a map of file names and
         their corresponding URLs.

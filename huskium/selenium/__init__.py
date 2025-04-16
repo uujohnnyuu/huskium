@@ -5,7 +5,7 @@
 
 
 from .by import By
-from .ecex import GenericECEX
+from .ecex import ECEX
 from .element import Element
 from .elements import Elements
 from .page import Page

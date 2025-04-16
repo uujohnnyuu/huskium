@@ -13,7 +13,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, cast, Iterable, Literal, Never, Self, Type
+from typing import Any, cast, Iterable, Literal, Self, Type
 
 from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 from selenium.webdriver.remote.shadowroot import ShadowRoot
@@ -149,7 +149,7 @@ class Elements[WD: WebDriver, WE: WebElement]:
         """Synchronize necessary attributes."""
         self._wait.timeout = self._page._timeout if self._timeout is None else self._timeout
 
-    def _verify_by(self, by: Any) -> Never:
+    def _verify_by(self, by: Any) -> None:
         """
         This must be implemented in selenium or appium Elements.
         """
@@ -167,19 +167,19 @@ class Elements[WD: WebDriver, WE: WebElement]:
         if not isinstance(remark, str | None):
             raise TypeError(f'The set "remark" must be str, got {type(remark).__name__}.')
 
-    def _verify_instance(self, instance: Any) -> Never:
+    def _verify_instance(self, instance: Any) -> None:
         """
         This must be implemented in selenium or appium Elements.
         """
         raise NotImplementedError('"_verify_instance" must be implemented in selenium or appium Elements.')
 
-    def _verify_owner(self, owner: Any) -> Never:
+    def _verify_owner(self, owner: Any) -> None:
         """
         This must be implemented in selenium or appium Elements.
         """
         raise NotImplementedError('"_verify_owner" must be implemented in selenium or appium Elements.')
 
-    def _verify_set(self, value: Any) -> Never:
+    def _verify_set(self, value: Any) -> None:
         """
         This must be implemented in selenium or appium Elements.
         """
