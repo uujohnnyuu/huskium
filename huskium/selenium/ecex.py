@@ -236,8 +236,8 @@ class GenericECEX[WD: WebDriver, WE: WebElement]:
 
         def _predicate(driver: WD):
             return [
-                element 
-                for element in GenericECEX[WD, WE]._find_elements_by(driver, locator) 
+                element
+                for element in GenericECEX[WD, WE]._find_elements_by(driver, locator)
                 if element.is_displayed()
             ]
 

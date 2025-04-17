@@ -222,7 +222,7 @@ class GenericElement[WD: WebDriver, WE: WebElement]:
     def _verify_remark(self, remark: Any) -> None:
         if not isinstance(remark, str | None):
             raise TypeError(f'The set "remark" must be str, got {type(remark).__name__}.')
-        
+
     def _verify_get(self, instance: Any, owner: Any):
         self._verify_descriptor_instance(instance)
         self._verify_descriptor_owner(owner)
