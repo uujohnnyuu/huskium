@@ -1,3 +1,21 @@
+# huskium v1.2.0
+
+## **Stable Release**
+[sphinx] https://uujohnnyuu.github.io/huskium/
+
+## **New Features**
+Use **Python 3.12** generics to modularize Selenium and Appium,
+allowing each to manage Page, Element, and related features separately.
+
+## Installation
+Note that this version requires **Python 3.12+**.
+To install or upgrade to this version, run:
+```sh
+pip install huskium==1.2.0
+```
+
+---
+
 # huskium v1.1.2
 
 ## **Stable Release**

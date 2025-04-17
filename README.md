@@ -69,7 +69,7 @@ class MyAppPage(Page):
     amounts = Elements(By.IOS_PREDICATE, 'name CONTAINS "$"', remark='All amounts')
 ```
 
-### 3. Appium Page Reusing Selenium Elements
+### 3. Appium Page Reusing Selenium Element
 
 If you want to reuse a Selenium page object in Appium (e.g., for cross-platform web/app testing), 
 use multiple inheritance:
@@ -93,7 +93,7 @@ class MyAppPage(MyWebPage, Page):
     search_field = Element(By.NAME, 'q', remark='App search input box')
 ```
 
-### 4. ❌ Do Not Mix Selenium Page with Appium Elements
+### 4. ❌ Do Not Mix Selenium Page with Appium Element
 
 Avoid mixing Page and Element classes across platforms. 
 This will raise errors during initialization:
@@ -114,8 +114,6 @@ Initialize the page object with a driver,
 then use the `page.method()` or `page.element.method()` pattern.
 
 ```python
-# test_my_page.py
-
 from selenium import webdriver
 from my_page import MyPage
 

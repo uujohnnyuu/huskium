@@ -2,6 +2,10 @@
 *vscode*
 __pycache__/
 
+# virtual env
+.venv/
+requirements.txt
+
 # verify
 .mypy_cache/
 verify_commit/
