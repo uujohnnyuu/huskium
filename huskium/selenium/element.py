@@ -1171,7 +1171,6 @@ class GenericElement[WD: WebDriver, WE: WebElement]:
 
                 my_page.my_element.clear()
                 my_page.my_element.clear().send_keys('my text')
-                my_page.my_element.click().clear().send_keys('my text')
 
         """
         try:
