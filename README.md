@@ -36,29 +36,77 @@ greatly improving stability and performance.
 
 ---
 
-## Page Object and Test Script
+## Page Object
 
-The core of huskium is to quickly build a **page object** and utilize it to write **test scripts**.  
-Unless specified otherwise, `Element` refers to both `Element` and `Elements`.
+The core of huskium is building **page objects** to simplify writing **test scripts**.  
+Unless otherwise noted, `Element` refers to both `Element` and `Elements`.
 
-### 1. Page Object
+### 1. Selenium Page with Selenium Element
 
-Create a simple page object (e.g., `my_page.py`) by defining `Element` instances.
+Define a simple page object using Selenium:
 
 ```python
-# my_page.py
+from huskium.selenium import Page, Element, Elements, By
 
-from huskium import Page, Element, Elements
-
-class MyPage(Page):
-
-    # Standard way to define an element.
+class MyWebPage(Page):
     search_field = Element(By.NAME, 'q', remark='Search input box')
     search_results = Elements(By.TAG_NAME, 'h3', remark='All search results')
     search_result1 = Element(By.XPATH, '(//h3)[1]', remark='First search result')
 ```
 
-### 2. Test Script
+### 2. Appium Page with Appium Element
+
+Create an Appium-based page the same way:
+
+```python
+from huskium.appium import Page, Element, Elements, By
+
+class MyAppPage(Page):
+    id_field = Element(By.ACCESSIBILITY_ID, 'id_field', remark='ID input box')
+    name_field = Element(By.ACCESSIBILITY_ID, 'name_field', remark='Name input box')
+    login_button = Element(By.ACCESSIBILITY_ID, 'login_button', remark='Login button')
+    amounts = Elements(By.IOS_PREDICATE, 'name CONTAINS "$"', remark='All amounts')
+```
+
+### 3. Appium Page Reusing Selenium Elements
+
+If you want to reuse a Selenium page object in Appium (e.g., for cross-platform web/app testing), 
+use multiple inheritance:
+
+```python
+from huskium.appium import Page
+from mypage import MyWebPage  # Selenium-based page object
+
+# Place MyWebPage before Page to preserve static type hints.
+class MyAppPage(MyWebPage, Page):  
+    pass
+```
+
+If any element needs Appium-specific behavior, you can override it:
+
+```python
+from huskium.appium import Page, Element, By
+from mypage import MyWebPage
+
+class MyAppPage(MyWebPage, Page):
+    search_field = Element(By.NAME, 'q', remark='App search input box')
+```
+
+### 4. ❌ Do Not Mix Selenium Page with Appium Elements
+
+Avoid mixing Page and Element classes across platforms. 
+This will raise errors during initialization:
+
+```python
+# ❌ Invalid: Selenium Page cannot use Appium Element
+from huskium.selenium import Page
+from huskium.appium import Element, By
+
+class MyPage(Page):
+    search_field = Element(By.NAME, 'q', remark='Search input box')
+```
+
+## Test Script
 
 After defining the page object, you can easily write test scripts (e.g., `test_my_page.py`).  
 Initialize the page object with a driver, 
@@ -86,6 +134,27 @@ my_page.search_result1.click()
 my_page.close()
 ```
 
+Regardless of whether you're using Selenium or Appium, the initialization is done in the same way.  
+However, make sure to match the correct Page class with the corresponding WebDriver:
+
+```python
+# ✅ Chrome is a Selenium WebDriver; WebPage is a Selenium Page.
+web_page = WebPage(chrome)
+
+# ✅ iPhone is an Appium WebDriver; AppPage is an Appium Page.
+app_page = AppPage(iphone)
+```
+
+❌ Mixing WebDriver and Page types will raise an error at initialization:
+
+```python
+# ❌ iPhone is an Appium WebDriver; WebPage is a Selenium Page.
+web_page = WebPage(iphone)
+
+# ❌ Chrome is a Selenium WebDriver; AppPage is an Appium Page.
+app_page = AppPage(chrome)
+```
+
 ---
 
 ## Dynamic Element
@@ -105,8 +174,8 @@ No matter which method you choose, the final usage will still follow the `page.e
 **Cons:** Cannot statically store element info (though the performance impact is minimal).
 
 ```python
-# my_page.py
-from huskium import Page, Element, By, dynamic
+from huskium import dynamic
+from huskium.selenium import Page, Element, By
 
 class MyPage(Page):
 
@@ -117,7 +186,6 @@ class MyPage(Page):
 
 Test script still uses `page.element.method()` pattern.
 ```python
-# test_my_page.py
 my_page.search_result(3).click()
 ```
 
@@ -127,8 +195,7 @@ my_page.search_result(3).click()
 **Cons:** Slightly more verbose; requires a corresponding static and dynamic element.
 
 ```python
-# my_page.py
-from huskium import Page, Element, By
+from huskium.selenium import Page, Element, By
 
 class MyPage(Page):
 
@@ -153,8 +220,7 @@ my_page.static_search_result.click()
 **Cons:** Less intuitive and requires understanding Python data descriptor behavior.
 
 ```python
-# my_page.py
-from huskium import Page, Element, By
+from huskium.selenium import Page, Element, By
 
 class MyPage(Page):
 
@@ -169,7 +235,6 @@ class MyPage(Page):
 
 Once set, you can reuse the static element:
 ```python
-# test_my_page.py
 my_page.dynamic_search_result(3).wait_present()
 my_page.static_search_result.click()
 ```
@@ -480,7 +545,7 @@ page.element.select_by_value("option_value")
 ## Inheritance
 
 ```python
-from huskium import Page as HuskyPage, Element as HuskyElement
+from huskium.selenium import Page as HuskyPage, Element as HuskyElement
 
 class Page(HuskyPage):
     def extended_func(self, par):
