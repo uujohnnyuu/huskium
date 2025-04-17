@@ -3,7 +3,8 @@
 ## Table of Contents
 - [Overview](#overview)
 - [Usage](#usage)
-- [Page Object and Test Script](#page-object-and-test-script)
+- [Page Object](#page-object)
+- [Test Script](#test-script)
 - [Timeout Value Settings](#timeout-value-settings)
 - [Timeout Reraise Settings](#timeout-reraise-settings)
 - [Element Cache Settings](#element-cache-settings)
