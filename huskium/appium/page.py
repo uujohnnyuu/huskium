@@ -17,7 +17,7 @@ from appium.webdriver.webdriver import WebDriver
 from appium.webdriver.webelement import WebElement
 
 from ..common import Area, Offset
-from ..generic import Page as GenericPage
+from ..selenium import GenericPage
 from ..types import Coordinate, TupleCoordinate
 from .ecex import ECEX
 
