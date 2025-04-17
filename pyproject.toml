@@ -12,7 +12,7 @@ authors = [
 dependencies = [
     "Appium-Python-Client >=4.0.0"
 ]
-requires-python = ">= 3.11"
+requires-python = ">= 3.12"
 readme = "README.md"
 license = {text = "Apache-2.0"}
 keywords = ["huskium", "huskypo", "selenium", "appium", "page object", "automation"]
@@ -21,7 +21,7 @@ keywords = ["huskium", "huskypo", "selenium", "appium", "page object", "automati
 Homepage = "https://github.com/uujohnnyuu/huskium"
 
 [tool.setuptools]
-packages = ["huskium", "huskium.core"]
+packages = ["huskium", "huskium.selenium", "huskium.appium"]
 
 [tool.setuptools.dynamic]
 version = {attr = "huskium.__version__"}
