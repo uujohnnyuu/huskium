@@ -7,8 +7,8 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   huskium.appium
    huskium.selenium
+   huskium.appium
 
 Submodules
 ----------
