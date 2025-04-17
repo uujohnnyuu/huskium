@@ -1,0 +1,53 @@
+huskium.appium package
+======================
+
+Submodules
+----------
+
+huskium.appium.by module
+------------------------
+
+.. automodule:: huskium.appium.by
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+huskium.appium.ecex module
+--------------------------
+
+.. automodule:: huskium.appium.ecex
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+huskium.appium.element module
+-----------------------------
+
+.. automodule:: huskium.appium.element
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+huskium.appium.elements module
+------------------------------
+
+.. automodule:: huskium.appium.elements
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+huskium.appium.page module
+--------------------------
+
+.. automodule:: huskium.appium.page
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Module contents
+---------------
+
+.. automodule:: huskium.appium
+   :members:
+   :show-inheritance:
+   :undoc-members:

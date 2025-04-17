@@ -1,0 +1,53 @@
+huskium.selenium package
+========================
+
+Submodules
+----------
+
+huskium.selenium.by module
+--------------------------
+
+.. automodule:: huskium.selenium.by
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+huskium.selenium.ecex module
+----------------------------
+
+.. automodule:: huskium.selenium.ecex
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+huskium.selenium.element module
+-------------------------------
+
+.. automodule:: huskium.selenium.element
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+huskium.selenium.elements module
+--------------------------------
+
+.. automodule:: huskium.selenium.elements
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+huskium.selenium.page module
+----------------------------
+
+.. automodule:: huskium.selenium.page
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Module contents
+---------------
+
+.. automodule:: huskium.selenium
+   :members:
+   :show-inheritance:
+   :undoc-members:

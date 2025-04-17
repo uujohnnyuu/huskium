@@ -1,0 +1,815 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>huskium.appium package &mdash; huskium 1.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=6efca38a"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="huskium.selenium package" href="huskium.selenium.html" />
+    <link rel="prev" title="huskium package" href="huskium.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            huskium
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">API Documentation:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="huskium.html">huskium package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="huskium.selenium.html">huskium.selenium package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">huskium.appium package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-huskium.appium.by">huskium.appium.by module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#huskium.appium.by.ByAttr"><code class="docutils literal notranslate"><span class="pre">ByAttr</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#huskium.appium.by.ByAttr.NAMES"><code class="docutils literal notranslate"><span class="pre">ByAttr.NAMES</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#huskium.appium.by.ByAttr.OPTIONAL_VALUES"><code class="docutils literal notranslate"><span class="pre">ByAttr.OPTIONAL_VALUES</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#huskium.appium.by.ByAttr.VALUES"><code class="docutils literal notranslate"><span class="pre">ByAttr.VALUES</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-huskium.appium.ecex">huskium.appium.ecex module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#huskium.appium.ecex.ECEX"><code class="docutils literal notranslate"><span class="pre">ECEX</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#huskium.appium.ecex.ECEX.webview_is_present"><code class="docutils literal notranslate"><span class="pre">ECEX.webview_is_present()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-huskium.appium.element">huskium.appium.element module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#huskium.appium.element.Element"><code class="docutils literal notranslate"><span class="pre">Element</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#huskium.appium.element.Element.app_drag_and_drop"><code class="docutils literal notranslate"><span class="pre">Element.app_drag_and_drop()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#huskium.appium.element.Element.app_scroll"><code class="docutils literal notranslate"><span class="pre">Element.app_scroll()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#huskium.appium.element.Element.flick_by"><code class="docutils literal notranslate"><span class="pre">Element.flick_by()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#huskium.appium.element.Element.is_viewable"><code class="docutils literal notranslate"><span class="pre">Element.is_viewable()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#huskium.appium.element.Element.location_in_view"><code class="docutils literal notranslate"><span class="pre">Element.location_in_view</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#huskium.appium.element.Element.swipe_by"><code class="docutils literal notranslate"><span class="pre">Element.swipe_by()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#huskium.appium.element.Element.tap"><code class="docutils literal notranslate"><span class="pre">Element.tap()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-huskium.appium.elements">huskium.appium.elements module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#huskium.appium.elements.Elements"><code class="docutils literal notranslate"><span class="pre">Elements</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#huskium.appium.elements.Elements.locations_in_view"><code class="docutils literal notranslate"><span class="pre">Elements.locations_in_view</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-huskium.appium.page">huskium.appium.page module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#huskium.appium.page.Page"><code class="docutils literal notranslate"><span class="pre">Page</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#huskium.appium.page.Page.activate_app"><code class="docutils literal notranslate"><span class="pre">Page.activate_app()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#huskium.appium.page.Page.contexts"><code class="docutils literal notranslate"><span class="pre">Page.contexts</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#huskium.appium.page.Page.draw_gesture"><code class="docutils literal notranslate"><span class="pre">Page.draw_gesture()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#huskium.appium.page.Page.draw_lines"><code class="docutils literal notranslate"><span class="pre">Page.draw_lines()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#huskium.appium.page.Page.flick"><code class="docutils literal notranslate"><span class="pre">Page.flick()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#huskium.appium.page.Page.flick_by"><code class="docutils literal notranslate"><span class="pre">Page.flick_by()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#huskium.appium.page.Page.get_status"><code class="docutils literal notranslate"><span class="pre">Page.get_status()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#huskium.appium.page.Page.swipe"><code class="docutils literal notranslate"><span class="pre">Page.swipe()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#huskium.appium.page.Page.swipe_by"><code class="docutils literal notranslate"><span class="pre">Page.swipe_by()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#huskium.appium.page.Page.switch_to_app"><code class="docutils literal notranslate"><span class="pre">Page.switch_to_app()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#huskium.appium.page.Page.switch_to_context"><code class="docutils literal notranslate"><span class="pre">Page.switch_to_context()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#huskium.appium.page.Page.switch_to_flutter"><code class="docutils literal notranslate"><span class="pre">Page.switch_to_flutter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#huskium.appium.page.Page.switch_to_webview"><code class="docutils literal notranslate"><span class="pre">Page.switch_to_webview()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#huskium.appium.page.Page.tap"><code class="docutils literal notranslate"><span class="pre">Page.tap()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#huskium.appium.page.Page.tap_window_center"><code class="docutils literal notranslate"><span class="pre">Page.tap_window_center()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#huskium.appium.page.Page.terminate_app"><code class="docutils literal notranslate"><span class="pre">Page.terminate_app()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-huskium.appium">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">huskium</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="huskium.html">huskium package</a></li>
+      <li class="breadcrumb-item active">huskium.appium package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/huskium.appium.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="huskium-appium-package">
+<h1>huskium.appium package<a class="headerlink" href="#huskium-appium-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-huskium.appium.by">
+<span id="huskium-appium-by-module"></span><h2>huskium.appium.by module<a class="headerlink" href="#module-huskium.appium.by" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="huskium.appium.by.ByAttr">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">huskium.appium.by.</span></span><span class="sig-name descname"><span class="pre">ByAttr</span></span><a class="headerlink" href="#huskium.appium.by.ByAttr" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Mainly used for internal validation of <cite>By</cite>.
+It can also be used to check the available <cite>By</cite> attributes
+in your current Selenium and Appium version.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="huskium.appium.by.ByAttr.NAMES">
+<span class="sig-name descname"><span class="pre">NAMES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['ACCESSIBILITY_ID',</span> <span class="pre">'ANDROID_DATA_MATCHER',</span> <span class="pre">'ANDROID_UIAUTOMATOR',</span> <span class="pre">'ANDROID_VIEWTAG',</span> <span class="pre">'ANDROID_VIEW_MATCHER',</span> <span class="pre">'CLASS_NAME',</span> <span class="pre">'CSS_SELECTOR',</span> <span class="pre">'CUSTOM',</span> <span class="pre">'FLUTTER_INTEGRATION_KEY',</span> <span class="pre">'FLUTTER_INTEGRATION_SEMANTICS_LABEL',</span> <span class="pre">'FLUTTER_INTEGRATION_TEXT',</span> <span class="pre">'FLUTTER_INTEGRATION_TEXT_CONTAINING',</span> <span class="pre">'FLUTTER_INTEGRATION_TYPE',</span> <span class="pre">'ID',</span> <span class="pre">'IMAGE',</span> <span class="pre">'IOS_CLASS_CHAIN',</span> <span class="pre">'IOS_PREDICATE',</span> <span class="pre">'LINK_TEXT',</span> <span class="pre">'NAME',</span> <span class="pre">'PARTIAL_LINK_TEXT',</span> <span class="pre">'TAG_NAME',</span> <span class="pre">'XPATH',</span> <span class="pre">'_custom_finders',</span> <span class="pre">'clear_custom_finders',</span> <span class="pre">'get_finder',</span> <span class="pre">'register_custom_finder']</span></em><a class="headerlink" href="#huskium.appium.by.ByAttr.NAMES" title="Link to this definition"></a></dt>
+<dd><p>A list of all <cite>By</cite> attribute names as strings.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="huskium.appium.by.ByAttr.OPTIONAL_VALUES">
+<span class="sig-name descname"><span class="pre">OPTIONAL_VALUES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['accessibility</span> <span class="pre">id',</span> <span class="pre">'-android</span> <span class="pre">datamatcher',</span> <span class="pre">'-android</span> <span class="pre">uiautomator',</span> <span class="pre">'-android</span> <span class="pre">viewtag',</span> <span class="pre">'-android</span> <span class="pre">viewmatcher',</span> <span class="pre">'class</span> <span class="pre">name',</span> <span class="pre">'css</span> <span class="pre">selector',</span> <span class="pre">'-custom',</span> <span class="pre">'-flutter</span> <span class="pre">key',</span> <span class="pre">'-flutter</span> <span class="pre">semantics</span> <span class="pre">label',</span> <span class="pre">'-flutter</span> <span class="pre">text',</span> <span class="pre">'-flutter</span> <span class="pre">text</span> <span class="pre">containing',</span> <span class="pre">'-flutter</span> <span class="pre">type',</span> <span class="pre">'id',</span> <span class="pre">'-image',</span> <span class="pre">'-ios</span> <span class="pre">class</span> <span class="pre">chain',</span> <span class="pre">'-ios</span> <span class="pre">predicate</span> <span class="pre">string',</span> <span class="pre">'link</span> <span class="pre">text',</span> <span class="pre">'name',</span> <span class="pre">'partial</span> <span class="pre">link</span> <span class="pre">text',</span> <span class="pre">'tag</span> <span class="pre">name',</span> <span class="pre">'xpath',</span> <span class="pre">{},</span> <span class="pre">&lt;bound</span> <span class="pre">method</span> <span class="pre">By.clear_custom_finders</span> <span class="pre">of</span> <span class="pre">&lt;class</span> <span class="pre">'appium.webdriver.common.appiumby.AppiumBy'&gt;&gt;,</span> <span class="pre">&lt;bound</span> <span class="pre">method</span> <span class="pre">By.get_finder</span> <span class="pre">of</span> <span class="pre">&lt;class</span> <span class="pre">'appium.webdriver.common.appiumby.AppiumBy'&gt;&gt;,</span> <span class="pre">&lt;bound</span> <span class="pre">method</span> <span class="pre">By.register_custom_finder</span> <span class="pre">of</span> <span class="pre">&lt;class</span> <span class="pre">'appium.webdriver.common.appiumby.AppiumBy'&gt;&gt;,</span> <span class="pre">None]</span></em><a class="headerlink" href="#huskium.appium.by.ByAttr.OPTIONAL_VALUES" title="Link to this definition"></a></dt>
+<dd><p>A list of all <cite>By</cite> attribute values with <cite>None</cite>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="huskium.appium.by.ByAttr.VALUES">
+<span class="sig-name descname"><span class="pre">VALUES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['accessibility</span> <span class="pre">id',</span> <span class="pre">'-android</span> <span class="pre">datamatcher',</span> <span class="pre">'-android</span> <span class="pre">uiautomator',</span> <span class="pre">'-android</span> <span class="pre">viewtag',</span> <span class="pre">'-android</span> <span class="pre">viewmatcher',</span> <span class="pre">'class</span> <span class="pre">name',</span> <span class="pre">'css</span> <span class="pre">selector',</span> <span class="pre">'-custom',</span> <span class="pre">'-flutter</span> <span class="pre">key',</span> <span class="pre">'-flutter</span> <span class="pre">semantics</span> <span class="pre">label',</span> <span class="pre">'-flutter</span> <span class="pre">text',</span> <span class="pre">'-flutter</span> <span class="pre">text</span> <span class="pre">containing',</span> <span class="pre">'-flutter</span> <span class="pre">type',</span> <span class="pre">'id',</span> <span class="pre">'-image',</span> <span class="pre">'-ios</span> <span class="pre">class</span> <span class="pre">chain',</span> <span class="pre">'-ios</span> <span class="pre">predicate</span> <span class="pre">string',</span> <span class="pre">'link</span> <span class="pre">text',</span> <span class="pre">'name',</span> <span class="pre">'partial</span> <span class="pre">link</span> <span class="pre">text',</span> <span class="pre">'tag</span> <span class="pre">name',</span> <span class="pre">'xpath',</span> <span class="pre">{},</span> <span class="pre">&lt;bound</span> <span class="pre">method</span> <span class="pre">By.clear_custom_finders</span> <span class="pre">of</span> <span class="pre">&lt;class</span> <span class="pre">'appium.webdriver.common.appiumby.AppiumBy'&gt;&gt;,</span> <span class="pre">&lt;bound</span> <span class="pre">method</span> <span class="pre">By.get_finder</span> <span class="pre">of</span> <span class="pre">&lt;class</span> <span class="pre">'appium.webdriver.common.appiumby.AppiumBy'&gt;&gt;,</span> <span class="pre">&lt;bound</span> <span class="pre">method</span> <span class="pre">By.register_custom_finder</span> <span class="pre">of</span> <span class="pre">&lt;class</span> <span class="pre">'appium.webdriver.common.appiumby.AppiumBy'&gt;&gt;]</span></em><a class="headerlink" href="#huskium.appium.by.ByAttr.VALUES" title="Link to this definition"></a></dt>
+<dd><p>A list of all <cite>By</cite> attribute values.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-huskium.appium.ecex">
+<span id="huskium-appium-ecex-module"></span><h2>huskium.appium.ecex module<a class="headerlink" href="#module-huskium.appium.ecex" title="Link to this heading"></a></h2>
+<p>Expected Conditions Extension (ECEX)</p>
+<dl class="simple">
+<dt>Overview:</dt><dd><p>ECEX extends official <cite>expected_conditions (EC)</cite> module.</p>
+</dd>
+<dt>Locator Handling:</dt><dd><p>The <cite>locator</cite> follows the same structure as <cite>EC</cite>.</p>
+</dd>
+<dt>Index Feature:</dt><dd><p>The <cite>index</cite> allows using the <cite>find_elements(*locator)[index]</cite> pattern.
+If <cite>index</cite> is <cite>None</cite>, <cite>find_element(*locator)</cite> is used instead.</p>
+</dd>
+<dt>Exception Handling:</dt><dd><p>ECEX separates methods for locators and WebElements to enable more robust
+exception handling.</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="huskium.appium.ecex.ECEX">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">huskium.appium.ecex.</span></span><span class="sig-name descname"><span class="pre">ECEX</span></span><a class="headerlink" href="#huskium.appium.ecex.ECEX" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="huskium.selenium.html#huskium.selenium.ecex.GenericECEX" title="huskium.selenium.ecex.GenericECEX"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenericECEX</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">WebDriver</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">WebElement</span></code>]</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="huskium.appium.ecex.ECEX.webview_is_present">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">webview_is_present</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">switch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">WebDriver</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="k"><span class="pre">False</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#huskium.appium.ecex.ECEX.webview_is_present" title="Link to this definition"></a></dt>
+<dd><p>Whether <cite>WEBVIEW</cite> context is present.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>switch</strong> – Switch to the <cite>WEBVIEW</cite> context
+when it exists and <cite>switch</cite> is <cite>True</cite>.</p></li>
+<li><p><strong>index</strong> – Switch to the specified context index,
+defaulting to the most recently appeared.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>All current contexts <cite>list[str]</cite> when a <cite>WEBVIEW</cite> exists;
+otherwise, <cite>False</cite> when no <cite>WEBVIEW</cite> exists.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(list[str] | False)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-huskium.appium.element">
+<span id="huskium-appium-element-module"></span><h2>huskium.appium.element module<a class="headerlink" href="#module-huskium.appium.element" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="huskium.appium.element.Element">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">huskium.appium.element.</span></span><span class="sig-name descname"><span class="pre">Element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remark</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#huskium.appium.element.Element" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="huskium.selenium.html#huskium.selenium.element.GenericElement" title="huskium.selenium.element.GenericElement"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenericElement</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">WebDriver</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">WebElement</span></code>]</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="huskium.appium.element.Element.app_drag_and_drop">
+<span class="sig-name descname"><span class="pre">app_drag_and_drop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#huskium.appium.element.Element" title="huskium.appium.element.Element"><span class="pre">Element</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">pause</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="headerlink" href="#huskium.appium.element.Element.app_drag_and_drop" title="Link to this definition"></a></dt>
+<dd><p>Appium API. Drag the origin element to the destination element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> – The element to drag to.</p></li>
+<li><p><strong>pause</strong> – How long the action pauses before moving after
+the tap and hold in seconds.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="huskium.appium.element.Element.app_scroll">
+<span class="sig-name descname"><span class="pre">app_scroll</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#huskium.appium.element.Element" title="huskium.appium.element.Element"><span class="pre">Element</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="headerlink" href="#huskium.appium.element.Element.app_scroll" title="Link to this definition"></a></dt>
+<dd><p>Appium API. Scrolls from one element to another.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> – The element to scroll to (center of element).</p></li>
+<li><p><strong>duration</strong> – Defines speed of scroll action when moving to target.
+Default is 600 ms for W3C spec.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="huskium.appium.element.Element.flick_by">
+<span class="sig-name descname"><span class="pre">flick_by</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Coordinate</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(0.5,</span> <span class="pre">0.75,</span> <span class="pre">0.5,</span> <span class="pre">0.25)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">area</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Coordinate</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">0.0,</span> <span class="pre">1.0,</span> <span class="pre">1.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_round</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_align</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_xycmp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="headerlink" href="#huskium.appium.element.Element.flick_by" title="Link to this definition"></a></dt>
+<dd><p>Appium API.
+For native iOS and Android apps, it flicks the screen until
+the element becomes visible within the specified area.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>offset</strong> – <cite>(start_x, start_y, end_x, end_y)</cite> or <cite>(sx, sy, ex, ey)</cite>.</p></li>
+<li><p><strong>area</strong> – <cite>(x, y, width, height)</cite> or <cite>(x, y, w, h)</cite>.</p></li>
+<li><p><strong>timeout</strong> – Maximum wait time in seconds.</p></li>
+<li><p><strong>max_round</strong> – Maximum number of flick attempts.</p></li>
+<li><p><strong>max_align</strong> – Maximum attempts to align all borders of the element
+within the area (view) border.</p></li>
+<li><p><strong>min_xycmp</strong> – Minimum x and y components to avoid being mistaken
+as a click <strong>during alignment</strong>.
+Should be considered along with <cite>duration</cite>.</p></li>
+<li><p><strong>duration</strong> – <strong>Alignment</strong> (not flick) duration in milliseconds.
+If too short, it may be mistaken as a click.
+Should be considered along with <cite>min_xycmp</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">huskium</span><span class="w"> </span><span class="kn">import</span> <span class="n">Offset</span><span class="p">,</span> <span class="n">Area</span>
+
+<span class="c1"># Filck by default.</span>
+<span class="c1"># Offset.UP (sx, sy, ex, ey) = (0.5, 0.75, 0.5, 0.25)</span>
+<span class="c1"># Area.FULL (x, y, w, h) = (0.0, 0.0, 1.0, 1.0)</span>
+<span class="c1"># offset x: Fixed 0.5 of current window width.</span>
+<span class="c1"># offset y: From 0.75 to 0.25 of current window height.</span>
+<span class="n">my_page</span><span class="o">.</span><span class="n">target_element</span><span class="o">.</span><span class="n">filck_by</span><span class="p">()</span>
+
+<span class="c1"># Filck to the direction using Offset.</span>
+<span class="n">my_page</span><span class="o">.</span><span class="n">target_element</span><span class="o">.</span><span class="n">filck_by</span><span class="p">(</span><span class="n">Offset</span><span class="o">.</span><span class="n">DOWN</span><span class="p">)</span>
+<span class="n">my_page</span><span class="o">.</span><span class="n">target_element</span><span class="o">.</span><span class="n">filck_by</span><span class="p">(</span><span class="n">Offset</span><span class="o">.</span><span class="n">UPPER_LEFT</span><span class="p">)</span>
+
+<span class="c1"># Filck with customize relative offset.</span>
+<span class="n">my_page</span><span class="o">.</span><span class="n">target_element</span><span class="o">.</span><span class="n">filck_by</span><span class="p">((</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">))</span>
+
+<span class="c1"># Filck within a filckable range.</span>
+<span class="c1"># Get the absolute area rect using the scrollable element.</span>
+<span class="n">area</span> <span class="o">=</span> <span class="n">my_page</span><span class="o">.</span><span class="n">scrollable_element</span><span class="o">.</span><span class="n">rect</span>
+<span class="n">my_page</span><span class="o">.</span><span class="n">target_element</span><span class="o">.</span><span class="n">filck_by</span><span class="p">((</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">),</span> <span class="n">area</span><span class="p">)</span>
+
+<span class="c1"># Filck with customize absolute offset.</span>
+<span class="n">my_page</span><span class="o">.</span><span class="n">target_element</span><span class="o">.</span><span class="n">filck_by</span><span class="p">((</span><span class="mi">250</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">700</span><span class="p">))</span>
+
+<span class="c1"># Filck with customize relative offset of customize relative area.</span>
+<span class="c1"># The area is relative to current window rect, for example:</span>
+<span class="c1"># current window rect = (10, 20, 500, 1000)</span>
+<span class="c1"># area = (0.1, 0.2, 0.6, 0.7)</span>
+<span class="c1"># area_x = 10 + 500 x 0.1 = 60</span>
+<span class="c1"># area_y = 20 + 1000 x 0.2 = 220</span>
+<span class="c1"># area_width = 500 x 0.6 = 300</span>
+<span class="c1"># area_height = 1000 x 0.7 = 700</span>
+<span class="n">my_page</span><span class="o">.</span><span class="n">target_element</span><span class="o">.</span><span class="n">filck_by</span><span class="p">(</span>
+    <span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Filck with customize relative offset of customize absolute area.</span>
+<span class="n">my_page</span><span class="o">.</span><span class="n">target_element</span><span class="o">.</span><span class="n">filck_by</span><span class="p">(</span>
+    <span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">),</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">700</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="huskium.appium.element.Element.is_viewable">
+<span class="sig-name descname"><span class="pre">is_viewable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#huskium.appium.element.Element.is_viewable" title="Link to this definition"></a></dt>
+<dd><p>Appium API.
+This method is typically used with swipe-based element searching.
+Checks if the current element is visible on the mobile screen.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="huskium.appium.element.Element.location_in_view">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">location_in_view</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#huskium.appium.element.Element.location_in_view" title="Link to this definition"></a></dt>
+<dd><p>Appium API.
+Retrieve the location (coordination) of the element
+relative to the view when it is present.
+For example: <cite>{‘x’: 100, ‘y’: 250}</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="huskium.appium.element.Element.swipe_by">
+<span class="sig-name descname"><span class="pre">swipe_by</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Coordinate</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(0.5,</span> <span class="pre">0.75,</span> <span class="pre">0.5,</span> <span class="pre">0.25)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">area</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Coordinate</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">0.0,</span> <span class="pre">1.0,</span> <span class="pre">1.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_round</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_align</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_xycmp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="headerlink" href="#huskium.appium.element.Element.swipe_by" title="Link to this definition"></a></dt>
+<dd><p>Appium API.
+For native iOS and Android apps, it swipes the screen until
+the element becomes visible within the specified area.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>offset</strong> – <cite>(start_x, start_y, end_x, end_y)</cite> or <cite>(sx, sy, ex, ey)</cite>.</p></li>
+<li><p><strong>area</strong> – <cite>(x, y, width, height)</cite> or <cite>(x, y, w, h)</cite>.</p></li>
+<li><p><strong>timeout</strong> – Maximum wait time in seconds.</p></li>
+<li><p><strong>max_round</strong> – Maximum number of swipe attempts.</p></li>
+<li><p><strong>max_align</strong> – Maximum attempts to align all borders of the element
+within the area (view) border.</p></li>
+<li><p><strong>min_xycmp</strong> – Minimum x and y components to avoid being mistaken
+as a click <strong>during alignment</strong>.
+Should be considered along with <cite>duration</cite>.</p></li>
+<li><p><strong>duration</strong> – Swipe and alignment duration in milliseconds.
+If too short, it may be mistaken as a click.
+Should be considered along with <cite>offset</cite> and <cite>min_xycmp</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">huskium</span><span class="w"> </span><span class="kn">import</span> <span class="n">Offset</span><span class="p">,</span> <span class="n">Area</span>
+
+<span class="c1"># Swipe by default.</span>
+<span class="c1"># Offset.UP (sx, sy, ex, ey) = (0.5, 0.75, 0.5, 0.25)</span>
+<span class="c1"># Area.FULL (x, y, w, h) = (0.0, 0.0, 1.0, 1.0)</span>
+<span class="c1"># offset x: Fixed 0.5 of current window width.</span>
+<span class="c1"># offset y: From 0.75 to 0.25 of current window height.</span>
+<span class="n">my_page</span><span class="o">.</span><span class="n">target_element</span><span class="o">.</span><span class="n">swipe_by</span><span class="p">()</span>
+
+<span class="c1"># Swipe to the direction using Offset.</span>
+<span class="n">my_page</span><span class="o">.</span><span class="n">target_element</span><span class="o">.</span><span class="n">swipe_by</span><span class="p">(</span><span class="n">Offset</span><span class="o">.</span><span class="n">DOWN</span><span class="p">)</span>
+<span class="n">my_page</span><span class="o">.</span><span class="n">target_element</span><span class="o">.</span><span class="n">swipe_by</span><span class="p">(</span><span class="n">Offset</span><span class="o">.</span><span class="n">UPPER_LEFT</span><span class="p">)</span>
+
+<span class="c1"># Swipe with customize relative offset.</span>
+<span class="n">my_page</span><span class="o">.</span><span class="n">target_element</span><span class="o">.</span><span class="n">swipe_by</span><span class="p">((</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">))</span>
+
+<span class="c1"># Swipe within a swipeable range.</span>
+<span class="c1"># Get the absolute area rect using the scrollable element.</span>
+<span class="n">area</span> <span class="o">=</span> <span class="n">my_page</span><span class="o">.</span><span class="n">scrollable_element</span><span class="o">.</span><span class="n">rect</span>
+<span class="n">my_page</span><span class="o">.</span><span class="n">target_element</span><span class="o">.</span><span class="n">swipe_by</span><span class="p">((</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">),</span> <span class="n">area</span><span class="p">)</span>
+
+<span class="c1"># Swipe with customize absolute offset.</span>
+<span class="n">my_page</span><span class="o">.</span><span class="n">target_element</span><span class="o">.</span><span class="n">swipe_by</span><span class="p">((</span><span class="mi">250</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">700</span><span class="p">))</span>
+
+<span class="c1"># Swipe with customize relative offset of customize relative area.</span>
+<span class="c1"># The area is relative to current window rect, for example:</span>
+<span class="c1"># current window rect = (10, 20, 500, 1000)</span>
+<span class="c1"># area = (0.1, 0.2, 0.6, 0.7)</span>
+<span class="c1"># area_x = 10 + 500 x 0.1 = 60</span>
+<span class="c1"># area_y = 20 + 1000 x 0.2 = 220</span>
+<span class="c1"># area_width = 500 x 0.6 = 300</span>
+<span class="c1"># area_height = 1000 x 0.7 = 700</span>
+<span class="n">my_page</span><span class="o">.</span><span class="n">target_element</span><span class="o">.</span><span class="n">swipe_by</span><span class="p">(</span>
+    <span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Swipe with customize relative offset of customize absolute area.</span>
+<span class="n">my_page</span><span class="o">.</span><span class="n">target_element</span><span class="o">.</span><span class="n">swipe_by</span><span class="p">(</span>
+    <span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">),</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">700</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="huskium.appium.element.Element.tap">
+<span class="sig-name descname"><span class="pre">tap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="headerlink" href="#huskium.appium.element.Element.tap" title="Link to this definition"></a></dt>
+<dd><p>Appium API.
+Tap the center location of the element when it is present.
+This method can be used when <cite>click()</cite> fails.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>duration</strong> – Length of time to tap, in ms.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-huskium.appium.elements">
+<span id="huskium-appium-elements-module"></span><h2>huskium.appium.elements module<a class="headerlink" href="#module-huskium.appium.elements" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="huskium.appium.elements.Elements">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">huskium.appium.elements.</span></span><span class="sig-name descname"><span class="pre">Elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remark</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#huskium.appium.elements.Elements" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="huskium.selenium.html#huskium.selenium.elements.GenericElements" title="huskium.selenium.elements.GenericElements"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenericElements</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">WebDriver</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">WebElement</span></code>]</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="huskium.appium.elements.Elements.locations_in_view">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">locations_in_view</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#huskium.appium.elements.Elements.locations_in_view" title="Link to this definition"></a></dt>
+<dd><p>Appium API.
+The locations relative to the view of all present elements.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-huskium.appium.page">
+<span id="huskium-appium-page-module"></span><h2>huskium.appium.page module<a class="headerlink" href="#module-huskium.appium.page" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="huskium.appium.page.Page">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">huskium.appium.page.</span></span><span class="sig-name descname"><span class="pre">Page</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">driver</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">WD</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reraise</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remark</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Page'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#huskium.appium.page.Page" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="huskium.selenium.html#huskium.selenium.page.GenericPage" title="huskium.selenium.page.GenericPage"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenericPage</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">WebDriver</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">WebElement</span></code>]</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="huskium.appium.page.Page.activate_app">
+<span class="sig-name descname"><span class="pre">activate_app</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="headerlink" href="#huskium.appium.page.Page.activate_app" title="Link to this definition"></a></dt>
+<dd><p>Appium API.
+Activates the application if it is not running
+or is running in the background.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>app_id</strong> – The application id to be activated.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="huskium.appium.page.Page.contexts">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">contexts</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#huskium.appium.page.Page.contexts" title="Link to this definition"></a></dt>
+<dd><p>Appium API. Get current all contexts.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="huskium.appium.page.Page.draw_gesture">
+<span class="sig-name descname"><span class="pre">draw_gesture</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dots</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gesture</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#huskium.appium.page.Page.draw_gesture" title="Link to this definition"></a></dt>
+<dd><p>Appium 2.0 API. Nine-box Gesture Drawing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dots</strong> – Define dots in order [1, 2, 3, …, 9],
+e.g., [{‘x’: 100, ‘y’: 100}, {‘x’: 200, ‘y’: 100}, …];
+or [(100, 100), (200, 100), …].
+If dots are elements, use <cite>page.elements.centers</cite>.</p></li>
+<li><p><strong>gesture</strong> – A string containing the actual positions of the nine dots,
+such as ‘1235789’ for drawing a Z shape.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="huskium.appium.page.Page.draw_lines">
+<span class="sig-name descname"><span class="pre">draw_lines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dots</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#huskium.appium.page.Page.draw_lines" title="Link to this definition"></a></dt>
+<dd><p>Appium 2.0 API. Draw lines by dots in given order.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dots</strong> – A list of coordinates for the target dots,
+e.g., [{‘x’: 100, ‘y’: 100}, {‘x’: 200, ‘y’: 300}, …];
+or [(100, 100), (200, 300), …].</p></li>
+<li><p><strong>duration</strong> – The time taken to draw between two points.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="huskium.appium.page.Page.flick">
+<span class="sig-name descname"><span class="pre">flick</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="headerlink" href="#huskium.appium.page.Page.flick" title="Link to this definition"></a></dt>
+<dd><p>Appium API.
+Flick from one point to another point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_x</strong> – x-coordinate at which to start</p></li>
+<li><p><strong>start_y</strong> – y-coordinate at which to start</p></li>
+<li><p><strong>end_x</strong> – x-coordinate at which to stop</p></li>
+<li><p><strong>end_y</strong> – y-coordinate at which to stop</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">page</span><span class="o">.</span><span class="n">flick</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="huskium.appium.page.Page.flick_by">
+<span class="sig-name descname"><span class="pre">flick_by</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Coordinate</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(0.5,</span> <span class="pre">0.75,</span> <span class="pre">0.5,</span> <span class="pre">0.25)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">area</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Coordinate</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">0.0,</span> <span class="pre">1.0,</span> <span class="pre">1.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">times</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="headerlink" href="#huskium.appium.page.Page.flick_by" title="Link to this definition"></a></dt>
+<dd><p>Flick from one point to another,
+allowing customization of the offset and border settings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>offset</strong> – Please refer to the Examples.</p></li>
+<li><p><strong>area</strong> – Please refer to the Examples.</p></li>
+<li><p><strong>times</strong> – The number of times to perform the flick.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Swipe parameters. Refer to the Class notes for details.</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">huskium</span><span class="w"> </span><span class="kn">import</span> <span class="n">Offset</span><span class="p">,</span> <span class="n">Area</span>
+
+<span class="c1"># Flick down.</span>
+<span class="n">my_page</span><span class="o">.</span><span class="n">flick_by</span><span class="p">(</span><span class="n">Offset</span><span class="o">.</span><span class="n">DOWN</span><span class="p">)</span>
+
+<span class="c1"># Flick to the right.</span>
+<span class="n">my_page</span><span class="o">.</span><span class="n">flick_by</span><span class="p">(</span><span class="n">Offset</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">)</span>
+
+<span class="c1"># Flick to the upper left.</span>
+<span class="n">my_page</span><span class="o">.</span><span class="n">flick_by</span><span class="p">(</span><span class="n">Offset</span><span class="o">.</span><span class="n">UPPER_LEFT</span><span class="p">)</span>
+
+<span class="c1"># Default is flicking up.</span>
+<span class="c1"># offset = Offset.UP = (0.5, 0.5, 0.5, 0.25)</span>
+<span class="c1"># area = Area.FULL = (0.0, 0.0, 1.0, 1.0)</span>
+<span class="c1"># offset x: Fixed 0.5 of current window width.</span>
+<span class="c1"># offset y: From 0.75 to 0.25 of current window height.</span>
+<span class="n">my_page</span><span class="o">.</span><span class="n">flick_by</span><span class="p">()</span>
+
+<span class="c1"># Flick within a swipeable range.</span>
+<span class="n">area</span> <span class="o">=</span> <span class="n">my_page</span><span class="o">.</span><span class="n">scrollable_element</span><span class="o">.</span><span class="n">rect</span>
+<span class="n">my_page</span><span class="o">.</span><span class="n">flick_by</span><span class="p">((</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">),</span> <span class="n">area</span><span class="p">)</span>
+
+<span class="c1"># Flick with customize absolute offset.</span>
+<span class="n">my_page</span><span class="o">.</span><span class="n">flick_by</span><span class="p">((</span><span class="mi">250</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">700</span><span class="p">))</span>
+
+<span class="c1"># Flick with customize relative offset of current window size.</span>
+<span class="n">my_page</span><span class="o">.</span><span class="n">target_element</span><span class="o">.</span><span class="n">flick_by</span><span class="p">((</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">))</span>
+
+<span class="c1"># Flick with customize relative offset of customize relative area.</span>
+<span class="c1"># The area is relative to current window rect, for example:</span>
+<span class="c1"># current window rect = (10, 20, 500, 1000)</span>
+<span class="c1"># area = (0.1, 0.2, 0.6, 0.7)</span>
+<span class="c1"># area_x = 10 + 500 x 0.1 = 60</span>
+<span class="c1"># area_y = 20 + 1000 x 0.2 = 220</span>
+<span class="c1"># area_width = 500 x 0.6 = 300</span>
+<span class="c1"># area_height = 1000 x 0.7 = 700</span>
+<span class="n">my_page</span><span class="o">.</span><span class="n">flick_by</span><span class="p">((</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">))</span>
+
+<span class="c1"># Flick with customize relative offset of customize absolute area.</span>
+<span class="n">my_page</span><span class="o">.</span><span class="n">flick_by</span><span class="p">((</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">),</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">700</span><span class="p">))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="huskium.appium.page.Page.get_status">
+<span class="sig-name descname"><span class="pre">get_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#huskium.appium.page.Page.get_status" title="Link to this definition"></a></dt>
+<dd><p>Appium API. Get the Appium server status.</p>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">page</span><span class="o">.</span><span class="n">get_status</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="huskium.appium.page.Page.swipe">
+<span class="sig-name descname"><span class="pre">swipe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="headerlink" href="#huskium.appium.page.Page.swipe" title="Link to this definition"></a></dt>
+<dd><p>Swipe from one point to another point, for an optional duration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_x</strong> – x-coordinate at which to start</p></li>
+<li><p><strong>start_y</strong> – y-coordinate at which to start</p></li>
+<li><p><strong>end_x</strong> – x-coordinate at which to stop</p></li>
+<li><p><strong>end_y</strong> – y-coordinate at which to stop</p></li>
+<li><p><strong>duration</strong> – defines the swipe speed as time taken
+to swipe from point a to point b, in ms,
+note that default set to 250 by ActionBuilder.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">page</span><span class="o">.</span><span class="n">swipe</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="huskium.appium.page.Page.swipe_by">
+<span class="sig-name descname"><span class="pre">swipe_by</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Coordinate</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(0.5,</span> <span class="pre">0.75,</span> <span class="pre">0.5,</span> <span class="pre">0.25)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">area</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Coordinate</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">0.0,</span> <span class="pre">1.0,</span> <span class="pre">1.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">times</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="headerlink" href="#huskium.appium.page.Page.swipe_by" title="Link to this definition"></a></dt>
+<dd><p>Swipe from one point to another,
+allowing customization of the offset and border settings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>offset</strong> – Please refer to the Examples.</p></li>
+<li><p><strong>area</strong> – Please refer to the Examples.</p></li>
+<li><p><strong>duration</strong> – Defines the swipe speed as the time
+taken to swipe from point A to point B, in milliseconds.
+The default is set to 250 by ActionBuilder.</p></li>
+<li><p><strong>times</strong> – The number of times to perform the swipe.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Swipe parameters. Refer to the Class notes for details.</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">huskium</span><span class="w"> </span><span class="kn">import</span> <span class="n">Offset</span><span class="p">,</span> <span class="n">Area</span>
+
+<span class="c1"># Swipe down.</span>
+<span class="n">my_page</span><span class="o">.</span><span class="n">swipe_by</span><span class="p">(</span><span class="n">Offset</span><span class="o">.</span><span class="n">DOWN</span><span class="p">)</span>
+
+<span class="c1"># Swipe to the right.</span>
+<span class="n">my_page</span><span class="o">.</span><span class="n">swipe_by</span><span class="p">(</span><span class="n">Offset</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">)</span>
+
+<span class="c1"># Swipe to the upper left.</span>
+<span class="n">my_page</span><span class="o">.</span><span class="n">swipe_by</span><span class="p">(</span><span class="n">Offset</span><span class="o">.</span><span class="n">UPPER_LEFT</span><span class="p">)</span>
+
+<span class="c1"># Default is swiping up.</span>
+<span class="c1"># offset = Offset.UP = (0.5, 0.75, 0.5, 0.25)</span>
+<span class="c1"># area = Area.FULL = (0.0, 0.0, 1.0, 1.0)</span>
+<span class="c1"># offset x: Fixed 0.5 of current window width.</span>
+<span class="c1"># offset y: From 0.75 to 0.25 of current window height.</span>
+<span class="n">my_page</span><span class="o">.</span><span class="n">swipe_by</span><span class="p">()</span>
+
+<span class="c1"># Swipe within a swipeable range.</span>
+<span class="n">area</span> <span class="o">=</span> <span class="n">my_page</span><span class="o">.</span><span class="n">scrollable_element</span><span class="o">.</span><span class="n">rect</span>
+<span class="n">my_page</span><span class="o">.</span><span class="n">swipe_by</span><span class="p">((</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">),</span> <span class="n">area</span><span class="p">)</span>
+
+<span class="c1"># Swipe with customize absolute offset.</span>
+<span class="n">my_page</span><span class="o">.</span><span class="n">swipe_by</span><span class="p">((</span><span class="mi">250</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">700</span><span class="p">))</span>
+
+<span class="c1"># Swipe with customize relative offset of current window size.</span>
+<span class="n">my_page</span><span class="o">.</span><span class="n">swipe_by</span><span class="p">((</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">))</span>
+
+<span class="c1"># Swipe with customize relative offset of customize relative area.</span>
+<span class="c1"># The area is relative to current window rect, for example:</span>
+<span class="c1"># current window rect = (10, 20, 500, 1000)</span>
+<span class="c1"># area = (0.1, 0.2, 0.6, 0.7)</span>
+<span class="c1"># area_x = 10 + 500 x 0.1 = 60</span>
+<span class="c1"># area_y = 20 + 1000 x 0.2 = 220</span>
+<span class="c1"># area_width = 500 x 0.6 = 300</span>
+<span class="c1"># area_height = 1000 x 0.7 = 700</span>
+<span class="n">my_page</span><span class="o">.</span><span class="n">swipe_by</span><span class="p">((</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">))</span>
+
+<span class="c1"># Swipe with customize relative offset of customize absolute area.</span>
+<span class="n">my_page</span><span class="o">.</span><span class="n">swipe_by</span><span class="p">((</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">),</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">700</span><span class="p">))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="huskium.appium.page.Page.switch_to_app">
+<span class="sig-name descname"><span class="pre">switch_to_app</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></span><a class="headerlink" href="#huskium.appium.page.Page.switch_to_app" title="Link to this definition"></a></dt>
+<dd><p>Appium API. Switch to native app.
+Return the current context after judging whether to switch.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="huskium.appium.page.Page.switch_to_context">
+<span class="sig-name descname"><span class="pre">switch_to_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="headerlink" href="#huskium.appium.page.Page.switch_to_context" title="Link to this definition"></a></dt>
+<dd><p>Appium API. Switch to NATIVE_APP or WEBVIEW.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="huskium.appium.page.Page.switch_to_flutter">
+<span class="sig-name descname"><span class="pre">switch_to_flutter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="headerlink" href="#huskium.appium.page.Page.switch_to_flutter" title="Link to this definition"></a></dt>
+<dd><p>Appium API. Switch to flutter app.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="huskium.appium.page.Page.switch_to_webview">
+<span class="sig-name descname"><span class="pre">switch_to_webview</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">switch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reraise</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="k"><span class="pre">False</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#huskium.appium.page.Page.switch_to_webview" title="Link to this definition"></a></dt>
+<dd><p>Appium API.
+Wait for the webview is present and determine whether switch to it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>switch</strong> – If True, switches to WEBVIEW when it becomes available.</p></li>
+<li><p><strong>index</strong> – Defaulting to <cite>-1</cite> which targets the latest WEBVIEW.</p></li>
+<li><p><strong>timeout</strong> – The timeout duration in seconds for explicit wait.</p></li>
+<li><p><strong>reraise</strong> – If True, re-raises a TimeoutException upon timeout;
+if False, returns False upon timeout.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><cite>list</cite> for <cite>[‘NATIVE_APP’, ‘WEBVIEW_XXX’, …]</cite>;
+<cite>False</cite> for no any WEBVIEW in contexts.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(list | False)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="huskium.appium.page.Page.tap">
+<span class="sig-name descname"><span class="pre">tap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">positions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="headerlink" href="#huskium.appium.page.Page.tap" title="Link to this definition"></a></dt>
+<dd><p>Appium API.
+Taps on an particular place with up to five fingers,
+holding for a certain time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>positions</strong> – an array of tuples representing the x/y coordinates of
+the fingers to tap. Length can be up to five.</p></li>
+<li><p><strong>duration</strong> – length of time to tap, in ms. Default value is 100 ms.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">page</span><span class="o">.</span><span class="n">tap</span><span class="p">([(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">60</span><span class="p">),</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)],</span> <span class="mi">500</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="huskium.appium.page.Page.tap_window_center">
+<span class="sig-name descname"><span class="pre">tap_window_center</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="headerlink" href="#huskium.appium.page.Page.tap_window_center" title="Link to this definition"></a></dt>
+<dd><p>Tap window center coordination.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>duration</strong> – length of time to tap, in ms. Default value is 100 ms.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="huskium.appium.page.Page.terminate_app">
+<span class="sig-name descname"><span class="pre">terminate_app</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#huskium.appium.page.Page.terminate_app" title="Link to this definition"></a></dt>
+<dd><p>Appium API. Terminates the application if it is running.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>app_id</strong> – the application id to be terminates.</p></li>
+<li><p><strong>**options</strong> – timeout (int), [Android only]
+how much time to wait for the uninstall to complete.
+500ms by default.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><cite>True</cite> if the app has been successfully terminated.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-huskium.appium">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-huskium.appium" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="huskium.html" class="btn btn-neutral float-left" title="huskium package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="huskium.selenium.html" class="btn btn-neutral float-right" title="huskium.selenium package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, JohnnyChou.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

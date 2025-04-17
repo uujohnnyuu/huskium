@@ -1,8 +1,33 @@
 huskium package
 ===============
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   huskium.appium
+   huskium.selenium
+
 Submodules
 ----------
+
+huskium.common module
+---------------------
+
+.. automodule:: huskium.common
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+huskium.dynamic module
+----------------------
+
+.. automodule:: huskium.dynamic
+   :members:
+   :show-inheritance:
+   :undoc-members:
 
 huskium.exception module
 ------------------------
@@ -28,10 +53,10 @@ huskium.types module
    :show-inheritance:
    :undoc-members:
 
-huskium.version module
-----------------------
+huskium.wait module
+-------------------
 
-.. automodule:: huskium.version
+.. automodule:: huskium.wait
    :members:
    :show-inheritance:
    :undoc-members:
