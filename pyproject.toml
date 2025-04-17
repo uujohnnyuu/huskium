@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=42"]
+requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -14,7 +14,7 @@ dependencies = [
 ]
 requires-python = ">= 3.12"
 readme = "README.md"
-license = {text = "Apache-2.0"}
+license = {text = "MIT"}
 keywords = ["huskium", "huskypo", "selenium", "appium", "page object", "automation"]
 
 [project.urls]
