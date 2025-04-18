@@ -436,7 +436,7 @@ class Page(GenericPage[WebDriver, WebElement]):
     def switch_to_context(self, context: str | None) -> str:
         """
         Appium API.
-        Sets the context for the current session. 
+        Sets the context for the current session.
         Passing None is equal to switching to native context.
         Returns the current context.
         """
