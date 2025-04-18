@@ -48,8 +48,8 @@ class ECEX(GenericECEX[WebDriver, WebElement]):
                 defaulting to the most recently appeared.
 
         Returns:
-            (list[str] | False):
-                All current contexts `list[str]` when a `WEBVIEW` exists;
+            (str | False):
+                Current context `str` when a `WEBVIEW` exists;
                 otherwise, `False` when no `WEBVIEW` exists.
         """
 
@@ -58,7 +58,7 @@ class ECEX(GenericECEX[WebDriver, WebElement]):
             if any('WEBVIEW' in context for context in contexts):
                 if switch:
                     driver.switch_to.context(contexts[index])
-                return driver.current_context
+                return driver.context
             return False
 
         return _predicate

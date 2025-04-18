@@ -424,14 +424,24 @@ class Page(GenericPage[WebDriver, WebElement]):
         return self.driver.get_status()
 
     @property
+    def context(self) -> str:
+        """Appium API. Get current context."""
+        return self.driver.context
+
+    @property
     def contexts(self) -> list[str]:
         """Appium API. Get current all contexts."""
         return self.driver.contexts
 
-    def switch_to_context(self, context) -> Self:
-        """Appium API. Switch to NATIVE_APP or WEBVIEW."""
+    def switch_to_context(self, context: str | None) -> str:
+        """
+        Appium API.
+        Sets the context for the current session. 
+        Passing None is equal to switching to native context.
+        Returns the current context.
+        """
         self.driver.switch_to.context(context)
-        return self
+        return self.driver.context
 
     def switch_to_webview(
         self,
@@ -468,7 +478,7 @@ class Page(GenericPage[WebDriver, WebElement]):
         Return the current context after judging whether to switch.
         """
         self.driver.switch_to.context('NATIVE_APP')
-        return self.driver.current_context
+        return self.driver.context
 
     def terminate_app(self, app_id: str, **options: Any) -> bool:
         """
@@ -501,4 +511,4 @@ class Page(GenericPage[WebDriver, WebElement]):
     def switch_to_flutter(self) -> str:
         """Appium API. Switch to flutter app."""
         self.driver.switch_to.context('FLUTTER')
-        return self.driver.current_context
+        return self.driver.context
