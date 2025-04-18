@@ -17,7 +17,6 @@ from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.fedcm.dialog import Dialog
 from selenium.webdriver.common.print_page_options import PrintOptions
 from selenium.webdriver.remote.fedcm import FedCM
-from selenium.webdriver.remote.mobile import Mobile
 from selenium.webdriver.remote.script_key import ScriptKey
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
@@ -257,11 +256,6 @@ class GenericPage[WD: WebDriver, WE: WebElement]:
             WebDriverException: If FedCM not supported.
         """
         return self.driver.fedcm_dialog(timeout, poll_frequency, ignored_exceptions)
-
-    @property
-    def mobile(self) -> Mobile:
-        """Return Mobile object."""
-        return self.driver.mobile
 
     @property
     def name(self) -> str:
