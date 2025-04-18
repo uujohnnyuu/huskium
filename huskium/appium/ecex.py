@@ -37,7 +37,7 @@ class ECEX(GenericECEX[WebDriver, WebElement]):
     def webview_is_present(
         switch: bool = True,
         index: int = -1
-    ) -> Callable[[WebDriver], list[str] | Literal[False]]:
+    ) -> Callable[[WebDriver], str | Literal[False]]:
         """
         Whether `WEBVIEW` context is present.
 
@@ -58,7 +58,7 @@ class ECEX(GenericECEX[WebDriver, WebElement]):
             if any('WEBVIEW' in context for context in contexts):
                 if switch:
                     driver.switch_to.context(contexts[index])
-                return contexts
+                return driver.current_context
             return False
 
         return _predicate

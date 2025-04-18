@@ -424,7 +424,7 @@ class Page(GenericPage[WebDriver, WebElement]):
         return self.driver.get_status()
 
     @property
-    def contexts(self) -> Any | list[str]:
+    def contexts(self) -> list[str]:
         """Appium API. Get current all contexts."""
         return self.driver.contexts
 
@@ -439,7 +439,7 @@ class Page(GenericPage[WebDriver, WebElement]):
         index: int = -1,
         timeout: int | float | None = None,
         reraise: bool | None = None
-    ) -> list[str] | Literal[False]:
+    ) -> str | Literal[False]:
         """
         Appium API.
         Wait for the webview is present and determine whether switch to it.
@@ -452,8 +452,8 @@ class Page(GenericPage[WebDriver, WebElement]):
                 if False, returns False upon timeout.
 
         Returns:
-            (list | False):
-                `list` for `['NATIVE_APP', 'WEBVIEW_XXX', ...]`;
+            (str | False):
+                `str` for current context;
                 `False` for no any WEBVIEW in contexts.
         """
         try:
@@ -462,13 +462,12 @@ class Page(GenericPage[WebDriver, WebElement]):
             status = f'Timed out waiting {self.wait.timeout} seconds for WEBVIEW to be present.'
             return self._timeout_process(status, exc, reraise)
 
-    def switch_to_app(self) -> Any | str:
+    def switch_to_app(self) -> str:
         """
         Appium API. Switch to native app.
         Return the current context after judging whether to switch.
         """
-        if self.driver.current_context != 'NATIVE_APP':
-            self.driver.switch_to.context('NATIVE_APP')
+        self.driver.switch_to.context('NATIVE_APP')
         return self.driver.current_context
 
     def terminate_app(self, app_id: str, **options: Any) -> bool:
@@ -499,8 +498,7 @@ class Page(GenericPage[WebDriver, WebElement]):
         self.driver.activate_app(app_id)
         return self
 
-    def switch_to_flutter(self) -> Self:
+    def switch_to_flutter(self) -> str:
         """Appium API. Switch to flutter app."""
-        if self.driver.current_context != "FLUTTER":
-            self.driver.switch_to.context('FLUTTER')
-        return self
+        self.driver.switch_to.context('FLUTTER')
+        return self.driver.current_context
