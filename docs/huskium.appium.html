@@ -86,6 +86,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-huskium.appium.page">huskium.appium.page module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#huskium.appium.page.Page"><code class="docutils literal notranslate"><span class="pre">Page</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#huskium.appium.page.Page.activate_app"><code class="docutils literal notranslate"><span class="pre">Page.activate_app()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#huskium.appium.page.Page.context"><code class="docutils literal notranslate"><span class="pre">Page.context</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#huskium.appium.page.Page.contexts"><code class="docutils literal notranslate"><span class="pre">Page.contexts</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#huskium.appium.page.Page.draw_gesture"><code class="docutils literal notranslate"><span class="pre">Page.draw_gesture()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#huskium.appium.page.Page.draw_lines"><code class="docutils literal notranslate"><span class="pre">Page.draw_lines()</span></code></a></li>
@@ -203,11 +204,11 @@ defaulting to the most recently appeared.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>All current contexts <cite>list[str]</cite> when a <cite>WEBVIEW</cite> exists;
+<dd class="field-even"><p>Current context <cite>str</cite> when a <cite>WEBVIEW</cite> exists;
 otherwise, <cite>False</cite> when no <cite>WEBVIEW</cite> exists.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>(list[str] | False)</p>
+<dd class="field-odd"><p>(str | False)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -458,6 +459,12 @@ or is running in the background.</p>
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="huskium.appium.page.Page.context">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">context</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#huskium.appium.page.Page.context" title="Link to this definition"></a></dt>
+<dd><p>Appium API. Get current context.</p>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="huskium.appium.page.Page.contexts">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">contexts</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#huskium.appium.page.Page.contexts" title="Link to this definition"></a></dt>
 <dd><p>Appium API. Get current all contexts.</p>
@@ -683,8 +690,11 @@ Return the current context after judging whether to switch.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="huskium.appium.page.Page.switch_to_context">
-<span class="sig-name descname"><span class="pre">switch_to_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="headerlink" href="#huskium.appium.page.Page.switch_to_context" title="Link to this definition"></a></dt>
-<dd><p>Appium API. Switch to NATIVE_APP or WEBVIEW.</p>
+<span class="sig-name descname"><span class="pre">switch_to_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#huskium.appium.page.Page.switch_to_context" title="Link to this definition"></a></dt>
+<dd><p>Appium API.
+Sets the context for the current session.
+Passing None is equal to switching to native context.
+Returns the current context.</p>
 </dd></dl>
 
 <dl class="py method">
