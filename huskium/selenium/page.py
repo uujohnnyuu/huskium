@@ -11,7 +11,7 @@ from typing import Any, cast, Iterable, Literal, Self, Type
 
 from selenium.common.exceptions import TimeoutException
 from selenium.types import WaitExcTypes
-from selenium.webdriver.common.action_chains import ActionChains, AnyDevice
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.actions.wheel_input import ScrollOrigin
 from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.fedcm.dialog import Dialog
@@ -127,7 +127,7 @@ class GenericPage[WD: WebDriver, WE: WebElement]:
     def action(self) -> ActionChains:
         """The ActionChains instance."""
         return self._action
-    
+
     def reset_action(self, driver: WD, duration: int = 250) -> None:
         """
         Reset the ActionChains instance.
