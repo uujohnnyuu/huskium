@@ -9,3 +9,5 @@ from .ecex import GenericECEX, ECEX
 from .element import ELEMENT_REFERENCE_EXCEPTIONS, GenericElement, Element
 from .elements import GenericElements, Elements
 from .page import GenericPage, Page
+from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.remote.webelement import WebElement

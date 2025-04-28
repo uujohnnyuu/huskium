@@ -9,3 +9,5 @@ from .ecex import ECEX
 from .element import Element
 from .elements import Elements
 from .page import Page
+from appium.webdriver.webdriver import WebDriver
+from appium.webdriver.webelement import WebElement
