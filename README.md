@@ -78,9 +78,27 @@ use multiple inheritance:
 from huskium.appium import Page
 from mypage import MyWebPage  # Selenium-based page object
 
-# Place MyWebPage before Page to preserve static type hints.
-class MyAppPage(MyWebPage, Page):  
+class MyAppPage(Page, MyWebPage):  
     pass
+```
+
+Note that regardless of inheritance order, the data logic remains correct both in mypy and at runtime.  
+However, type hinting issues may arise in different IDEs due to their specific restrictions.
+
+You can explicitly annotate the attributes you need. For example:
+```python
+from huskium.appium import Page, WebDriver
+from mypage import MyWebPage
+
+class MyAppPage(Page, MyWebPage):
+
+    # Explicit annotation as PyCharm defaults to selenium WebDriver from MyWebPage
+    driver: WebDriver
+
+    # Extended function for Appium
+    def delayed_tap(self, coordinates: list[tuple[int, int]], wait: int = 1):
+        time.sleep(wait)
+        self.driver.tap(coordinates)  # Recognized correctly due to explicit hinting
 ```
 
 If any element needs Appium-specific behavior, you can override it:
@@ -89,8 +107,8 @@ If any element needs Appium-specific behavior, you can override it:
 from huskium.appium import Page, Element, By
 from mypage import MyWebPage
 
-class MyAppPage(MyWebPage, Page):
-    search_field = Element(By.NAME, 'q', remark='App search input box')
+class MyAppPage(Page, MyWebPage):
+    search_field = Element(By.NAME, 'qry', remark='App search input box')
 ```
 
 ### 4. ❌ Do Not Mix Selenium Page with Appium Element
