@@ -559,21 +559,6 @@ page.element.select_by_value("option_value")
 
 ---
 
-## Inheritance
-
-```python
-from huskium.selenium import Page as HuskyPage, Element as HuskyElement
-
-class Page(HuskyPage):
-    def extended_func(self, par):
-        ...
-
-class Element(HuskyElement):
-    def extended_func(self, par):
-        ...
-```
-
----
-
 ## TODO
-Continue tracking Appium version updates.
+1. Continue tracking Appium version updates.
+2. Building MCP service.
