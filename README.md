@@ -13,7 +13,6 @@
 - [Appium Extended Actions](#appium-extended-actions)
 - [Action Chains](#action-chains)
 - [Select Actions](#select-actions)
-- [Inheritance](#inheritance)
 - [TODO](#todo)
 
 ---
