@@ -28,11 +28,15 @@
 - Currently tracking Appium v5.0.0 (released on 2025/03/24).
 - Sphinx documentation: https://uujohnnyuu.github.io/huskium/
 
+[⬆️](#table-of-contents)
+
 ---
 
 ## Usage
 Easily **build page objects** and **write test scripts**, 
 greatly improving stability and performance.
+
+[⬆️](#table-of-contents)
 
 ---
 
@@ -154,10 +158,10 @@ Regardless of whether you're using Selenium or Appium, the initialization is don
 However, make sure to match the correct Page class with the corresponding WebDriver:
 
 ```python
-# ✅ Chrome is a Selenium WebDriver; WebPage is a Selenium Page.
+# Chrome is a Selenium WebDriver; WebPage is a Selenium Page.
 web_page = WebPage(chrome)
 
-# ✅ iPhone is an Appium WebDriver; AppPage is an Appium Page.
+# iPhone is an Appium WebDriver; AppPage is an Appium Page.
 app_page = AppPage(iphone)
 ```
 
@@ -170,6 +174,8 @@ web_page = WebPage(iphone)
 # ❌ Chrome is a Selenium WebDriver; AppPage is an Appium Page.
 app_page = AppPage(chrome)
 ```
+
+[⬆️](#table-of-contents)
 
 ---
 
@@ -255,6 +261,8 @@ my_page.dynamic_search_result(3).wait_present()
 my_page.static_search_result.click()
 ```
 
+[⬆️](#table-of-contents)
+
 ---
 
 ## Timeout Value Settings
@@ -294,6 +302,8 @@ Applies when neither the Method Level nor the Element Level timeout is set.
 ```python
 my_page = MyPage(driver, timeout=10)  # 10 seconds for all operations.
 ```
+
+[⬆️](#table-of-contents)
 
 ---
 
@@ -342,6 +352,8 @@ my_page.my_element.wait_present()
 my_page.my_element.text
 my_page.my_element.click()
 ```
+
+[⬆️](#table-of-contents)
 
 ---
 
@@ -399,6 +411,8 @@ A common scenario where we validate the element’s text before clicking:
 assert my_page.my_element.text == 'some text'  # It will cache the WebElement object to reuse.
 my_page.my_element.click()
 ```
+
+[⬆️](#table-of-contents)
 
 ---
 
@@ -475,6 +489,8 @@ xxx_filter.reset_torecord(True)
 prefix_filter.reset_isfunc(False)  
 ```
 
+[⬆️](#table-of-contents)
+
 ---
 
 ## Wait Actions
@@ -505,6 +521,8 @@ page.element.wait_invisible(present=False)  # Can be either absent or invisible
 page.element.wait_unclickable(present=False)  # Can be either absent or unclickable
 ```
 
+[⬆️](#table-of-contents)
+
 ---
 
 ## Appium Extended Actions
@@ -534,6 +552,8 @@ dots = page.elements.locations
 page.draw_lines(dots)
 ```
 
+[⬆️](#table-of-contents)
+
 ---
 
 ## Action Chains
@@ -548,6 +568,8 @@ page.scroll_from_origin().double_click()
 page.perform()  # perform all actions
 ```
 
+[⬆️](#table-of-contents)
+
 ---
 
 ## Select Actions
@@ -556,8 +578,14 @@ page.element.options
 page.element.select_by_value("option_value")
 ```
 
+[⬆️](#table-of-contents)
+
 ---
 
 ## TODO
 1. Continue tracking Appium version updates.
 2. Building MCP service.
+
+[⬆️](#table-of-contents)
+
+---
